@@ -5,7 +5,6 @@
 //=================
 
 Ped ClonePed(Ped ped);
-void UpdatePlayers();
 Ped CreatePed(char* PedName, Vector3 SpawnCoordinates, int ped_type, bool network_handle);
 
 //Animations
@@ -15,34 +14,11 @@ void playAnimation(Ped ped, bool loop, char * dict, char * anim);
 //SKINS
 bool applyChosenSkin(std::string skinName);
 
-void changeAppearance(char * family, int model, int texture);
-
-void ResetAppearance();
-
-void Swat();
-
-void rlogo();
-
-void ghost();
-
-void Penguin();
-
-void Splinter();
-
-void Pilot();
-
-void Special();
-
-void Special2();
-
-void Balla();
-
-void Elf();
-
-void CopyOutfit(Player player);
-
 //CONTROL
 void RequestControlOfEnt(Entity entity);
+
+template <typename Type>
+
 
 //FORCE
 void ApplyForceToEntity(Entity e, float x, float y, float z);
@@ -56,7 +32,8 @@ void set_all_nearby_peds_to_calm();
 //NEARBY PEDS
 std::set<Ped> getNearbyPeds();
 void update_nearby_peds(Ped playerPed, int count);
-
+//VEHICLE
+void request_vehicle();
 //VEHICLE
 bool get_vehicle_keyboard_result(uint* outModel);
 
@@ -92,14 +69,14 @@ float get_distance(Vector3*pointA, Vector3*pointB);
 float get_vector_length(Vector3*vector);
 
 //NOTIFICATION
-void notifyMap(char * fmt, ...);
-void notifyMap(std::string str);
-void notifyCenter(char * fmt, ...);
-void notifyCenter(std::string str);
-void update_status_text();
+//void notifyBottom(char * fmt, ...);
+//void notifyBottom(std::string str);
+//void notifyMap(char * fmt, ...);
+//void notifyMap(std::string str);
+//void notifyCenter(char * fmt, ...);
+//void notifyCenter(std::string str);
+//void update_status_text();
 
 //DRAWING FUNCTIONS
 void draw_rect(float A_0, float A_1, float A_2, float A_3, int A_4, int A_5, int A_6, int A_7);
 void draw_menu_line(std::string caption, float lineWidth, float lineHeight, float lineTop, float lineLeft, float textLeft, bool active, bool title, bool rescaleText = true);
-
-Object SpawnObject(char * name, Vector3 coords);

@@ -318,6 +318,4 @@ namespace Memory {
 }
 
 
-
-
 #endif // __MEMORY_H__

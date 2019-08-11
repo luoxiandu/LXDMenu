@@ -15,16 +15,14 @@ struct CrossMappingEntry
 class CrossMapping
 {
 public:
+	static uint64_t SearchNative(uint64_t native);
 	static void initNativeMap();
-public:
 	static uint64_t MapNative(uint64_t inNative);
-
-public:
 	static void dumpNativeMappingCache();
-public:
 	static bool searchMap(nMap map, uint64_t inNative, uint64_t *outNative);
 };
 
 #endif // __CROSS_MAPPING_H__
+
 
 

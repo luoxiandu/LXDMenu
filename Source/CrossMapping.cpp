@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include <mmsystem.h>
+
 ::std::unordered_map<uint64_t, uint64_t> nativeHashMap;
 
 uint64_t __HASHMAPDATA[] = {
+
+	//1.47 - 1.48.
 		0x846AA8E7D55EE5B6, 0xC7FBCC313D15ACA2,
 		0xD3A58A12C77D9D4B, 0x6B4BAEB95E339452,
 		0x1514FB24C02C2322, 0xE54FC1D4030AE3A0,
@@ -6168,43 +6171,44 @@ uint64_t __HASHMAPDATA[] = {
 		0xAC95ED552157E092, 0xAC95ED552157E092,
 		0x09E8F18641BE2575, 0x09E8F18641BE2575,
 		0x973A9781A34F8DEB, 0x973A9781A34F8DEB,
-		0xE816E655DE37FE20, 0xE816E655DE37FE20,
+		0xE816E655DE37FE20, 0xE816E655DE37FE20
+
 };
 
 /*
 void CrossMapping::initNativeMap() {
-static int init = 0;
-struct twoQwords {
-uint64_t first;
-uint64_t second;
-} *p2q;
+	static int init = 0;
+	struct twoQwords {
+		uint64_t first;
+		uint64_t second;
+	} *p2q;
 
-if (init) {
-DEBUGMSG("Already init, nativeHashMap has %lli members", nativeHashMap.size());
-return;
-}
+	if (init) {
+		DEBUGMSG("Already init, nativeHashMap has %lli members", nativeHashMap.size());
+		return;
+	}
 
-p2q = reinterpret_cast<twoQwords *>(__HASHMAPDATA);
-//DEBUG_OUT("p2q: %p", p2q);
-//DEBUG_OUT("p2q->first: %llx", p2q->first);
-//DEBUG_OUT("p2q->second: %llx", p2q->second);
-while (p2q->first) {
-//DEBUG_OUT("initNHM: %llx, %llx", p2q->first, p2q->second);
-nativeHashMap.emplace(p2q->first, p2q->second);
-//DEBUG_OUT("nativeHashMap now has %lli members", nativeHashMap.size());
-++p2q;
-}
-init = 1;
-DEBUGMSG("nativeHashMap has %lli members", nativeHashMap.size());
+	p2q = reinterpret_cast<twoQwords *>(__HASHMAPDATA);
+	//DEBUG_OUT("p2q: %p", p2q);
+	//DEBUG_OUT("p2q->first: %llx", p2q->first);
+	//DEBUG_OUT("p2q->second: %llx", p2q->second);
+	while (p2q->first) {
+		//DEBUG_OUT("initNHM: %llx, %llx", p2q->first, p2q->second);
+		nativeHashMap.emplace(p2q->first, p2q->second);
+		//DEBUG_OUT("nativeHashMap now has %lli members", nativeHashMap.size());
+		++p2q;
+	}
+	init = 1;
+	DEBUGMSG("nativeHashMap has %lli members", nativeHashMap.size());
 
 
-std::ofstream file;
-file.open("EntryPoints.txt");
-for (int i = 0; i < sizeof(__HASHMAPDATA) / sizeof(*__HASHMAPDATA); i += 2) {
-auto addr = Hooking::GetNativeHandler(__HASHMAPDATA[i]);
-file << std::hex << "0x" << __HASHMAPDATA[i] << " : " << "0x" << addr << std::endl;
-}
-file.close();
+	std::ofstream file;
+	file.open("EntryPoints.txt");
+	for (int i = 0; i < sizeof(__HASHMAPDATA) / sizeof(*__HASHMAPDATA); i += 2) {
+		auto addr = Hooking::GetNativeHandler(__HASHMAPDATA[i]);
+		file << std::hex << "0x" << __HASHMAPDATA[i] << " : " << "0x" << addr << std::endl;
+	}
+	file.close();
 }*/
 
 void CrossMapping::initNativeMap()
@@ -6221,7 +6225,7 @@ void CrossMapping::initNativeMap()
 		return;
 	}
 
-	p2q = reinterpret_cast<twoQwords *>(__HASHMAPDATA);
+	p2q = reinterpret_cast<twoQwords*>(__HASHMAPDATA);
 	//DEBUG_OUT("p2q: %p", p2q);
 	//DEBUG_OUT("p2q->first: %llx", p2q->first);
 	//DEBUG_OUT("p2q->second: %llx", p2q->second);
@@ -6241,7 +6245,7 @@ void CrossMapping::initNativeMap()
 
 static nMap nativeCache;
 
-bool CrossMapping::searchMap(nMap map, uint64_t inNative, uint64_t *outNative)
+bool CrossMapping::searchMap(nMap map, uint64_t inNative, uint64_t* outNative)
 {
 	bool found = false;
 	//LOG_DEBUG("inNative 0x%016llx", inNative);

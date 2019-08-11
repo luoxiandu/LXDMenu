@@ -15,14 +15,14 @@ protected:
 public:
 
 	template<typename T>
-	inline T GetArgument(int idx) {
+	inline T GetArgument( int idx ) {
 
 		intptr_t * arguments = (intptr_t*)m_pArgs;
 		return *(T*)&arguments[idx];
 	}
 
 	template<typename T>
-	inline void SetResult(int idx, T value) {
+	inline void SetResult( int idx, T value ) {
 
 		intptr_t * returnValues = (intptr_t*)m_pReturn;
 		*(T*)&returnValues[idx] = value;
@@ -34,7 +34,7 @@ public:
 	}
 
 	template<typename T>
-	inline T GetResult(int idx) {
+	inline T GetResult( int idx ) {
 
 		intptr_t * returnValues = (intptr_t*)m_pReturn;
 		return *(T*)&returnValues[idx];
@@ -61,23 +61,22 @@ public:
 
 		m_pArgs = &m_TempStack;
 		m_pReturn = &m_TempStack;		// It's okay to point both args and return at
-										// the same pointer. The game should handle this.
+		// the same pointer. The game should handle this.
 		m_nArgCount = 0;
 		m_nDataCount = 0;
 	}
 
 	template <typename T>
-	inline void Push(T value) {
+	inline void Push( T value ) {
 
-		if (sizeof(T) > ArgSize) {
+		if ( sizeof( T ) > ArgSize ) {
 			throw "Argument has an invalid size";
-		}
-		else if (sizeof(T) < ArgSize) {
+		} else if ( sizeof( T ) < ArgSize ) {
 			// Ensure we don't have any stray data
-			*reinterpret_cast<uintptr_t*>(m_TempStack + ArgSize * m_nArgCount) = 0;
+			*reinterpret_cast<uintptr_t*>( m_TempStack + ArgSize * m_nArgCount ) = 0;
 		}
 
-		*reinterpret_cast<T*>(m_TempStack + ArgSize * m_nArgCount) = value;
+		*reinterpret_cast<T*>( m_TempStack + ArgSize * m_nArgCount ) = value;
 		m_nArgCount++;
 	}
 
@@ -86,24 +85,24 @@ public:
 		uintptr_t tempValues[MaxNativeParams];
 		uintptr_t * args = (uintptr_t*)m_pArgs;
 
-		for (uint32_t i = 0; i < m_nArgCount; i++) {
+		for ( uint32_t i = 0; i < m_nArgCount; i++ ) {
 
 			int target = m_nArgCount - i - 1;
 			tempValues[target] = args[i];
 		}
 
-		memcpy(m_TempStack, tempValues, sizeof(m_TempStack));
+		memcpy( m_TempStack, tempValues, sizeof( m_TempStack ) );
 	}
 
 	template <typename T>
 	inline T GetResult() {
 
-		return *reinterpret_cast<T*>(m_TempStack);
+		return *reinterpret_cast<T*>( m_TempStack );
 	}
 };
 
 struct pass {
-	template<typename ...T> pass(T...) {}
+	template<typename ...T> pass( T... ) {}
 };
 
 class NativeManagerContext : public NativeContext {

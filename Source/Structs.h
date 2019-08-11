@@ -4,23 +4,22 @@
 
 //Addresses from GTAV.exe module
 #ifdef __SC_VERSION__
-#define ADDRESS_WORLD					0x2328EC8		//42
-#define ADDRESS_WAYPOINT				0x1F7F400		//wtb a (mini)map struct
-#define ADDRESS_OBJECTIVE				0x1F7F4B0
-#define ADDRESS_AMMO					0x0F706C5		//Ammo dec code; 41 2B D1 E8; 90 90 90 E8
-#define ADDRESS_MAGAZINE				0x0F70680		//Magazine dec code; 41 2B C9 3B C8 0F; 90 90 90 3B C8 0F
+#define ADDRESS_WORLD                    0x23DE120 //1.43  //0x23D1C48        //1.42 
+#define ADDRESS_WAYPOINT                0x1FE6F50        //wtb a (mini)map struct
+#define ADDRESS_OBJECTIVE                0x1F7F4B0
+#define ADDRESS_AMMO                    0x0F706C5        //Ammo dec code; 41 2B D1 E8; 90 90 90 E8
+#define ADDRESS_MAGAZINE                0x0F70680        //Magazine dec code; 41 2B C9 3B C8 0F; 90 90 90 3B C8 0F
 #endif
 #ifdef __STEAM_VERSION__
-#define ADDRESS_WORLD					0x232BC00
-#define ADDRESS_WAYPOINT				0x1F82460
-#define ADDRESS_OBJECTIVE				0x1F82510
-#define ADDRESS_AMMO					0x0F71C38
-#define ADDRESS_MAGAZINE				0x0F71C7D
+#define ADDRESS_WORLD                    0x23E2130    //1.43 //0x23D6330        //1.42
+#define ADDRESS_WAYPOINT                0x1FF7490    //1.43
+#define ADDRESS_OBJECTIVE                0x1FF7540    //1.43
+#define ADDRESS_AMMO                    0xE9BFEC    //1.43
+#define ADDRESS_MAGAZINE                0xEA2D7E    //1.43
 #endif
 
 //offset from WORLD
-#define OFFSET_PLAYER					0x08			//player
-
+#define OFFSET_PLAYER					0x08			//playerbase
 
 //entity offsets
 #define OFFSET_ENTITY_POSBASE			0x30			//base of a structure that contains entity coords
@@ -31,6 +30,7 @@
 #define OFFSET_ENTITY_ATTACKER			0x2A8			//base to a list of the last 3 entities that attacked the current entity
 #define OFFSET_ENTITY_GOD				0x189			//godmode; on = 1, off = 0; byte
 
+#define OFFSET_SET_ENTITY_VISIBL			0x2C
 //player (entity) offsets
 #define OFFSET_PLAYER_ARMOR						0x14B0			//armour
 #define OFFSET_PLAYER_INFO						0x10B8			//playerInfo struct
@@ -83,3 +83,19 @@
 
 
 #define OFFSET_ATTACKER_DISTANCE		0x18			//changed to 0x18, from 0x10
+
+class ChatNameStruct
+{
+public:
+	char pad_0x0000[0x5C]; //0x0000
+	char ChatName[20]; //0x005C 
+
+};
+class ReClass
+{
+public:
+	char LocalPed = 0x08;
+	char PlayerInfo = 0x10B8;
+	char Name = 0x7C;
+
+};

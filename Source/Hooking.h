@@ -1,9 +1,23 @@
 #pragma once
-
-typedef bool(__cdecl* fpIsDLCPresent)(Hash dlchash);
-typedef bool(__cdecl* fpStatSetInt)(Hash dlchash);
-typedef int(__fastcall* PROT_TSE)(bool unk0, uint64_t* args, int argCount, int bitFlags);
-
+typedef bool(__cdecl* fpIsDLCPresent)();
+typedef bool(__cdecl* fpSetName)();
+typedef bool(__cdecl* fpTriggerScriptEvent)(int, void*, int, int);
+typedef bool(__cdecl* fpSetLobbyWeather)(int, int, int, __int64);
+typedef bool(__cdecl* fpIncrementStatHook)(__int64 a1, __int64 a2, float a3);
+typedef void(__cdecl* fpAddOwnedExplosion)(Ped ped, float x, float y, float z, int explosionType, float damageScale, BOOL isAudible, BOOL isInvisible, float cameraShake);
+typedef bool(__cdecl* fpAddTextCompSubstrPlayerName)(char* text);
+typedef bool(__cdecl* fpEndTextCmdDisplayText)(float x, float y);
+typedef bool(__cdecl* GetEventData)(int eventGroup, int eventIndex, uint64_t* argStruct, int argStructSize);
+typedef bool(__cdecl* fpBeginTextCmdDisplayText)(char* text);
+typedef bool(__cdecl* fpSetLobbyTime)(int, int, int);
+typedef bool(__cdecl* fpGetPlayerPed)(Player player);
+typedef bool(__cdecl* fpSendMessage2)(char* message, int* networkHandle);
+typedef __int64(__cdecl* fpGetPlayerAddress)(Player);
+typedef bool(__cdecl* fpStatSetInt)(Hash statName, int value, BOOL save);
+typedef BOOL(__cdecl* fpCreateAmbientPickup)(DWORD pickupHash, Vector3* pos, int unk0, int value, DWORD modelHash, bool unk1, bool unk2);
+typedef BOOL(_cdecl* fpGetEventData)(int eventGroup, int eventIndex, uint64_t* argStruct, int argStructSize);
+typedef uint32_t* (*__cdecl        fpFileRegister)(int*, const char*, bool, const char*, bool);
+using fpGetLabelText = const char* (*) (void* this_, const char* label);
 class Hooking
 {
 private:
@@ -12,26 +26,41 @@ private:
 	static void FailPatterns(const char* name);
 
 public:
+	static fpFileRegister            m_fileregister;
 	static std::vector<LPVOID>		m_hooks;
-	static uint64_t*				m_frameCount;
+	static uint64_t* m_frameCount;
 	static fpIsDLCPresent			is_DLC_present;
-	static fpStatSetInt			    stat_set_int;
+	static fpSetName			    SetName;
+	static GetEventData             get_script_event_data;
+	static fpTriggerScriptEvent	    trigger_script_event;
+	static fpSetLobbyWeather	    set_lobby_weather;
+	static fpGetEventData	        get_event_data;
+	static 	fpGetLabelText GetLabelText;
+	static fpCreateAmbientPickup	create_ambient_pickup;
+	static fpIncrementStatHook	    increment_stat_hook;
+	static fpAddOwnedExplosion	    add_owned_explosion;
+	static fpSetLobbyTime	        set_lobby_time;
+	static fpSendMessage2	        send_message2;
+	static fpGetPlayerAddress		GetPlayerAddress;
+	static fpStatSetInt            Hooking::stat_set_int;
+	static fpGetPlayerPed	        get_player_ped;
+	static fpAddTextCompSubstrPlayerName	    add_text_comp_substr_playername;
+	static fpEndTextCmdDisplayText	    end_text_cmd_display_text;
+	static fpBeginTextCmdDisplayText	    begin_text_cmd_display_text;
 	static void Start(HMODULE hmoduleDLL);
 	static void Cleanup();
-	//void patchEvent(eRockstarEvent e, bool b);
-	//void defuseEvent(eRockstarEvent e, bool toggle);
 	static eGameState GetGameState();
 	static uint64_t getWorldPtr();
 	static void onTickInit();
 	static bool HookNatives();
 	static __int64** getGlobalPtr();
-	static __int64* getGlobalPtr1(int index);
-	static __int64* setTunable(int Tunable);
 	static void defuseEvent(RockstarEvent e, bool toggle);
+	static BlipList* GetBlipList();
 
+	static __int64* getGlobalPatern(int index);
 
-// Native function handler type
-	typedef void(__cdecl * NativeHandler)(scrNativeCallContext * context);
+	// Native function handler type
+	typedef void(__cdecl* NativeHandler)(scrNativeCallContext* context);
 	struct NativeRegistrationNew
 	{
 		uint64_t nextRegistration1;
@@ -47,10 +76,10 @@ public:
 			auto v5 = reinterpret_cast<uintptr_t>(&nextRegistration1);
 			auto v12 = 2i64;
 			auto v13 = v5 ^ nextRegistration2;
-			auto v14 = (char *)&result - v5;
+			auto v14 = (char*)& result - v5;
 			do
 			{
-				*(DWORD*)&v14[v5] = v13 ^ *(DWORD*)v5;
+				*(DWORD*)& v14[v5] = v13 ^ *(DWORD*)v5;
 				v5 += 4i64;
 				--v12;
 			} while (v12);
@@ -60,7 +89,7 @@ public:
 
 		inline uint32_t getNumEntries()
 		{
-			return ((uintptr_t)&numEntries1) ^ numEntries1 ^ numEntries2;
+			return ((uintptr_t)& numEntries1) ^ numEntries1 ^ numEntries2;
 		}
 
 		inline uint64_t getHash(uint32_t index)
@@ -69,11 +98,11 @@ public:
 			auto naddr = 16 * index + reinterpret_cast<uintptr_t>(&nextRegistration1) + 0x54;
 			auto v8 = 2i64;
 			uint64_t nResult;
-			auto v11 = (char *)&nResult - naddr;
-			auto v10 = naddr ^  *(DWORD*)(naddr + 8);
+			auto v11 = (char*)& nResult - naddr;
+			auto v10 = naddr ^ *(DWORD*)(naddr + 8);
 			do
 			{
-				*(DWORD *)&v11[naddr] = v10 ^ *(DWORD*)(naddr);
+				*(DWORD*)& v11[naddr] = v10 ^ *(DWORD*)(naddr);
 				naddr += 4i64;
 				--v8;
 			} while (v8);
@@ -126,20 +155,24 @@ struct scrThreadContext
 	int pad[17];
 };
 
+
+
+
+
 struct scrThread
 {
-	void *vTable;
+	void* vTable;
 	scrThreadContext m_ctx;
-	void *m_pStack;
-	void *pad;
-	void *pad2;
-	const char *m_pszExitMessage;
+	void* m_pStack;
+	void* pad;
+	void* pad2;
+	const char* m_pszExitMessage;
 };
 
 struct ScriptThread : scrThread
 {
 	const char Name[64];
-	void *m_pScriptHandler;
+	void* m_pScriptHandler;
 	const char gta_pad2[40];
 	const char flag1;
 	const char m_networkFlag;
@@ -170,9 +203,9 @@ public:
 	~CPatternResult();
 
 	template <typename rT>
-	rT*	get(int offset = 0)
+	rT* get(int offset = 0)
 	{
-		rT*	ret = nullptr;
+		rT* ret = nullptr;
 		if (m_pVoid != nullptr)
 			ret = reinterpret_cast<rT*>(reinterpret_cast<char*>(m_pVoid) + offset);
 		return ret;
@@ -181,9 +214,9 @@ public:
 	template <typename rT>
 	rT* get_rel(int offset = 0)
 	{
-		rT*		result = nullptr;
+		rT* result = nullptr;
 		int32_t	rel;
-		char*	ptr = get<char>(offset);
+		char* ptr = get<char>(offset);
 
 		if (ptr == nullptr)
 			goto LABEL_RETURN;
@@ -196,21 +229,21 @@ public:
 	}
 
 	template <typename rT>
-	rT*	section_begin()
+	rT* section_begin()
 	{
 		return reinterpret_cast<rT*>(m_pBegin);
 	}
 
 	template <typename rT>
-	rT*	section_end()
+	rT* section_end()
 	{
 		return reinterpret_cast<rT*>(m_pEnd);
 	}
 
 protected:
-	void*	m_pVoid = nullptr;
-	void*	m_pBegin = nullptr;
-	void*	m_pEnd = nullptr;
+	void* m_pVoid = nullptr;
+	void* m_pBegin = nullptr;
+	void* m_pEnd = nullptr;
 };
 
 class CMetaData
@@ -229,7 +262,6 @@ private:
 /*
 //CPattern
 */
-
 typedef	std::vector<CPatternResult>	vec_result;
 class CPattern
 {
@@ -237,18 +269,18 @@ public:
 	CPattern(char* szByte, char* szMask);
 	~CPattern();
 
-	CPattern&		find(int i = 0, uint64_t startAddress = 0);		//scans for i patterns
-	CPattern&		virtual_find(int i = 0, uint64_t startAddress = 0);
+	CPattern& find(int i = 0, uint64_t startAddress = 0);		//scans for i patterns
+	CPattern& virtual_find(int i = 0, uint64_t startAddress = 0);
 	CPatternResult	get(int i);				//returns result i
 
 protected:
-	char*			m_szByte;
-	char*			m_szMask;
+	char* m_szByte;
+	char* m_szMask;
 	bool			m_bSet;
 	vec_result		m_result;
 
 	bool		match(int i = 0, uint64_t startAddress = 0, bool virt = false);
 	bool		byte_compare(const BYTE* pData, const BYTE* btMask, const char* szMask);
-	uint64_t	find_pattern(uint64_t i64Address, uint64_t end, BYTE *btMask, char *szMask);
-	uint64_t	virtual_find_pattern(uint64_t address, BYTE *btMask, char *szMask);
+	uint64_t	find_pattern(uint64_t i64Address, uint64_t end, BYTE* btMask, char* szMask);
+	uint64_t	virtual_find_pattern(uint64_t address, BYTE* btMask, char* szMask);
 };

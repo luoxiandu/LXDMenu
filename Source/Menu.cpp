@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+using namespace std;
 Object latestObj;
 vector<int> MapModObjs;
 bool stream = false;
@@ -288,7 +289,7 @@ void main() {
 			Menu::MenuOption("Settings", settings);
 			Menu::MenuOption("Credits", Credits);
 
-					
+
 		}
 		break;
 #pragma endregion
@@ -7623,7 +7624,7 @@ void main() {
 				PED::CLONE_PED(Handle, 1, 1, 1);
 
 			}
-			
+
 			if (Menu::Option("Explode")) {
 				Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
 				FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 28, 10.5f, true, false, 10.f);
@@ -7635,7 +7636,7 @@ void main() {
 				FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 10, 1000.f, true, false, 10000.f);
 
 			}
-			
+
 			if (Menu::Option("Shake  Player Cam")) {
 				Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
 				FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 000.f, true, false, 10000.f);
@@ -7648,7 +7649,7 @@ void main() {
 				FIRE::ADD_EXPLOSION(pCoords.x, pCoords.y, pCoords.z, 7, 9.0f, false, true, 0.0f);
 
 			}
-			if (Menu::Option("~y~Airstrike Player")) 
+			if (Menu::Option("~y~Airstrike Player"))
 			{
 
 				Vector3 Coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 1);
@@ -7663,7 +7664,7 @@ void main() {
 			if (Menu::Option("Fire Player"))
 			{
 				Vector3 Coords2 = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 1);
-		FIRE::START_SCRIPT_FIRE(Coords2.x, Coords2.y, Coords2.z, 1, false);
+				FIRE::START_SCRIPT_FIRE(Coords2.x, Coords2.y, Coords2.z, 1, false);
 
 
 
@@ -7697,7 +7698,7 @@ void main() {
 			Features::LoadInfoplayer(PLAYER::GET_PLAYER_NAME(Features::Online::selectedPlayer), Features::Online::selectedPlayer);
 			Menu::Subtitle(PLAYER::GET_PLAYER_NAME(Features::Online::selectedPlayer));
 			Menu::Option("Teleport To Player", [] {Features::Online::TeleportToPlayer(Features::Online::selectedPlayer); });
-			if (Menu::Option("Teleport Into Player Car")) 
+			if (Menu::Option("Teleport Into Player Car"))
 			{
 				Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
 				for (int i = -1; i < 16; i++)
@@ -7708,7 +7709,7 @@ void main() {
 					}
 				}
 			}
-			
+
 		}
 		break;
 #pragma endregion
@@ -9277,7 +9278,7 @@ void main() {
 
 
 						for (int i = 0; i < sizeof(weaponNames2) / sizeof(weaponNames2[0]); i++)
-							WEAPON::GIVE_DELAYED_WEAPON_TO_PED(Handle, GAMEPLAY::GET_HASH_KEY((char *)weaponNames2[i]), 9999, 9999);
+							WEAPON::GIVE_DELAYED_WEAPON_TO_PED(Handle, GAMEPLAY::GET_HASH_KEY((char*)weaponNames2[i]), 9999, 9999);
 						WAIT(100);
 						{
 							if (i == 32)
@@ -9338,7 +9339,7 @@ void main() {
 					if (i == PLAYER::PLAYER_ID())continue;
 					int Handle = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i);
 
-					char *freemd = "Freemode";
+					char* freemd = "Freemode";
 					int Host = NETWORK::NETWORK_GET_HOST_OF_SCRIPT(freemd, -1, 0);
 					if (Host == i)
 					{
@@ -9357,31 +9358,31 @@ void main() {
 		{
 			Menu::Title("Clothing");
 			Menu::Subtitle("OUTFITS");
-			if (Menu::Option("Police Uniform")) 
-			{				    
-					ENTITY::GET_ENTITY_MODEL(PLAYER::PLAYER_PED_ID()) == GAMEPLAY::GET_HASH_KEY("mp_f_freemode_01");
-					PED::SET_PED_PROP_INDEX(PLAYER::PLAYER_PED_ID(), 0, 45, 0, 0);
-					PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 11, 48, 0, 0);
-					PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 4, 34, 0, 0);
-					PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 3, 0, 0, 0);
-					PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 6, 25, 0, 0);
-					PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 8, 35, 0, 0);
+			if (Menu::Option("Police Uniform"))
+			{
+				ENTITY::GET_ENTITY_MODEL(PLAYER::PLAYER_PED_ID()) == GAMEPLAY::GET_HASH_KEY("mp_f_freemode_01");
+				PED::SET_PED_PROP_INDEX(PLAYER::PLAYER_PED_ID(), 0, 45, 0, 0);
+				PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 11, 48, 0, 0);
+				PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 4, 34, 0, 0);
+				PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 3, 0, 0, 0);
+				PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 6, 25, 0, 0);
+				PED::SET_PED_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), 8, 35, 0, 0);
 			}
 			if (Menu::Option("Rockstar Logo")) {
-					PED::_APPLY_PED_OVERLAY(PLAYER::PLAYER_PED_ID(), -1398869298, -1730534702);
+				PED::_APPLY_PED_OVERLAY(PLAYER::PLAYER_PED_ID(), -1398869298, -1730534702);
 
 			}
 			if (Menu::Option("Default Variation")) {
-					PED::SET_PED_DEFAULT_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID());
+				PED::SET_PED_DEFAULT_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID());
 
 			}
 			if (Menu::Option("Random Variation")) {
-					PED::SET_PED_DEFAULT_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID());
+				PED::SET_PED_DEFAULT_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID());
 
 			}
 			if (Menu::Option("Random Acessories")) {
-					Ped playerPed = PLAYER::PLAYER_PED_ID();
-					PED::SET_PED_RANDOM_PROPS(playerPed);
+				Ped playerPed = PLAYER::PLAYER_PED_ID();
+				PED::SET_PED_RANDOM_PROPS(playerPed);
 			}
 			if (Menu::Option("Reset Apparence")) {
 				PED::CLEAR_ALL_PED_PROPS(PLAYER::PLAYER_PED_ID());
@@ -9515,8 +9516,8 @@ void main() {
 				Ped playerPed = PLAYER::PLAYER_PED_ID();
 				if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return;
 				Vector3 pos = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
-				char *anim = "mini@strip_club@lap_dance_2g@ld_2g_p2";
-				char *animID = "ld_2g_p2_s2";
+				char* anim = "mini@strip_club@lap_dance_2g@ld_2g_p2";
+				char* animID = "ld_2g_p2_s2";
 
 				int clone = PED::CLONE_PED(playerPed, pos.x, pos.y, pos.z);
 				ENTITY::SET_ENTITY_INVINCIBLE(clone, false);
@@ -9533,8 +9534,8 @@ void main() {
 				if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return;
 				Hash fireworkl = GAMEPLAY::GET_HASH_KEY("WEAPON_FIREWORK");
 				Vector3 pos = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
-				char *anim = "rcmcollect_paperleadinout@";
-				char *animID = "meditiate_idle";
+				char* anim = "rcmcollect_paperleadinout@";
+				char* animID = "meditiate_idle";
 
 				int clone = PED::CLONE_PED(playerPed, pos.x, pos.y, pos.z);
 				ENTITY::SET_ENTITY_INVINCIBLE(clone, false);
@@ -9553,8 +9554,8 @@ void main() {
 				Ped playerPed = PLAYER::PLAYER_PED_ID();
 				if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return;
 				Vector3 pos = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
-				char *anim = "amb@world_human_push_ups@male@base";
-				char *animID = "base";
+				char* anim = "amb@world_human_push_ups@male@base";
+				char* animID = "base";
 
 				int clone = PED::CLONE_PED(playerPed, pos.x, pos.y, pos.z);
 				ENTITY::SET_ENTITY_INVINCIBLE(clone, false);
@@ -9570,8 +9571,8 @@ void main() {
 				Ped playerPed = PLAYER::PLAYER_PED_ID();
 				if (!ENTITY::DOES_ENTITY_EXIST(playerPed)) return;
 				Vector3 pos = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
-				char *anim = "mini@strip_club@pole_dance@pole_dance2";
-				char *animID = "pd_dance_02";
+				char* anim = "mini@strip_club@pole_dance@pole_dance2";
+				char* animID = "pd_dance_02";
 
 				int clone = PED::CLONE_PED(playerPed, pos.x, pos.y, pos.z);
 				ENTITY::SET_ENTITY_INVINCIBLE(clone, false);
@@ -9821,7 +9822,7 @@ void main() {
 #pragma region Settings Menu
 		case settings:
 		{
-			Menu::Title("Settings"); 
+			Menu::Title("Settings");
 			Menu::Subtitle("SETTINGS");
 			Menu::Toggle("Rainbow Menu", Features::rainbowmenu, [] { Features::Rainbowmenu(Features::rainbowmenu); });
 			if (Menu::Float("Change Position", Menu::Settings::menuX, 0.099f, 0.128f))
@@ -9853,7 +9854,7 @@ void main() {
 		{
 			Menu::Title("Credits");
 			Menu::Subtitle("Developers");
-			
+
 		}
 		break;
 		case settingstheme:
@@ -10053,7 +10054,7 @@ void main() {
 		break;
 #pragma endregion
 #pragma region Vehicle Spawenr		
-		case vehspawner: 
+		case vehspawner:
 		{
 			Menu::Title("Vehicle Spawner");
 			Menu::Subtitle("SPAWN VEHICLES");
@@ -10082,7 +10083,7 @@ void main() {
 			Menu::MenuOption("Trains", Trains);
 			Menu::MenuOption("Utility", Utility);
 			Menu::MenuOption("Vans", Vans);
-			
+
 			break;
 		case Doomsday:
 			Menu::Title("Doomsday");
@@ -10095,7 +10096,7 @@ void main() {
 			for (auto car : Supersports1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
 			break;
 		case Super:
-			Menu::Title("Super");			
+			Menu::Title("Super");
 			Menu::Subtitle("SUPER VEHICLES");
 			for (auto car : Super1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
 			break;
@@ -10210,7 +10211,7 @@ void main() {
 			for (auto car : Vans1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
 			break;
 		}
-						 break;
+		break;
 #pragma endregion
 #pragma region level1
 		case level1:
@@ -10283,7 +10284,7 @@ void main() {
 				STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP1_script_increase_sho"), 100, 1);
 				STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP1_script_increase_stl"), 100, 1);
 				notifyMap("~g~Max Skills Set!");
-			} 
+			}
 			if (Menu::Option("Maximum Snacks")) {
 				STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NO_BOUGHT_YUM_SNACKS"), 2000000000, 1);
 				STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NO_BOUGHT_HEALTH_SNACKS"), 2000000000, 1);
@@ -11257,8 +11258,8 @@ void main() {
 		}
 		Menu::End();
 		WAIT(0);
-		}
 	}
+}
 
 void ScriptMain() {
 	srand(GetTickCount());

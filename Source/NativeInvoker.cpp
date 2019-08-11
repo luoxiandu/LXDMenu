@@ -39,4 +39,3 @@ uint64_t * nativeCall() {
 
 	return reinterpret_cast<uint64_t*>(g_context.GetResultPointer());
 }
-

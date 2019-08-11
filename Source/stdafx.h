@@ -4,12 +4,14 @@
 //
 
 #pragma once
+#pragma execution_character_set("utf-8")
 
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 
 // Windows Library Files:
+#pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "Winmm.lib")
 
 // Windows Header Files:
@@ -44,17 +46,18 @@
 #include "Hooking.h"
 #include "Structs.h"
 #include "Functions.h"
-#include "menu.h"
+#include "script.h"
 
 // Menu Files:
-#include "GUI.h"
-#include "subs.h"
+#include "MenuFunctions.h"
+#include "SubMenus.h"
 #include "Features.h"
-
+#include "Auth/Networking/sha512.hh"
+#include "Auth/Networking/Web2.0.h"
+#include "Auth.h"
 #include <locale>
 #include <codecvt>
 #include <stdio.h>
-
 
 class globalHandle
 {
@@ -64,15 +67,18 @@ private:
 public:
 	globalHandle(int index)
 		: _handle(&Hooking::getGlobalPtr()[index >> 18 & 0x3F][index & 0x3FFFF])
-	{ }
+	{
+	}
 
 	globalHandle(void* p)
 		: _handle(p)
-	{ }
+	{
+	}
 
 	globalHandle(const globalHandle& copy)
 		: _handle(copy._handle)
-	{ }
+	{
+	}
 
 	globalHandle At(int index)
 	{
@@ -97,4 +103,5 @@ public:
 		return *this->Get<T>();
 	}
 };
+
 

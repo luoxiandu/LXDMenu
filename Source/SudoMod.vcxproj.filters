@@ -1,28 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Menu">
-      <UniqueIdentifier>{2a12d025-c2ec-49af-84af-2c26d0618e38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="The Menu:">
       <UniqueIdentifier>{d87d34a8-01b2-4bc7-a2bc-c549c4d1a8a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="The Menu:\GUI">
+    <Filter Include="Menu\MenuFunctions">
       <UniqueIdentifier>{667608eb-d4cc-412a-aeba-b122da0d9f92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="The Menu:\Features">
+    <Filter Include="Menu\SubMenus">
+      <UniqueIdentifier>{07c802bd-b635-45f5-9e56-af7dbede6b15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menu\Features">
       <UniqueIdentifier>{ef9dc22c-830d-487f-a798-f389dbcaa9a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="The Menu:\Important">
-      <UniqueIdentifier>{8f84397f-1560-44cd-bf63-2f9f734ef3d8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -32,10 +29,19 @@
     <ClInclude Include="Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hooking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="natives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types.h">
@@ -53,6 +59,9 @@
     <ClInclude Include="CrossMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="script.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="InputHook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -62,67 +71,91 @@
     <ClInclude Include="Functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MenuFunctions.h">
+      <Filter>Menu\MenuFunctions</Filter>
+    </ClInclude>
+    <ClInclude Include="SubMenus.h">
+      <Filter>Menu\SubMenus</Filter>
+    </ClInclude>
     <ClInclude Include="Features.h">
-      <Filter>The Menu:\Features</Filter>
+      <Filter>Menu\Features</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>The Menu:\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="subs.h">
+    <ClInclude Include="Lists.h">
       <Filter>Menu</Filter>
     </ClInclude>
-    <ClInclude Include="menu.h">
-      <Filter>Menu</Filter>
+    <ClInclude Include="Math.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="enums.h">
-      <Filter>The Menu:\Important</Filter>
+    <ClInclude Include="iniFiles.h">
+      <Filter>Menu\MenuFunctions</Filter>
     </ClInclude>
-    <ClInclude Include="natives.h">
-      <Filter>The Menu:\Important</Filter>
+    <ClInclude Include="Auth\Networking\atlrx.h">
+      <Filter>Menu\Features</Filter>
     </ClInclude>
-    <ClInclude Include="Hooking.h">
-      <Filter>The Menu:\Important</Filter>
+    <ClInclude Include="Auth\Networking\RegExp.h">
+      <Filter>Menu\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Auth\Networking\sha1.hh">
+      <Filter>Menu\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Auth\Networking\sha512.hh">
+      <Filter>Menu\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Auth\Networking\StringProcess.h">
+      <Filter>Menu\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Auth\Networking\Web2.0.h">
+      <Filter>Menu\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Auth\Networking\WinHttpClient.h">
+      <Filter>Menu\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Auth.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Log.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NativeInvoker.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="keyboard.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputHook.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Functions.cpp">
-      <Filter>Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Features.cpp">
-      <Filter>The Menu:\Features</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI.cpp">
-      <Filter>The Menu:\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="CrossMapping.cpp">
-      <Filter>The Menu:\Important</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hooking.cpp">
-      <Filter>The Menu:\Important</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeInvoker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CrossMapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuFunctions.cpp">
+      <Filter>Menu\MenuFunctions</Filter>
+    </ClCompile>
+    <ClCompile Include="Features.cpp">
+      <Filter>Menu\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="script.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Auth.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
