@@ -53,8 +53,8 @@ bool FileExists(const std::string& fileName)
 
 void YTD()
 {
-	std::string path = "ThemeMenu/";
-	std::string name = "Take.ytd";
+	std::string path = "MasterMenu/";
+	std::string name = "Master.ytd";
 	const std::string fullPath = path + name;
 
 	int textureID;
@@ -207,11 +207,11 @@ void Menu::Title(const char * title)
 	Ped playerPed = PLAYER::PLAYER_PED_ID();
 
 	//Drawing::Spriter("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
-	Drawing::Spriter("Take", "Teste", Settings::menuX, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
+	Drawing::Spriter("Master", "Teste", Settings::menuX, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 	
 	float speed = ENTITY::GET_ENTITY_SPEED(PED::GET_VEHICLE_PED_IS_USING(playerPed));
 	float rotation = speed * 2.51f /*as miles*/ * 1.6f /*as kilometers*/ / 320.0f /*circle max*/ + 0.655f /*arrow initial rotation*/;
-	Drawing::Spriter("Take", "NativeSpeedoBack", 30, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
+	Drawing::Spriter("Master", "NativeSpeedoBack", 30, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 
 	
 	YTD();
@@ -1134,7 +1134,7 @@ public:
 		return std::stof(GetString(app, key));
 	}
 };
-std::string MenuStyleFile = ".\\ThemeMenu\\MenuStyle.ini";
+std::string MenuStyleFile = ".\\MasterMenu\\MenuStyle.ini";
 void Menu::Files::StyleSaver::SaveStyles()
 {
 	// Title Text

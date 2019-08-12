@@ -75,7 +75,7 @@ bool risky = false;
 std::string namech;
 bool GalExist()
 {
-	DWORD dwAttrib = GetFileAttributesA(".\\ThemeMenu");
+	DWORD dwAttrib = GetFileAttributesA(".\\MasterMenu");
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES && dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
 }
 static char* DiamondDLC[] = {
@@ -7592,28 +7592,40 @@ Menu::Files::StyleSaver::LoadStyles();
 		case mainmenu:
 		{
 			 
-			 Menu::Title("TakeMenu");
+			 Menu::Title("Master Menu");
 			 Menu::Subtitle("VERSION: 1.48");
 			 Menu::MenuOption("自我选项", playermenu);
 			 Menu::MenuOption("武器选项", weapon);
+			 Menu::MenuOption("线上选项", onlineoptions);
 			 Menu::MenuOption("载具选项", vehspawner);
 			 Menu::MenuOption("传送选项", teleports);
-			 Menu::MenuOption("世界选项", weatheroptions);
+			 Menu::MenuOption("世界选项", worldoptions);
 			 Menu::MenuOption("视觉冲击", versionsoptions);
 			 Menu::MenuOption("模型选项", modelObjects);
 			 Menu::MenuOption("全副武装", OutfitOptions);
 			 Menu::MenuOption("成就解锁", recover);
 			 Menu::MenuOption("金钱供给", moneystealth);
 			 Menu::MenuOption("其它设置", miscoptions);
-			 Menu::MenuOption("线上玩家", onlinemenu_playerlist);
-			 Menu::MenuOption("全局控制", allplayers);
 			 Menu::MenuOption("菜单设置", settingsmenu);
-			 Menu::MenuOption("防护措施", protectedmenu);
 			 Menu::MenuOption("技术支持", CreditsInfor);
 			 
 
 		 }
 		 break;
+#pragma endregion
+#pragma region OLINE OPTIONS
+		case onlineoptions:
+		{
+			Menu::Title("线上选项");
+			Menu::Subtitle("OLINE OPTIONS");
+			Menu::MenuOption("全局控制", allplayers);
+			for (int i = 0; i < 32; ++i) {
+				if (ENTITY::DOES_ENTITY_EXIST(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i))) {
+					Menu::MenuOption(PLAYER::GET_PLAYER_NAME(i), onlinemenu_selected) ? Features::Online::selectedPlayer = i : NULL;
+				}
+			}
+		}
+		break;
 #pragma endregion
 #pragma region Money Options
 		 case moneystealth:
@@ -7622,13 +7634,13 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Title("金钱供给");
 			 Menu::Subtitle("MONEY OPTIONS");
 			 Menu::Break("~g~---隐形刷钱---");
-			 //Menu::Bool("15M", Features::stealth15m, [] { Features::Stealth(Features::stealth15m); });
+             //Menu::Bool("15M", Features::stealth15m, [] { Features::Stealth(Features::stealth15m); });
 			 //Menu::Bool("12M", Features::stealth12m, [] { Features::Stealth(Features::stealth12m); });
-			// Menu::Bool("10M", Features::stealth10m, [] { Features::Stealth(Features::stealth10m); });
-			// Menu::Bool("600k", Features::stealth600k, [] { Features::Stealth(Features::stealth600k); });
-			// Menu::Bool("250k", Features::stealth250k, [] { Features::Stealth(Features::stealth250k); });
-			// Menu::Bool("120k", Features::stealth120k, [] { Features::Stealth(Features::stealth120k); });
-			// Menu::Bool("50k", Features::stealth50k, [] { Features::Stealth(Features::stealth50k); });
+			 //Menu::Bool("10M", Features::stealth10m, [] { Features::Stealth(Features::stealth10m); });
+			 //Menu::Bool("600k", Features::stealth600k, [] { Features::Stealth(Features::stealth600k); });
+			 //Menu::Bool("250k", Features::stealth250k, [] { Features::Stealth(Features::stealth250k); });
+			 //Menu::Bool("120k", Features::stealth120k, [] { Features::Stealth(Features::stealth120k); });
+			 //Menu::Bool("50k", Features::stealth50k, [] { Features::Stealth(Features::stealth50k); });
 			 Menu::Break("~g~---金钱掉落---");
 			 Menu::Bool("金钱雨", Features::moneyrain2k, [] { Features::RainMoney(Features::moneyrain2k); });
 			 Menu::Bool("掉落$2500", Features::moneydropp, [] { Features::dildomoneylocal(Features::moneydropp); });
@@ -7636,7 +7648,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::MenuOption("账目变更", moneyoptions);
 			 Menu::Break("~g~---删除银行货币---");
 			 Menu::Int("金额", Features::amount5, 0, 2147483647, 1000000);
-			 //Menu::Bool("Remove Money Bank", Features::remover, [] { Features::Stealth(Features::remover); });
+			 //Menu::Bool("移除银行金额", Features::remover, [] { Features::Stealth(Features::remover); });
 			 Menu::Break("~g~---添加银行货币---");
 			 Menu::Int("金额", Features::amount, 0, 15000000, 1000000);
 			 Menu::Bool("兑现支票", Features::giver);
@@ -7644,23 +7656,34 @@ Menu::Files::StyleSaver::LoadStyles();
 
 		 }
 		 break;
+#pragma endregion
+#pragma region world Options
+		 case worldoptions:
+		 {
+	
+			 Menu::Title("世界选项");
+			 Menu::Subtitle("WORLD OPTIONS");
+			 Menu::MenuOption("天气选项", weatheroptions);
+			 Menu::Int("单机时间控制", timeer, 0, 24);
+			 if (Menu::Option("设定时间")) { NETWORK::NETWORK_OVERRIDE_CLOCK_TIME(timeer, 0, 0); }
+		 }
+		 break;
+#pragma endregion
 #pragma region Weather Options
 		 case weatheroptions:
 		 {
-			 
-			 Menu::Title("世界选项");
+			 Menu::Title("天气选项");
 			 Menu::Subtitle("WEATHER OPTIONS");
-			 if (Menu::Option("Sun")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Clear"); }
-			 if (Menu::Option("Rain")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Clearing"); }
-			 if (Menu::Option("Snow")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Snowlight"); }
-			 if (Menu::Option("Thunder")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Thunder"); }
-			 if (Menu::Option("Blizzard")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Blizzard"); }
-			 if (Menu::Option("Overcast")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Overcast"); }
-			 if (Menu::Option("Foggy")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Foggy"); }
-			 if (Menu::Option("Smog")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Smog"); }
-			 if (Menu::Option("Clouds")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Clouds"); }
-			 if (Menu::Option("Christmas")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("XMAS"); }
-
+			 if (Menu::Option("晴天")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Clear"); }
+			 if (Menu::Option("雨天")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Clearing"); }
+			 if (Menu::Option("雪天")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Snowlight"); }
+			 if (Menu::Option("雷雨")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Thunder"); }
+			 if (Menu::Option("暴雪")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Blizzard"); }
+			 if (Menu::Option("阴天")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Overcast"); }
+			 if (Menu::Option("沙尘暴")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Foggy"); }
+			 if (Menu::Option("雾霾")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Smog"); }
+			 if (Menu::Option("多云")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("Clouds"); }
+			 if (Menu::Option("圣诞节")) { GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST("XMAS"); }
 		 }
 		 break;
 #pragma region Visions Options
@@ -7722,11 +7745,11 @@ Menu::Files::StyleSaver::LoadStyles();
 		 case RecoveryStats:
 		 {
 			 //Menu::DRAW_TEXTURE("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
-			 Menu::Title("Recovery Options");
-			 Menu::Subtitle("UNLOCK OPTIONS");
+			 Menu::Title("恢复选项");
+			 Menu::Subtitle("解锁选项");
 			
 
-			 if (Menu::Option("100% Skills")) {
+			 if (Menu::Option("100%的技能")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_SCRIPT_INCREASE_STAM"), 100, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_SCRIPT_INCREASE_STRN"), 100, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_SCRIPT_INCREASE_LUNG"), 100, 0);
@@ -7753,7 +7776,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_AWD_FM_RACES_FASTEST_LAP"), 50, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NUMBER_SLIPSTREAMS_IN_RACE"), 100, 1);
 			 }
-			 if (Menu::Option("Remove Bad Sport")) {
+			 if (Menu::Option("删除不好的运动")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_BAD_SPORT_BITSET"), 0, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_MPPLY_WAS_I_BAD_SPORT"), 0, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_MPPLY_OVERALL_BADSPORT"), 0, 0);
@@ -7778,7 +7801,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_EXPLOITS"), 0, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_ISPUNISHED"), 0, 1);
 			 }
-			 if (Menu::Option("Unlock All Clothing")) {
+			 if (Menu::Option("解锁所有的衣服")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_CLTHS_AVAILABLE_FEET_1"), -1, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_CLTHS_AVAILABLE_HAIR"), -1, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_CLTHS_AVAILABLE_HAIR_1"), -1, 1);
@@ -7981,7 +8004,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_CLTHS_AVAILABLE_HAIR_6"), -1, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_CLTHS_AVAILABLE_HAIR_7"), -1, 1);
 			 }
-			 if (Menu::Option("Unlock All Tattoo's")) {
+			 if (Menu::Option("解锁所有纹身")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_AWD_FM_DM_WINS"), 50, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_AWD_FM_TDM_MVP"), 50, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_AWD_FM_DM_TOTALKILLS"), 500, 1);
@@ -8003,7 +8026,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_PLAYER_HEADSHOTS"), 500, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_DB_PLAYER_KILLS"), 1000, 1);
 			 }
-			 if (Menu::Option("Unlock all Weapon Camos")) {
+			 if (Menu::Option("解锁所有武器迷彩伪装")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_MOLOTOV_ENEMY_KILLS"), 600, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_CMBTPISTOL_ENEMY_KILLS"), 600, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_PISTOL50_ENEMY_KILLS"), 600, 0);
@@ -8031,7 +8054,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_STKYBMB_ENEMY_KILLS"), 600, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_MOLOTOV_ENEMY_KILLS"), 600, 0);
 			 }
-			 if (Menu::Option("Unlock all Trophies")) {
+			 if (Menu::Option("解锁所有的奖杯")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_PLAYER_HEADSHOTS"), 500, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_PISTOL_ENEMY_KILLS"), 500, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_SAWNOFF_ENEMY_KILLS"), 500, 1);
@@ -8121,7 +8144,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_FLOAT(GAMEPLAY::GET_HASH_KEY("MP0_LONGEST_WHEELIE_DIST"), 1000, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_HEIST_ACH_TRACKER"), -1, 1);
 			 }
-			 if (Menu::Option("Max Snacks")) {
+			 if (Menu::Option("最大零食")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NO_BOUGHT_YUM_SNACKS"), 99999999, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NO_BOUGHT_HEALTH_SNACKS"), 99999999, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NO_BOUGHT_EPIC_SNACKS"), 99999999, 0);
@@ -8129,7 +8152,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NUMBER_OF_ORANGE_BOUGHT"), 99999999, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_NUMBER_OF_BOURGE_BOUGHT"), 99999999, 0);
 			 }
-			 if (Menu::Option("Max Fireworks")) {
+			 if (Menu::Option("最大烟花")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_FIREWORK_TYPE_1_WHITE"), 999999, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_FIREWORK_TYPE_2_WHITE"), 999999, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_FIREWORK_TYPE_3_WHITE"), 999999, 0);
@@ -8143,7 +8166,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_FIREWORK_TYPE_3_BLUE"), 999999, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_FIREWORK_TYPE_4_BLUE"), 999999, 0);
 			 }
-			 if (Menu::Option("Clear Reports")) {
+			 if (Menu::Option("清晰的报告")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_REPORT_STRENGTH"), 0, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_COMMEND_STRENGTH"), 100, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_FRIENDLY"), 100, 1);
@@ -8367,7 +8390,6 @@ Menu::Files::StyleSaver::LoadStyles();
 
 			 Menu::Title("其它设置");
 			 Menu::Subtitle("MISC OPTIONS");
-			 Menu::MenuOption("保护措施", protectedmenu);
 			 Menu::MenuOption("全套装备", OutfitOptions);
 			 Menu::MenuOption("游戏异象", versionsoptions);
 			 Menu::Bool("显示器 FPS", Features::DisplayFPS, [] { Features::featureDisplayFPS(Features::DisplayFPS); });
@@ -8375,9 +8397,6 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Bool("引爆街机角色", Features::explodepedsbool);
 			 Menu::Bool("引爆街机载具", Features::explodenearbyvehiclesbool);
 			 Menu::Bool("删除街机汽车", Features::deletenearbyvehiclesbool);
-			 Menu::Bool("有待开发", rdev);
-			 Menu::Int("单机时间控制", timeer, 0, 24);
-			 if (Menu::Option("设定时间")) { NETWORK::NETWORK_OVERRIDE_CLOCK_TIME(timeer, 0, 0); }
 		 }
 		 break;
 #pragma endregion
@@ -8500,6 +8519,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 //Menu::DRAW_TEXTURE("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("自我选项");
 			 Menu::Subtitle("SELF OPTIONS");
+			 Menu::MenuOption("防护措施", protectedmenu);
              Menu::MenuOption("角色变换", modelchanger);
 			 Menu::MenuOption("动作选项", anim);
 			 Menu::MenuOption("自身效果", PTFX);
@@ -8507,8 +8527,8 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Bool("不被通缉", Features::neverwanted, [] { Features::NeverGetWanted(Features::neverwanted); });
 			 Menu::Bool("脱离雷达", Features::orbool, [] { Features::OffRadar(Features::orbool); });
 			 Menu::Bool("禁用电话", Features::phonedisable, [] { Features::disablephone(); });
-			 Menu::Bool("自我隐身", Features::playerinvisibility, [] { Features::Invisibility(Features::playerinvisibility); });
-			 Menu::Bool("无视存在", Features::playernoragdoll, [] { Features::NoRagdoll(Features::playernoragdoll); });
+			 //Menu::Bool("自我隐身", Features::playerinvisibility, [] { Features::Invisibility(Features::playerinvisibility); });
+			 //Menu::Bool("无视存在", Features::playernoragdoll, [] { Features::NoRagdoll(Features::playernoragdoll); });
 			 Menu::Bool("超级跳跃", Features::playersuperjump, [] { Features::SuperJump(Features::playersuperjump); });
 			 Menu::Bool("快速奔跑", Features::fastrun, [] { Features::RunFast(Features::fastrun); });
 			 Menu::Bool("加速游泳", Features::fastswim, [] { Features::SwimFast(Features::fastswim); });
@@ -8527,11 +8547,11 @@ Menu::Files::StyleSaver::LoadStyles();
 		 {
 			 Menu::Title("软件信息");
 			 Menu::Subtitle("STATUS/INFORMATIONS");
-			 Menu::Option("编程 : ~y~不一样的时间(ZBING)");
+			 Menu::Option("编程 : ~y~荒陌");
 			 Menu::Option("状态 : ~g~未被检测到");
 			 Menu::Option("GTA5.exe : ~g~v1.0.1737.1");
 			 Menu::Option("支持线上版本 : ~g~1.48");
-			 Menu::Option("程序版本: ~g~4.2.0");
+			 Menu::Option("程序版本: ~g~1.0.0");
 			 Menu::Option("发布日期: ~g~Aug 03, 2019");
 			 Menu::Option("~HUD_COLOUR_GOLD~俱乐部帐户:");
 			 Menu::Option(PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()));
@@ -8541,9 +8561,7 @@ Menu::Files::StyleSaver::LoadStyles();
 		 {
 			 Menu::Title("参与人员");
 			 Menu::Subtitle("CREDITS");
-			 Menu::Option("~r~编程: ~y~不一样的时间(ZBING)");
-			 Menu::Option("~r~帮手: ~w~荒陌");
-			 Menu::Option("~r~帮手: ~w~有马小生");
+			 Menu::Option("~r~编程: ~y~荒陌");
 		 }
 		 break;
 #pragma region Outfit Options
@@ -8912,7 +8930,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 
 			 Menu::Title("设置属性");
 			 Menu::Subtitle("SETTINGS OPTIONS");
-			 Menu::MenuOption("Take Menu", settingsmenu_theme);
+			 Menu::MenuOption("Master Menu", settingsmenu_theme);
 			 if (Menu::Option("关闭 GTA V")) exit(0);
 			 Menu::Bool("界面颜色", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
 			 if (Menu::Option("界面右移 >")) { Menu::Settings::menuX = 0.85f; }
@@ -8952,7 +8970,7 @@ Menu::Files::StyleSaver::LoadStyles();
 		 case settingsmenu_theme:
 		 {
 			 //Menu::DRAW_TEXTURE("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
-			 Menu::Title("Take Menu");
+			 Menu::Title("Master Menu");
 			 Menu::Subtitle("THEME MENU OPTIONS");
 			 Menu::MenuOption("标题文本", settingsmenu_theme_titletext);
 			 Menu::MenuOption("矩形结构", settingsmenu_theme_titlerect);
@@ -9040,28 +9058,28 @@ Menu::Files::StyleSaver::LoadStyles();
 		 {
 			 
 			 Menu::Title("载具选项");
-			 Menu::Subtitle("VEHICLES OPTIONS");
+			 Menu::Subtitle("载具选项");
 			 Menu::MenuOption("Los Santos Customs", lsc);
              Menu::MenuOption("Plate Style", plateoptions);
-			 Menu::Bool("Speed Meter KM/h", Features::Speedometerbool);
-			 if (Menu::Bool("Car Godmode", Features::cargodmodebool)) { Features::cargodmode(); }
-			 Menu::Bool("Engine Allways On", Features::enginealwaysonbool, [] { Features::enginealwayson(Features::enginealwaysonbool); });
-			 Menu::Bool("Horn Boost", Features::boostbool, [] { Features::carboost(Features::boostbool); });
-			 Menu::Bool("Flighing Car", Features::fcbool, [] { Features::FlyingCarLoop(Features::fcbool); });
-			 Menu::Bool("Rainbow Car", Features::rlbool, [] { Features::HasPaintLoop(Features::rlbool); });
-			 if (Menu::Option("Fix Car")) {
+			 Menu::Bool("时速表", Features::Speedometerbool);
+			 if (Menu::Bool("车辆无敌", Features::cargodmodebool)) { Features::cargodmode(); }
+			 Menu::Bool("发动机一直开启", Features::enginealwaysonbool, [] { Features::enginealwayson(Features::enginealwaysonbool); });
+			 Menu::Bool("喇叭加速", Features::boostbool, [] { Features::carboost(Features::boostbool); });
+			 Menu::Bool("车辆升天", Features::fcbool, [] { Features::FlyingCarLoop(Features::fcbool); });
+			 Menu::Bool("彩虹车辆", Features::rlbool, [] { Features::HasPaintLoop(Features::rlbool); });
+			 if (Menu::Option("修复车辆")) {
 				 uint Vehicle = PED::GET_VEHICLE_PED_IS_USING(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(PLAYER::PLAYER_ID()));
 				 VEHICLE::SET_VEHICLE_FIXED(Vehicle);
 				 VEHICLE::SET_VEHICLE_DEFORMATION_FIXED(Vehicle);
 				 VEHICLE::SET_VEHICLE_DIRT_LEVEL(Vehicle, 0);
 			 }
-			 if (Menu::Option("Max Upgrade")) {
+			 if (Menu::Option("满改车辆")) {
 				 Features::maxvehicle();
 			 }
-			 if (Menu::Option("Flip Car")) {
+			 if (Menu::Option("修正车辆")) {
 				 Features::flipup();
 			 }
-			 if (Menu::Option("Open Doors")) {
+			 if (Menu::Option("打开车门")) {
 				 VEHICLE::SET_VEHICLE_DOOR_OPEN(PED::GET_VEHICLE_PED_IS_USING(PLAYER::PLAYER_PED_ID()), 0, true, false);
 				 VEHICLE::SET_VEHICLE_DOOR_OPEN(PED::GET_VEHICLE_PED_IS_USING(PLAYER::PLAYER_PED_ID()), 1, true, false);
 				 VEHICLE::SET_VEHICLE_DOOR_OPEN(PED::GET_VEHICLE_PED_IS_USING(PLAYER::PLAYER_PED_ID()), 2, true, false);
@@ -9071,12 +9089,12 @@ Menu::Files::StyleSaver::LoadStyles();
 				 VEHICLE::SET_VEHICLE_DOOR_OPEN(PED::GET_VEHICLE_PED_IS_USING(PLAYER::PLAYER_PED_ID()), 6, true, false);
 				 VEHICLE::SET_VEHICLE_DOOR_OPEN(PED::GET_VEHICLE_PED_IS_USING(PLAYER::PLAYER_PED_ID()), 7, true, false);
 			 }
-			 if (Menu::Option("Close Doors")) {
+			 if (Menu::Option("关闭车门")) {
 				 VEHICLE::SET_VEHICLE_DOORS_SHUT(PED::GET_VEHICLE_PED_IS_USING(PLAYER::PLAYER_PED_ID()), true);
 			 }
-			 Menu::Float("~t~Acceleration Multiplier", Features::accelerationmultiplier, 0, 3, 1); 
-			 Menu::Float("~t~Brakes Multiplier", Features::brakesmultiplier, 0, 3, 1); 
-			 Menu::Float("~t~Suspension Height", Features::suspensionseight, 0, 2, 1); 
+			 Menu::Float("~t~加速度乘数", Features::accelerationmultiplier, 0, 3, 1); 
+			 Menu::Float("~t~刹车乘数", Features::brakesmultiplier, 0, 3, 1); 
+			 Menu::Float("~t~悬架高度", Features::suspensionseight, 0, 2, 1); 
 			 
 		 }
 		 break;
@@ -9979,11 +9997,11 @@ Menu::Files::StyleSaver::LoadStyles();
 
 			 Menu::Title("Vehicle Spawner");
 			 Menu::Subtitle("VEHICLE SPAWNER");
-			 Menu::MenuOption("Smugglers Run DLC 1.40", smugglers_run);
-			 Menu::MenuOption("Gunrunning DLC 1.41", Gunrunning);
-			 Menu::MenuOption("Doomsday Heist DLC 1.42", DoomsdayHeist);
-			 Menu::MenuOption("SA Sport Series DLC 1.43", VelosesEstilos);
-			 Menu::MenuOption("Casino DLC 1.47", CasinoVehicles);
+			 Menu::MenuOption("走私者运行 DLC 1.40", smugglers_run);
+			 Menu::MenuOption("军火走私 DLC 1.41", Gunrunning);
+			 Menu::MenuOption("世界末日抢劫 DLC 1.42", DoomsdayHeist);
+			 Menu::MenuOption("运动系列 DLC 1.43", VelosesEstilos);
+			 Menu::MenuOption("赌场 DLC 1.47", CasinoVehicles);
 		 }
 		 break;
 #pragma endregion
@@ -9992,33 +10010,33 @@ Menu::Files::StyleSaver::LoadStyles();
 			 
 			 Menu::Title("Vehicle Spawner");
 			 Menu::Subtitle("VEHICLE SPAWNER");
-			 Menu::MenuOption("Vehicle Options", vehicle);
-			 Menu::MenuOption("DLC VEHICLES", dlcvehicles);
-			 Menu::MenuOption("Super", Super);
-			 Menu::MenuOption("Sports", Sports);
-			 Menu::MenuOption("Sport Classic", SportClassic);
-			 Menu::MenuOption("Offroad", Offroad);
-			 Menu::MenuOption("Sedans", Sedans);
-			 Menu::MenuOption("Coupes", Coupes);
-			 Menu::MenuOption("Muscle", Muscle);
-			 Menu::MenuOption("Boats", Boats);
-			 Menu::MenuOption("Commercial", Commercial);
-			 Menu::MenuOption("Compacts", Compacts);
-			 Menu::MenuOption("Cycles", Cycles);
-			 Menu::MenuOption("Emergency", Emergency);
-			 Menu::MenuOption("Helicopters", Helicopters);
-			 Menu::MenuOption("Industrial", Industrial);
-			 Menu::MenuOption("Military", Military);
-			 Menu::MenuOption("Motorcycles", Motorcycles);
-			 Menu::MenuOption("Planes", Planes);
-			 Menu::MenuOption("Service", Service);
+			 Menu::MenuOption("车辆选项", vehicle);
+			 Menu::MenuOption("DLC 车辆", dlcvehicles);
+			 Menu::MenuOption("超级跑车", Super);
+			 Menu::MenuOption("运动车辆", Sports);
+			 Menu::MenuOption("经典运动", SportClassic);
+			 Menu::MenuOption("越野车", Offroad);
+			 Menu::MenuOption("轿车车辆", Sedans);
+			 Menu::MenuOption("汽车车辆", Coupes);
+			 Menu::MenuOption("肌肉车辆", Muscle);
+			 Menu::MenuOption("船", Boats);
+			 Menu::MenuOption("商业车辆", Commercial);
+			 Menu::MenuOption("小型汽车", Compacts);
+			 Menu::MenuOption("自行车", Cycles);
+			 Menu::MenuOption("紧急车辆", Emergency);
+			 Menu::MenuOption("直升机", Helicopters);
+			 Menu::MenuOption("工业车辆", Industrial);
+			 Menu::MenuOption("军事车辆", Military);
+			 Menu::MenuOption("摩托车", Motorcycles);
+			 Menu::MenuOption("飞机", Planes);
+			 Menu::MenuOption("服务车辆", Service);
 			 Menu::MenuOption("SUV", SUV);
-			 Menu::MenuOption("Trailer", Trailer);
-			 Menu::MenuOption("Trains", Trains);
-			 Menu::MenuOption("Utility", Utility);
-			 Menu::MenuOption("Vans", Vans);
-			 Menu::Bool("Spawn in Car", Features::spawnincar);
-			 Menu::Bool("Spawn Maxed", Features::spawnmaxed);
+			 Menu::MenuOption("拖车", Trailer);
+			 Menu::MenuOption("火车", Trains);
+			 Menu::MenuOption("公用车辆", Utility);
+			 Menu::MenuOption("货车", Vans);
+			 Menu::Bool("刷车进入车内", Features::spawnincar);
+			 Menu::Bool("刷出最高等级", Features::spawnmaxed);
 			 break;
 		 case CasinoVehicles:
 			 Menu::Title("Casino");

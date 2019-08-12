@@ -5,7 +5,6 @@
 
 #pragma once
 #pragma execution_character_set("utf-8")
-
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
