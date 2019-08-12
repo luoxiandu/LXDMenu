@@ -7608,6 +7608,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::MenuOption("其它设置", miscoptions);
 			 Menu::MenuOption("菜单设置", settingsmenu);
 			 Menu::MenuOption("技术支持", CreditsInfor);
+			 Menu::Bool("颜色渐变", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
 			 
 
 		 }
@@ -7707,9 +7708,9 @@ Menu::Files::StyleSaver::LoadStyles();
 			 if (Menu::Option("低画质")) { GRAPHICS::SET_TIMECYCLE_MODIFIER("cinema_001"); } //done
 			 if (Menu::Option("模糊不清")) { GRAPHICS::SET_TIMECYCLE_MODIFIER("CHOP"); } //done
 			 if (Menu::Option("白屏")) { GRAPHICS::SET_TIMECYCLE_MODIFIER("BarryFadeOut"); } //done
-			 Menu::Bool("夜晚", Features::nightvisionbool, [] {Features::nightvision(Features::nightvisionbool); }); //done
-			 Menu::Bool("炎热天气", Features::heatvisionbool, [] {Features::heatvision(Features::heatvisionbool); }); //done
-			 Menu::Bool("灯火管制", Features::blackvisionbool, [] {Features::blackvision(Features::blackvisionbool); }); //done
+			 Menu::Bool("夜视仪", Features::nightvisionbool, [] {Features::nightvision(Features::nightvisionbool); }); //done
+			 Menu::Bool("热感头盔", Features::heatvisionbool, [] {Features::heatvision(Features::heatvisionbool); }); //done
+			 Menu::Bool("关闭灯光", Features::blackvisionbool, [] {Features::blackvision(Features::blackvisionbool); }); //done
 
 		 }
 		 break;
@@ -8194,7 +8195,7 @@ Menu::Files::StyleSaver::LoadStyles();
 
 			 Menu::Title("Teleport Locations");
 			 Menu::Subtitle("LOCATIONS MAP MODDER");
-			 if (Menu::Option("Load Map")) {
+			 if (Menu::Option("加载地图")) {
 				 Features::LoadObjects(-173040310, -63.310, -807.672, 324.074, 10.115, -1.606, -39.057);
 				 Features::LoadObjects(-173040310, -61.991, -809.437, 324.080, 10.240, -0.023, -47.198);
 				 Features::LoadObjects(-173040310, -60.645, -811.082, 324.057, 10.133, 1.512, -55.734);
@@ -8246,7 +8247,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 Features::LoadObjects(1212630005, -80.958, -824.657, 325.633, 0.0, 0.0, 144.400);
 				 Features::LoadObjects(1212630005, -83.703, -821.398, 325.633, 0.0, 0.0, 113.200);
 			 }
-			 if (Menu::Option("Maze Bank")) {
+			 if (Menu::Option("传送")) {
 				 Vector3 Coords;
 				 Coords.x = -74.94243f; Coords.y = -818.63446f; Coords.z = 326.174347f;
 				 TPto(Coords);
@@ -8932,7 +8933,6 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Subtitle("SETTINGS OPTIONS");
 			 Menu::MenuOption("Master Menu", settingsmenu_theme);
 			 if (Menu::Option("关闭 GTA V")) exit(0);
-			 Menu::Bool("界面颜色", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
 			 if (Menu::Option("界面右移 >")) { Menu::Settings::menuX = 0.85f; }
 			 if (Menu::Option("界面左移 <")) { Menu::Settings::menuX = 0.15f; }
 			 
@@ -9059,8 +9059,8 @@ Menu::Files::StyleSaver::LoadStyles();
 			 
 			 Menu::Title("载具选项");
 			 Menu::Subtitle("载具选项");
-			 Menu::MenuOption("Los Santos Customs", lsc);
-             Menu::MenuOption("Plate Style", plateoptions);
+			 Menu::MenuOption("改车选项", lsc);
+             Menu::MenuOption("车牌选项", plateoptions);
 			 Menu::Bool("时速表", Features::Speedometerbool);
 			 if (Menu::Bool("车辆无敌", Features::cargodmodebool)) { Features::cargodmode(); }
 			 Menu::Bool("发动机一直开启", Features::enginealwaysonbool, [] { Features::enginealwayson(Features::enginealwaysonbool); });
@@ -9105,8 +9105,8 @@ Menu::Files::StyleSaver::LoadStyles();
 			 
 			 Menu::Title("Plate Options");
 			 Menu::Subtitle("PLATE OPTIONS");
-			 Menu::MenuOption("Plate Style", platecolor);
-			 if (Menu::Option("Custom Plate Text")) {
+			 Menu::MenuOption("车牌风格", platecolor);
+			 if (Menu::Option("自定义车牌")) {
 				 Ped playerPed = PLAYER::PLAYER_PED_ID();
 				 if (!PED::IS_PED_IN_ANY_VEHICLE(playerPed, false)) return;
 				 GAMEPLAY::DISPLAY_ONSCREEN_KEYBOARD(true, "", "", "", "", "", "", 9);
@@ -9123,42 +9123,42 @@ Menu::Files::StyleSaver::LoadStyles();
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Plate Style");
 			 Menu::Subtitle("PLATE STYLE OPTIONS");
-			 if (Menu::Option("Blue On White Plate")) {
+			 if (Menu::Option("蓝白风格1")) {
 				 if (PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), true))
 				 {
 					 VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), false), 0);
 
 				 }
 			 }
-			 if (Menu::Option("Yellow On Black Plate")) {
+			 if (Menu::Option("黄黑风格")) {
 				 if (PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), true))
 				 {
 					 VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), false), 1);
 
 				 }
 			 }
-			 if (Menu::Option("Yellow On Blue Plate")) {
+			 if (Menu::Option("黄蓝风格")) {
 				 if (PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), true))
 				 {
 					 VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), false), 2);
 
 				 }
 			 }
-			 if (Menu::Option("Blue On White 2 Plate")) {
+			 if (Menu::Option("蓝白风格2")) {
 				 if (PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), true))
 				 {
 					 VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), false), 3);
 
 				 }
 			 }
-			 if (Menu::Option("Blue On White 3 Plate")) {
+			 if (Menu::Option("蓝白风格3")) {
 				 if (PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), true))
 				 {
 					 VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), false), 4);
 
 				 }
 			 }
-			 if (Menu::Option("Yankton Plate")) {
+			 if (Menu::Option("北洋克顿风格")) {
 				 if (PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), true))
 				 {
 					 VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), false), 5);
@@ -9175,63 +9175,63 @@ Menu::Files::StyleSaver::LoadStyles();
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("LOS SANTOS CUSTOM");
 			 Menu::Subtitle("LOS SANTOS CUSTOM");
-			 Menu::MenuOption("Wheels Options", Wheels);
-			 Menu::MenuOption("Neons Options", Neons);
-			 Menu::MenuOption("Colours Options", Colours);
-			 Menu::Int("Armor", Armor_, 0, 6); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);//this is for armor
+			 Menu::MenuOption("车轮选项", Wheels);
+			 Menu::MenuOption("车灯选项", Neons);
+			 Menu::MenuOption("颜色选项", Colours);
+			 Menu::Int("防护", Armor_, 0, 6); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);//this is for armor
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Armor_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 16, Armor_, 0);
 			 }
-			 Menu::Int("Brakes", Brakes_, 0, 4); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("刹车", Brakes_, 0, 4); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Brakes_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 12, Brakes_, 0);
 			 }
-			 Menu::Int("Transmission", Transmission_, 0, 4); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("传动", Transmission_, 0, 4); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Brakes_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 12, Brakes_, 0);
 			 }
-			 if (Menu::Option("Turbo")) {
+			 if (Menu::Option("涡轮增压")) {
 				 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, 0);
 				 VEHICLE::TOGGLE_VEHICLE_MOD(VehID, 18, 0);
 			 
 			 }
-			 Menu::Int("Bumpers", Bumpers_, 0, 3); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("保险杠", Bumpers_, 0, 3); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Bumpers_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 2, Bumpers_, 0);
 			 }
-			 Menu::Int("Hoods", Hoods_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("变速箱", Hoods_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Hoods_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 7, Hoods_, 0);
 			 }
-			 Menu::Int("Suspension", Suspension_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("悬架", Suspension_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Suspension_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 15, Suspension_, 0);
 			 }
-			 Menu::Int("Spoiler", Spoilers_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("扰流板", Spoilers_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Spoilers_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 0, Spoilers_, 0);
 			 }
-			 Menu::Int("SideSkirts", Skirts_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("侧裙", Skirts_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Skirts_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 3, Skirts_, 0);
 			 }
-			 Menu::Int("Exhaust", Exhaust_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("排气口", Exhaust_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Exhaust_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 4, Exhaust_, 0);
 			 }
-			 Menu::Int("Grill", Grill_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("进气口", Grill_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Grill_);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 6, Grill_, 0);
 			 }
-			 Menu::Int("Interior", Interior_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("内饰", Interior_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Interior_);
 			 VEHICLE::REMOVE_VEHICLE_MOD(VehID, Interior_);
 			 }
-			 Menu::Int("Window Tint", Tint_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("车窗", Tint_, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, Tint_);
 			 VEHICLE::SET_VEHICLE_WINDOW_TINT(VehID, Tint_);
 			 }
-			 Menu::Int("Horns", horns, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
+			 Menu::Int("喇叭", horns, 0, 5); { int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 			 VEHICLE::SET_VEHICLE_MOD_KIT(VehID, horns);
 			 VEHICLE::SET_VEHICLE_MOD(VehID, 14, horns, 0);
 			 }
@@ -9258,13 +9258,13 @@ Menu::Files::StyleSaver::LoadStyles();
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Wheels");
 			 Menu::Subtitle("WHEELS OPTIONS");
-			 Menu::MenuOption("Tuner", Tuner); //done
+			 Menu::MenuOption("皮卡", Tuner); //done
 			 Menu::MenuOption("SUV", WheelsSUV); //done
-			 Menu::MenuOption("Sport", SportWheels); //done
-			 Menu::MenuOption("Offroad", OffroadWheels); //done
-			 Menu::MenuOption("HighEnd", HighEnd); //done
-			 Menu::MenuOption("Lowrider", LowriderWheels); //done
-			 Menu::MenuOption("Muscle", MuscleWheels); //done
+			 Menu::MenuOption("体育运动", SportWheels); //done
+			 Menu::MenuOption("越野车", OffroadWheels); //done
+			 Menu::MenuOption("高档次", HighEnd); //done
+			 Menu::MenuOption("趴地跳跳车", LowriderWheels); //done
+			 Menu::MenuOption("肌肉", MuscleWheels); //done
 			 
 			 
 		 }
@@ -9290,62 +9290,62 @@ Menu::Files::StyleSaver::LoadStyles();
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHT_ENABLED(VehID, 6, 1);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHT_ENABLED(VehID, 7, 1);
 			 }
-			 if (Menu::Option("Red")) {
+			 if (Menu::Option("红色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 1);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 255, 0, 0);
 			 }
-			 if (Menu::Option("Green")) {
+			 if (Menu::Option("绿色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 0, 255, 0);
 			 }
-			 if (Menu::Option("Blue")) {
+			 if (Menu::Option("蓝色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 0, 0, 255);
 			 }
-			 if (Menu::Option("Hot Pink")) {
+			 if (Menu::Option("粉红色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 226, 35, 157);
 			 }
-			 if (Menu::Option("Yellow")) {
+			 if (Menu::Option("黄色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 247, 244, 0);
 			 }
-			 if (Menu::Option("Orange")) {
+			 if (Menu::Option("橙色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 247, 91, 0);
 			 }
-			 if (Menu::Option("Aqua")) {
+			 if (Menu::Option("浅绿色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 40, 255, 255);
 			 }
-			 if (Menu::Option("White")) {
+			 if (Menu::Option("白色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 255, 255, 255);
 			 }
-			 if (Menu::Option("Magenta")) {
+			 if (Menu::Option("洋红色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 102, 0, 35);
 			 }
-			 if (Menu::Option("Purple")) {
+			 if (Menu::Option("紫色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 53, 0, 83);
 			 }
-			 if (Menu::Option("Dark Green")) {
+			 if (Menu::Option("青绿色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 0, 118, 0);
 			 }
-			 if (Menu::Option("Rose Red")) {
+			 if (Menu::Option("朱红色")) {
 				 int VehID = PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0);
 				 VEHICLE::_IS_VEHICLE_NEON_LIGHT_ENABLED(VehID, 8);
 				 VEHICLE::_SET_VEHICLE_NEON_LIGHTS_COLOUR(VehID, 161, 0, 0);
@@ -10317,7 +10317,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 //Menu::DRAW_TEXTURE("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("IPLs");
 			 Menu::Subtitle("IPLS MAPS OPTIONS");
-			 if (Menu::Option("North Yankton")) {
+			 if (Menu::Option("北扬克顿")) {
 				 STREAMING::REQUEST_IPL("prologue01");
 				 STREAMING::REQUEST_IPL("Prologue01c");
 				 STREAMING::REQUEST_IPL("Prologue01d");
@@ -10354,13 +10354,13 @@ Menu::Files::StyleSaver::LoadStyles();
 				 Coords.x = 3360.19f; Coords.y = -4849.67f; Coords.z = 111.8f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Porn Yacht")) {
+			 if (Menu::Option("色情游艇")) {
 				 STREAMING::REQUEST_IPL("smboat");
 				 Vector3 Coords;
 				 Coords.x = -2045.8f; Coords.y = -1031.2f; Coords.z = 11.9f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Aircraft Carrier")) {
+			 if (Menu::Option("航空母舰")) {
 				 STREAMING::REQUEST_IPL("hei_carrier");
 				 STREAMING::REQUEST_IPL("hei_carrier_DistantLights");
 				 STREAMING::REQUEST_IPL("hei_Carrier_int1");
@@ -10374,20 +10374,20 @@ Menu::Files::StyleSaver::LoadStyles();
 				 Coords.x = 3069.330f; Coords.y = -4632.4f; Coords.z = 15.043f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Sunken Cargoship")) {
+			 if (Menu::Option("沉没的货轮（沉船）")) {
 				 STREAMING::REQUEST_IPL("sunkcargoship");
 				 Vector3 Coords;
 				 Coords.x = -162.8918f; Coords.y = -2365.769f; Coords.z = 0.0f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Hospital")) {
+			 if (Menu::Option("医院")) {
 				 STREAMING::REQUEST_IPL("RC12B_HospitalInterior");
 				 STREAMING::REQUEST_IPL("RC12B_Destroyed");
 				 Vector3 Coords;
 				 Coords.x = 356.8f; Coords.y = -590.1f; Coords.z = 43.3f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Oneil Farm")) {
+			 if (Menu::Option("奥尼尔农场")) {
 				 STREAMING::REMOVE_IPL("farm_burnt");
 				 STREAMING::REMOVE_IPL("farm_burnt_props");
 				 STREAMING::REQUEST_IPL("farm");
@@ -10398,20 +10398,20 @@ Menu::Files::StyleSaver::LoadStyles();
 				 Coords.x = 2441.2f; Coords.y = 4968.5f; Coords.z = 51.7f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Life Invader Office")) {
+			 if (Menu::Option("life invader公司大楼")) {
 				 STREAMING::REQUEST_IPL("facelobby");
 				 STREAMING::REQUEST_IPL("facelobbyfake");
 				 Vector3 Coords;
 				 Coords.x = -1047.9f; Coords.y = -233.0f; Coords.z = 39.0f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Cargoship")) {
+			 if (Menu::Option("货轮")) {
 				 STREAMING::REQUEST_IPL("cargoship");
 				 Vector3 Coords;
 				 Coords.x = -162.8918f; Coords.y = -2365.769f; Coords.z = 9.3192f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Jewelry Store")) {
+			 if (Menu::Option("珠宝店")) {
 				 STREAMING::REQUEST_IPL("jewel2fake");
 				 STREAMING::REQUEST_IPL("post_hiest_unload");
 				 STREAMING::REQUEST_IPL("bh1_16_refurb");
@@ -10419,7 +10419,7 @@ Menu::Files::StyleSaver::LoadStyles();
 				 Coords.x = -630.4f; Coords.y = -236.7f; Coords.z = 40.0f;
 				 TPto(Coords);
 			 }
-			 if (Menu::Option("Morgue")) {
+			 if (Menu::Option("停尸间")) {
 				 STREAMING::REQUEST_IPL("Coroner_Int_on");
 				 Vector3 Coords;
 				 Coords.x = 244.9f; Coords.y = -1374.7f; Coords.z = 39.5f;
