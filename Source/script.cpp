@@ -11,7 +11,7 @@ Object latestObj;
 
 #define PROP_MONEY_BAG_01 0x113FD533
 #define PICKUP_MONEY_CASE 0xCE6FDD6B
-
+int shuzhi = 255;
 int timeer = 0;
 long in = 0;
 int intor = 0;
@@ -7635,6 +7635,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Title("金钱供给");
 			 Menu::Subtitle("MONEY OPTIONS");
 			 Menu::Break("~g~---隐形刷钱---");
+			 Menu::Break("隐形刷钱暂时无法使用!!");
              //Menu::Bool("15M", Features::stealth15m, [] { Features::Stealth(Features::stealth15m); });
 			 //Menu::Bool("12M", Features::stealth12m, [] { Features::Stealth(Features::stealth12m); });
 			 //Menu::Bool("10M", Features::stealth10m, [] { Features::Stealth(Features::stealth10m); });
@@ -7665,7 +7666,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Title("世界选项");
 			 Menu::Subtitle("WORLD OPTIONS");
 			 Menu::MenuOption("天气选项", weatheroptions);
-			 Menu::Int("单机时间控制", timeer, 0, 24);
+			 Menu::Int("时间控制", timeer, 0, 24);
 			 if (Menu::Option("设定时间")) { NETWORK::NETWORK_OVERRIDE_CLOCK_TIME(timeer, 0, 0); }
 		 }
 		 break;
@@ -8530,6 +8531,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Bool("禁用电话", Features::phonedisable, [] { Features::disablephone(); });
 			 //Menu::Bool("自我隐身", Features::playerinvisibility, [] { Features::Invisibility(Features::playerinvisibility); });
 			 //Menu::Bool("无视存在", Features::playernoragdoll, [] { Features::NoRagdoll(Features::playernoragdoll); });
+			 if(Menu::Int("玩家透明度", shuzhi, 0, 255)) { ENTITY::SET_ENTITY_ALPHA(PLAYER::PLAYER_PED_ID(), shuzhi, 0); } //this changes the play visibility
 			 Menu::Bool("超级跳跃", Features::playersuperjump, [] { Features::SuperJump(Features::playersuperjump); });
 			 Menu::Bool("快速奔跑", Features::fastrun, [] { Features::RunFast(Features::fastrun); });
 			 Menu::Bool("加速游泳", Features::fastswim, [] { Features::SwimFast(Features::fastswim); });
