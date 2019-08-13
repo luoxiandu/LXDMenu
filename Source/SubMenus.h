@@ -89,4 +89,6 @@ enum SubMenus {
 	DoomsdayHeist,
 	VelosesEstilos,
 	CreditsInfor,
+	worldoptions,
+	onlineoptions,
 };
