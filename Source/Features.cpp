@@ -514,12 +514,12 @@ void CREATE_VEHICLE(LPCSTR modelName, float x, float y, float z, float heading, 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
 
 
-		sprintf_s(statusText, "~o~%s ~b~spawned.", modelName);
+		sprintf_s(statusText, "~o~%s ~b~已生成。", modelName);
 
 	}
 	else
 	{
-		sprintf_s(statusText, "~r~Invalid model: ~o~%s", modelName);
+		sprintf_s(statusText, "~r~无效的模型： ~o~%s", modelName);
 	}
 
 	//set_status_text(statusText);
@@ -767,21 +767,21 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	ostringstream Money, RP, Rank, Kills, Deaths, KD;
 
 
-	std::ostringstream Health; Health << "生命值:~s~ " << healthPercent;
+	std::ostringstream Health; Health << "生命值：~s~ " << healthPercent;
 	float armor = PED::GET_PED_ARMOUR(ped);
 	float maxArmor = PLAYER::GET_PLAYER_MAX_ARMOUR(p);
 	float armorPercent = armor * 100 / maxArmor;
-	std::ostringstream Armor; Armor << "是否无敌:~s~ " << armorPercent;
+	std::ostringstream Armor; Armor << "是否无敌：~s~ " << armorPercent;
 	bool alive = !PED::IS_PED_DEAD_OR_DYING(ped, 1);
 	char* aliveStatus;
 	if (alive) aliveStatus = "Yes"; else aliveStatus = "No";
-	std::ostringstream Alive; Alive << "生存状态:~s~ " << aliveStatus;
+	std::ostringstream Alive; Alive << "存活状态：~s~ " << aliveStatus;
 	bool inVehicle = PED::IS_PED_IN_ANY_VEHICLE(ped, 0);
 	std::ostringstream VehicleModel; VehicleModel << "载具:~s~ ";
-	std::ostringstream Speed; Speed << "速度:~s~ ";
-	std::ostringstream IsInAVehicle; IsInAVehicle << "是否驾驶中:~s~ ";
+	std::ostringstream Speed; Speed << "速度：~s~ ";
+	std::ostringstream IsInAVehicle; IsInAVehicle << "在载具中：~s~ ";
 	if (inVehicle) {
-		IsInAVehicle << "Yes";
+		IsInAVehicle << "是";
 		Hash vehHash = ENTITY::GET_ENTITY_MODEL(PED::GET_VEHICLE_PED_IS_IN(ped, 0));
 		VehicleModel << UI::_GET_LABEL_TEXT(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(vehHash));
 		float vehSpeed = ENTITY::GET_ENTITY_SPEED(PED::GET_VEHICLE_PED_IS_IN(ped, 0));
@@ -790,38 +790,37 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 		Speed << vehSpeedConverted << " KM/H";
 	}
 	else {
-		IsInAVehicle << "No";
+		IsInAVehicle << "否";
 		float speed = round(ENTITY::GET_ENTITY_SPEED(ped) * 100) / 100;
 		Speed << speed << " M/S";
 		VehicleModel << "--------";
 	}
-	std::ostringstream WantedLevel; WantedLevel << "通缉级别:~s~ " << PLAYER::GET_PLAYER_WANTED_LEVEL(p);
+	std::ostringstream WantedLevel; WantedLevel << "通缉级别：~s~ " << PLAYER::GET_PLAYER_WANTED_LEVEL(p);
 	if (!NETWORK::NETWORK_IS_PLAYER_CONNECTED(p)) {
-		RP << "~w~RP:~s~ ";
-		Kills << "~w~Kills:~s~ ";
-		Deaths << "~w~Deaths:~s~ ";
-		KD << "~w~KD Ratio:~s~ ";
-
+		RP << "~w~经验值(RP)：~s~ ";
+		Kills << "~w~击杀数：~s~ ";
+		Deaths << "~w~死亡数：~s~ ";
+		KD << "~w~击杀/死亡比(KD比)：~s~ ";
 	}
 	else {
-		RP << "RP: ~s~ " << rp;
-		Kills << "Kills: ~s~ " << kills;
-		Deaths << "Deaths: ~s~ " << deaths;
-		KD << "KD Ratio: ~s~ " << kd;
+		RP << "经验值(RP)：~s~ " << rp;
+		Kills << "击杀数：~s~ " << kills;
+		Deaths << "死亡数：~s~ " << deaths;
+		KD << "击杀/死亡比(KD比)：~s~ " << kd;
 
 	}
 
-	std::ostringstream Weapon; Weapon << "手持武器: ~s~";
+	std::ostringstream Weapon; Weapon << "武器： ~s~";
 
 
 	Hash weaponHash;
 	if (WEAPON::GET_CURRENT_PED_WEAPON(ped, &weaponHash, 1)) {
 		char* weaponName;
 		if (weaponHash == 2725352035) {
-			weaponName = "Unarmed";
+			weaponName = "徒手";
 		}
 		else if (weaponHash == 2578778090) {
-			weaponName = "Knife";
+			weaponName = "未检测到";
 		}
 		else if (weaponHash == 0x678B81B1) {
 			weaponName = "Nightstick";
@@ -1014,10 +1013,10 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	else Weapon << "Unarmed";
 	Vector3 myCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
 	Vector3 coords = ENTITY::GET_ENTITY_COORDS(ped, 1);
-	std::ostringstream Zone; Zone << "所处位置: ~s~" << UI::_GET_LABEL_TEXT(ZONE::GET_NAME_OF_ZONE(coords.x, coords.y, coords.z));
+	std::ostringstream Zone; Zone << "所处行政区：~s~" << UI::_GET_LABEL_TEXT(ZONE::GET_NAME_OF_ZONE(coords.x, coords.y, coords.z));
 	Hash streetName, crossingRoad;
 	PATHFIND::GET_STREET_NAME_AT_COORD(coords.x, coords.y, coords.z, &streetName, &crossingRoad);
-	std::ostringstream Street; Street << "所处街道: ~s~" << UI::GET_STREET_NAME_FROM_HASH_KEY(streetName);
+	std::ostringstream Street; Street << "所处街道： ~s~" << UI::GET_STREET_NAME_FROM_HASH_KEY(streetName);
 	float distance = Get3DDistance(coords, myCoords);
 	std::ostringstream Distance; Distance << "相距距离: ~s~";
 
