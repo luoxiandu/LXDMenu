@@ -965,8 +965,7 @@ namespace PED
 
 namespace VEHICLE
 {
-	static Vehicle CREATE_VEHICLE(Hash modelHash, float x, float y, float z, float heading, BOOL isNetwork, BOOL thisScriptCheck) { return invoke<Vehicle>(0xAF35D0D2583051B0, modelHash, x, y, z, heading, isNetwork, thisScriptCheck, true); } // AF35D0D2583051B0 DD75460A
-	//static Vehicle CREATE_VEHICLE(Hash modelHash, float x, float y, float z, float heading, BOOL isNetwork, BOOL p6) { return invoke<Vehicle>(0xAF35D0D2583051B0, modelHash, x, y, z, heading, isNetwork, p6); } // 0xAF35D0D2583051B0 0xDD75460A
+	static Vehicle CREATE_VEHICLE(Hash modelHash, float x, float y, float z, float heading, BOOL isNetwork, BOOL p6) { return invoke<Vehicle>(0xAF35D0D2583051B0, modelHash, x, y, z, heading, isNetwork, p6, false); } // AF35D0D2583051B0 DD75460A
 	static void DELETE_VEHICLE(Vehicle* vehicle) { invoke<Void>(0xEA386986E786A54F, vehicle); } // 0xEA386986E786A54F 0x9803AF60
 	static void _0x7D6F9A3EF26136A0(Vehicle vehicle, BOOL p1, BOOL p2) { invoke<Void>(0x7D6F9A3EF26136A0, vehicle, p1, p2); } // 0x7D6F9A3EF26136A0 0xBB54ECCA
 	static void SET_VEHICLE_ALLOW_NO_PASSENGERS_LOCKON(Vehicle veh, BOOL toggle) { invoke<Void>(0x5D14D4154BFE7B2C, veh, toggle); } // 0x5D14D4154BFE7B2C 0x8BAAC437

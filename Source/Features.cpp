@@ -44,7 +44,36 @@ void SET_ENTITY_INVINCIBLE(const int& entity, const bool& toggle)
 	static tSET_ENTITY_INVINCIBLE oSET_ENTITY_INVINCIBLE = (tSET_ENTITY_INVINCIBLE)(Memory::pattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 40 8A F2 E8 ? ? ? ? 33 DB").count(1).get(0).get<void>(0));
 	oSET_ENTITY_INVINCIBLE(entity, toggle);
 }
+void Features::DeleteVehicle(Ped PED_ID)
+{
+	Ped playerPed = PED_ID;
+	if (PED::IS_PED_IN_ANY_VEHICLE(playerPed, false))
+	{
+		int Vehicle = PED::GET_VEHICLE_PED_IS_USING(playerPed);
+		if (!NETWORK::NETWORK_REQUEST_CONTROL_OF_ENTITY(Vehicle))
+			while (!NETWORK::NETWORK_REQUEST_CONTROL_OF_ENTITY(Vehicle));
 
+		ENTITY::SET_ENTITY_AS_MISSION_ENTITY(Vehicle, 1, 1);
+		VEHICLE::DELETE_VEHICLE(&Vehicle);
+	}
+}
+void Features::notifyMap(char* fmt, ...)
+{
+	char buf[2048] = { 0 };
+	va_list va_alist;
+
+	va_start(va_alist, fmt);
+	vsprintf_s(buf, fmt, va_alist);
+	va_end(va_alist);
+
+	char buff2[2048] = { 0 };
+	sprintf_s(buff2, "%s", buf);
+
+	UI::SET_TEXT_OUTLINE();
+	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
+	UI::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(buff2);
+	UI::_DRAW_NOTIFICATION(FALSE, FALSE);
+}	void Features::notifyMap(std::string str) { Features::notifyMap(&str[0]); }
 void Features::UpdateLoop()
 {
 	playerGodMode ? GodMode(true) : NULL;
@@ -156,15 +185,15 @@ void Features::UpdateLoop()
 
 	//stealth10m ? Stealth(true) : NULL;
 
-//	stealth15m ? Stealth(true) : NULL;
+	//stealth15m ? Stealth(true) : NULL;
 
 	//stealth12m ? Stealth(true) : NULL;
 
-//	stealth600k ? Stealth(true) : NULL;
+	//stealth600k ? Stealth(true) : NULL;
 
 	//stealth120k ? Stealth(true) : NULL;
 
-//	stealth250k ? Stealth(true) : NULL;
+	//stealth250k ? Stealth(true) : NULL;
 
 	//stealth90m ? Stealth(true) : NULL;
 
@@ -537,7 +566,7 @@ void Features::spawn_vehicle(char* toSpawn) {
 		float heading = ENTITY::GET_ENTITY_HEADING(PLAYER::PLAYER_PED_ID());
 		float xVector = forward * sin(degToRad(heading)) * -1.f;
 		float yVector = forward * cos(degToRad(heading));
-		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, true, false);
+		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, false, false);
 		RequestControlOfEnt(veh);
 		VEHICLE::SET_VEHICLE_ENGINE_ON(veh, true, true, true);
 		VEHICLE::SET_VEHICLE_ON_GROUND_PROPERLY(veh);
@@ -1466,12 +1495,19 @@ void Features::Superman(bool toggle)
 
 
 
-
-
-bool Features::playerGodMode = false;
+//Ô­Ð´·¨
+/*bool Features::playerGodMode = false;
 void Features::GodMode(bool toggle) {
+	static int armour_player = 0;
+	Player player = PLAYER::PLAYER_ID();
+	Ped playerPed = PLAYER::PLAYER_PED_ID();
 	if (playerGodMode == true)
 	{
+		if (armour_player == 0)
+		{
+			armour_player = PED::GET_PED_ARMOUR(playerPed);
+		}
+
 		ENTITY::SET_ENTITY_INVINCIBLE(PLAYER::PLAYER_PED_ID(), true);
 
 		//Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_PLAYER_INFO, OFFSET_ENTITY_GOD }, 1);
@@ -1479,6 +1515,37 @@ void Features::GodMode(bool toggle) {
 	else {
 		ENTITY::SET_ENTITY_INVINCIBLE(PLAYER::PLAYER_PED_ID(), false);
 		//Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_PLAYER_INFO, OFFSET_ENTITY_GOD }, 0);
+	}
+}*/
+bool Features::playerGodMode = false;
+void Features::GodMode(bool toggle) {
+	static int armour_player = 0;
+	Player player = PLAYER::PLAYER_ID();
+	Ped playerPed = PLAYER::PLAYER_PED_ID();
+	if (armour_player == 0)
+	{
+		armour_player = PED::GET_PED_ARMOUR(playerPed);
+	}
+
+	if (toggle)
+	{
+		PLAYER::SET_PLAYER_INVINCIBLE(player, true);
+		ENTITY::SET_ENTITY_PROOFS(playerPed, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
+		PED::SET_PED_CAN_RAGDOLL(playerPed, FALSE);
+		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(playerPed, FALSE);
+		PED::ADD_ARMOUR_TO_PED(playerPed, PLAYER::GET_PLAYER_MAX_ARMOUR(player) - PED::GET_PED_ARMOUR(playerPed));
+	}
+	else
+	{
+		PLAYER::SET_PLAYER_INVINCIBLE(player, false);
+		ENTITY::SET_ENTITY_PROOFS(playerPed, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE);
+		PED::SET_PED_CAN_RAGDOLL(playerPed, TRUE);
+		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(playerPed, TRUE);
+		if (armour_player != 0)
+		{
+			PED::SET_PED_ARMOUR(playerPed, armour_player);
+			armour_player = 0;
+		}
 	}
 }
 bool Features::playertenkped = false;

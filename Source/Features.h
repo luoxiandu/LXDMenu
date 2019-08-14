@@ -1,12 +1,13 @@
 #pragma once
 
 namespace Features {
+	void notifyMap(char* fmt, ...);
+	void notifyMap(std::string str);
 	void UpdateLoop();
-	
+	void DeleteVehicle(Ped PED_ID);
 	void TPtoWaypoint();
 
 	void riskyOptins(bool toggle);
-
 	extern int TimePD; 
 
 
@@ -24,7 +25,6 @@ namespace Features {
 	extern bool fireammo;
 	extern bool expammo;
 	extern bool rbgun;
-
 	/*extern bool stealth50k;
 	extern bool stealth12m;
 	extern bool stealth15m;

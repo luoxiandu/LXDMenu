@@ -750,14 +750,15 @@ void Menu::End()
 		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
 	}
 }
-
-int IconNotification(char *text, char *text2, char *Subject)
+//貌似无法使用
+/*int IconNotification(char *text, char *text2, char *Subject)
 {
 	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
 	UI::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text);
-	//UI::_SET_NOTIFICATION_MESSAGE_CLAN_TAG("CHAR_GANGAPP", "CHAR_GANGAPP", false, 7, text2, Subject, 1.0, "___Menu");
+	UI::_SET_NOTIFICATION_MESSAGE_CLAN_TAG("CHAR_GANGAPP", "CHAR_GANGAPP", false, 7, text2, Subject, 1.0, "___Menu");
 	return UI::_DRAW_NOTIFICATION(1, 1);
-}
+}*/
+
 //char * text = "Logged in";
 void PlaySoundFrontend_default(char* sound_name)
 {
@@ -792,7 +793,7 @@ void Menu::Checks::Keys()
 				if (IsKeyPressed(VK_F4) || CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlScriptRB) && CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlPhoneRight)) {
 					Settings::menuLevel == 0 ? MenuLevelHandler::MoveMenu(SubMenus::mainmenu) : Settings::menuLevel == 1 ? MenuLevelHandler::BackMenu() : NULL;
 					if (firstopen) {
-						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(0)), "~r~Diamond Menu v4.0.1", text);
+						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(0)), "~r~Master Menu v1.0.0", "text");
 						PlaySoundFrontend_default2("Hack_Success");
 
 						firstopen = false;

@@ -11,6 +11,7 @@ Object latestObj;
 
 #define PROP_MONEY_BAG_01 0x113FD533
 #define PICKUP_MONEY_CASE 0xCE6FDD6B
+//这里是默认透明度
 int shuzhi = 255;
 int timeer = 0;
 long in = 0;
@@ -7585,6 +7586,8 @@ Player player = PLAYER::PLAYER_ID();
 
 void main() {
 Menu::Files::StyleSaver::LoadStyles();
+Features::notifyMap("~f~欢迎使用掌控者(Master)!");
+Features::notifyMap("~f~快捷键F4打开菜单!");
 	while (true) {
 		Menu::Checks::Keys();
 		Features::UpdateLoop();
@@ -7594,20 +7597,19 @@ Menu::Files::StyleSaver::LoadStyles();
 			 
 			 Menu::Title("Master Menu");
 			 Menu::Subtitle("VERSION: 1.48");
+			 Menu::MenuOption("线上选项", onlineoptions);
 			 Menu::MenuOption("自我选项", playermenu);
 			 Menu::MenuOption("武器选项", weapon);
-			 Menu::MenuOption("线上选项", onlineoptions);
 			 Menu::MenuOption("载具选项", vehspawner);
 			 Menu::MenuOption("传送选项", teleports);
 			 Menu::MenuOption("世界选项", worldoptions);
 			 Menu::MenuOption("视觉冲击", versionsoptions);
 			 Menu::MenuOption("模型选项", modelObjects);
-			 Menu::MenuOption("全副武装", OutfitOptions);
 			 Menu::MenuOption("成就解锁", recover);
 			 Menu::MenuOption("金钱供给", moneystealth);
 			 Menu::MenuOption("其它设置", miscoptions);
 			 Menu::MenuOption("菜单设置", settingsmenu);
-			 Menu::MenuOption("技术支持", CreditsInfor);
+			 Menu::MenuOption("关于菜单", Credits);
 			 Menu::Bool("颜色渐变", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
 			 
 
@@ -7619,6 +7621,7 @@ Menu::Files::StyleSaver::LoadStyles();
 		{
 			Menu::Title("线上选项");
 			Menu::Subtitle("OLINE OPTIONS");
+			Menu::MenuOption("防护措施", protectedmenu);
 			Menu::MenuOption("全局控制", allplayers);
 			for (int i = 0; i < 32; ++i) {
 				if (ENTITY::DOES_ENTITY_EXIST(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i))) {
@@ -7635,7 +7638,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Title("金钱供给");
 			 Menu::Subtitle("MONEY OPTIONS");
 			 Menu::Break("~g~---隐形刷钱---");
-			 Menu::Break("隐形刷钱暂时无法使用!!");
+			 Menu::Break("隐形刷钱未确定风险!!");
              //Menu::Bool("15M", Features::stealth15m, [] { Features::Stealth(Features::stealth15m); });
 			 //Menu::Bool("12M", Features::stealth12m, [] { Features::Stealth(Features::stealth12m); });
 			 //Menu::Bool("10M", Features::stealth10m, [] { Features::Stealth(Features::stealth10m); });
@@ -8392,8 +8395,6 @@ Menu::Files::StyleSaver::LoadStyles();
 
 			 Menu::Title("其它设置");
 			 Menu::Subtitle("MISC OPTIONS");
-			 Menu::MenuOption("全套装备", OutfitOptions);
-			 Menu::MenuOption("游戏异象", versionsoptions);
 			 Menu::Bool("显示器 FPS", Features::DisplayFPS, [] { Features::featureDisplayFPS(Features::DisplayFPS); });
 			 Menu::Bool("杀死街机角色", Features::killpedsbool);
 			 Menu::Bool("引爆街机角色", Features::explodepedsbool);
@@ -8521,8 +8522,8 @@ Menu::Files::StyleSaver::LoadStyles();
 			 //Menu::DRAW_TEXTURE("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("自我选项");
 			 Menu::Subtitle("SELF OPTIONS");
-			 Menu::MenuOption("防护措施", protectedmenu);
              Menu::MenuOption("角色变换", modelchanger);
+			 Menu::MenuOption("服装选项", OutfitOptions);
 			 Menu::MenuOption("动作选项", anim);
 			 Menu::MenuOption("自身效果", PTFX);
 			 Menu::Bool("自我无敌", Features::playerGodMode, [] { Features::GodMode(Features::playerGodMode); });
@@ -8531,7 +8532,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Bool("禁用电话", Features::phonedisable, [] { Features::disablephone(); });
 			 //Menu::Bool("自我隐身", Features::playerinvisibility, [] { Features::Invisibility(Features::playerinvisibility); });
 			 //Menu::Bool("无视存在", Features::playernoragdoll, [] { Features::NoRagdoll(Features::playernoragdoll); });
-			 if(Menu::Int("玩家透明度", shuzhi, 0, 255)) { ENTITY::SET_ENTITY_ALPHA(PLAYER::PLAYER_PED_ID(), shuzhi, 0); } //this changes the play visibility
+			 if(Menu::Int("玩家透明度", shuzhi, 0, 255)) { ENTITY::SET_ENTITY_ALPHA(PLAYER::PLAYER_PED_ID(), shuzhi, 0); } //自慰
 			 Menu::Bool("超级跳跃", Features::playersuperjump, [] { Features::SuperJump(Features::playersuperjump); });
 			 Menu::Bool("快速奔跑", Features::fastrun, [] { Features::RunFast(Features::fastrun); });
 			 Menu::Bool("加速游泳", Features::fastswim, [] { Features::SwimFast(Features::fastswim); });
@@ -8560,21 +8561,14 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Option(PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()));
 		 }
 		 break;
-		 case CreditsInfor:
-		 {
-			 Menu::Title("参与人员");
-			 Menu::Subtitle("CREDITS");
-			 Menu::Option("~r~编程: ~y~荒陌");
-		 }
-		 break;
 #pragma region Outfit Options
 		 case OutfitOptions :
 		 {
 			 
-			 Menu::Title("全副武装");
+			 Menu::Title("服装选项");
 			 Menu::Subtitle("OUTFIT OPTIONS");
-			 if (Menu::Option("随机变换")) { PED::SET_PED_DEFAULT_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID()); }
-			 if (Menu::Option("配套服装")) { PED::SET_PED_RANDOM_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), true); }
+			 if (Menu::Option("配套服装")) { PED::SET_PED_DEFAULT_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID()); }
+			 if (Menu::Option("随机变换")) { PED::SET_PED_RANDOM_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID(), true); }
 			 Menu::MenuOption("自选服装", OutfitCreator);
 			 
 		 }
@@ -10014,6 +10008,7 @@ Menu::Files::StyleSaver::LoadStyles();
 			 Menu::Subtitle("VEHICLE SPAWNER");
 			 Menu::MenuOption("车辆选项", vehicle);
 			 Menu::MenuOption("DLC 车辆", dlcvehicles);
+			 if (Menu::Option("删除车辆")) { Features::DeleteVehicle(PLAYER::PLAYER_PED_ID()); }
 			 Menu::MenuOption("超级跑车", Super);
 			 Menu::MenuOption("运动车辆", Sports);
 			 Menu::MenuOption("经典运动", SportClassic);
