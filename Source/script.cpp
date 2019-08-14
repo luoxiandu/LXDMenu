@@ -7586,7 +7586,7 @@ Player player = PLAYER::PLAYER_ID();
 
 void main() {
 Menu::Files::StyleSaver::LoadStyles();
-Features::notifyMap("~f~欢迎使用掌控者(Master)!");
+Features::notifyMap((std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~：欢迎使用掌控者(Master)!");
 Features::notifyMap("~f~快捷键F4打开菜单!");
 	while (true) {
 		Menu::Checks::Keys();
@@ -7596,7 +7596,7 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 		{
 			 
 			 Menu::Title("Master Menu");
-			 Menu::Subtitle("VERSION: 1.48");
+			 Menu::Subtitle("~y~VERSION:1.48");
 			 Menu::MenuOption("线上选项", onlineoptions);
 			 Menu::MenuOption("自我选项", playermenu);
 			 Menu::MenuOption("武器选项", weapon);
@@ -7608,8 +7608,6 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 Menu::MenuOption("成就解锁", recover);
 			 Menu::MenuOption("金钱供给", moneystealth);
 			 Menu::MenuOption("其它设置", miscoptions);
-			 Menu::MenuOption("菜单设置", settingsmenu);
-			 Menu::MenuOption("关于菜单", Credits);
 			 Menu::Bool("颜色渐变", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
 			 
 
@@ -8395,11 +8393,14 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 
 			 Menu::Title("其它设置");
 			 Menu::Subtitle("MISC OPTIONS");
+			 Menu::MenuOption("菜单位置", settingsmenu);
+			 Menu::MenuOption("关于菜单", Credits);
+			 if (Menu::Option("关闭 GTA V")) exit(0);
 			 Menu::Bool("显示器 FPS", Features::DisplayFPS, [] { Features::featureDisplayFPS(Features::DisplayFPS); });
-			 Menu::Bool("杀死街机角色", Features::killpedsbool);
-			 Menu::Bool("引爆街机角色", Features::explodepedsbool);
-			 Menu::Bool("引爆街机载具", Features::explodenearbyvehiclesbool);
-			 Menu::Bool("删除街机汽车", Features::deletenearbyvehiclesbool);
+			 Menu::Bool("杀死NPC角色", Features::killpedsbool);
+			 Menu::Bool("引爆NPC角色", Features::explodepedsbool);
+			 Menu::Bool("引爆NPC载具", Features::explodenearbyvehiclesbool);
+			 Menu::Bool("删除NPC汽车", Features::deletenearbyvehiclesbool);
 		 }
 		 break;
 #pragma endregion
@@ -8925,10 +8926,9 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 		 case settingsmenu:
 		 {
 			 
-			 Menu::Title("设置属性");
+			 Menu::Title("菜单位置");
 			 Menu::Subtitle("SETTINGS OPTIONS");
 			 Menu::MenuOption("Master Menu", settingsmenu_theme);
-			 if (Menu::Option("关闭 GTA V")) exit(0);
 			 if (Menu::Option("界面右移 >")) { Menu::Settings::menuX = 0.85f; }
 			 if (Menu::Option("界面左移 <")) { Menu::Settings::menuX = 0.15f; }
 			 

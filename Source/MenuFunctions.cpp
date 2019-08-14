@@ -794,6 +794,7 @@ void Menu::Checks::Keys()
 					Settings::menuLevel == 0 ? MenuLevelHandler::MoveMenu(SubMenus::mainmenu) : Settings::menuLevel == 1 ? MenuLevelHandler::BackMenu() : NULL;
 					if (firstopen) {
 						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(0)), "~r~Master Menu v1.0.0", "text");
+						Features::notifyMap((std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+"~f~£∫ª∂”≠ π”√’∆øÿ’ﬂ(Master)!");
 						PlaySoundFrontend_default2("Hack_Success");
 
 						firstopen = false;
