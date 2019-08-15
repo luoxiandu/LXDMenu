@@ -738,28 +738,28 @@ void Menu::End()
 	int opcount = Settings::optionCount;
 	int currop = Settings::currentOption;
 	if (opcount >= 16) {
-		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.110f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
+		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 		Drawing::Rect(Settings::line, { Settings::menuX, 17 * 0.035f + 0.1235f }, { 0.21f, 0.002f });
 		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((16 + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
-		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, 17 * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		//Drawing::Text(Tools::StringToChar("Developed By huangmo"), Settings::titleText3, { Settings::menuX, 17 * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
 	}
 	else if (opcount > 0) {
-		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.110f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
+		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 		Drawing::Rect(Settings::line, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1235f }, { 0.21f, 0.002f });
 		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((Settings::optionCount + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
-		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		//Drawing::Text(Tools::StringToChar("Developed By huangmo"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
 	}
 }
 //貌似无法使用
-/*int IconNotification(char *text, char *text2, char *Subject)
+int IconNotification(char *text, char *text2, char *Subject)
 {
 	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
 	UI::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text);
 	UI::_SET_NOTIFICATION_MESSAGE_CLAN_TAG("CHAR_GANGAPP", "CHAR_GANGAPP", false, 7, text2, Subject, 1.0, "___Menu");
 	return UI::_DRAW_NOTIFICATION(1, 1);
-}*/
+}
 
-//char * text = "Logged in";
+char * text = "Logged in";
 void PlaySoundFrontend_default(char* sound_name)
 {
 	AUDIO::PLAY_SOUND_FRONTEND(-1, sound_name, "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
@@ -792,9 +792,11 @@ void Menu::Checks::Keys()
 			if (GetTickCount() - Settings::keyPressPreviousTick3 > Settings::keyPressDelay3) {
 				if (IsKeyPressed(VK_F4) || CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlScriptRB) && CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlPhoneRight)) {
 					Settings::menuLevel == 0 ? MenuLevelHandler::MoveMenu(SubMenus::mainmenu) : Settings::menuLevel == 1 ? MenuLevelHandler::BackMenu() : NULL;
+					IconNotification(Menu::Tools::StringToChar("~w~尊敬的：" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~欢迎使用掌控者(Master)!"), "~r~Master Menu", " v1.0.0");
+					Features::notifyMap("按键说明：~f~小键盘8246上下左右5确定0返回!");
 					if (firstopen) {
-						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(0)), "~r~Master Menu v1.0.0", "text");
-						Features::notifyMap((std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+"~f~：欢迎使用掌控者(Master)!");
+						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+ "~f~,欢迎使用掌控者(Master)!"), "~r~Master Menu", " v1.0.0");
+						//Features::notifyMap("~f~尊敬的：" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,欢迎使用掌控者(Master)!");
 						PlaySoundFrontend_default2("Hack_Success");
 
 						firstopen = false;

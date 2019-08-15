@@ -7586,7 +7586,7 @@ Player player = PLAYER::PLAYER_ID();
 
 void main() {
 Menu::Files::StyleSaver::LoadStyles();
-Features::notifyMap((std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~：欢迎使用掌控者(Master)!");
+Features::notifyMap("~f~尊敬的："+(std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,欢迎使用掌控者(Master)!");
 Features::notifyMap("~f~快捷键F4打开菜单!");
 	while (true) {
 		Menu::Checks::Keys();
