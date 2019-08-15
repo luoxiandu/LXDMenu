@@ -737,17 +737,24 @@ void Menu::End()
 {
 	int opcount = Settings::optionCount;
 	int currop = Settings::currentOption;
+	float rate = 16.00 / (float)opcount;
 	if (opcount >= 16) {
 		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.110f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 		Drawing::Rect(Settings::line, { Settings::menuX, 17 * 0.035f + 0.1235f }, { 0.21f, 0.002f });
 		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((16 + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
 		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, 17 * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		// Scroll bar
+		Drawing::Rect(Settings::optionRect, { Settings::menuX - 0.11f, 16 * 0.035f / 2.00f + 0.1235f + 0.035f }, { 0.010f, 16 * 0.035f + 0.002f/* margin */ });
+		Drawing::Rect(Settings::scroller, { Settings::menuX - 0.11f, 16 * 0.035f / 2.00f + ((currop > 16?currop - 16:0)* rate - (1 - rate) * 16 / 2.00f) * 0.035f + 0.1235f + 0.035f }, { 0.008f, rate * 16 * 0.035f });
 	}
 	else if (opcount > 0) {
 		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.110f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
-		Drawing::Rect(Settings::line, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1235f }, { 0.21f, 0.002f });
-		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((Settings::optionCount + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
+		Drawing::Rect(Settings::line, { Settings::menuX, (opcount + 1) * 0.035f + 0.1235f }, { 0.21f, 0.002f });
+		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((opcount + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
 		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		// Scroll bar
+		Drawing::Rect(Settings::optionRect, {Settings::menuX - 0.11f, opcount * 0.035f / 2.00f + 0.1235f + 0.035f }, {0.010f, opcount * 0.035f + 0.002f/* margin */ });
+		Drawing::Rect(Settings::scroller, {Settings::menuX - 0.11f, opcount * 0.035f / 2.00f + 0.1235f + 0.035f }, {0.008f, opcount * 0.035f });
 	}
 }
 
@@ -1072,7 +1079,7 @@ void Menu::PlayerInfoTitle(char* text)
 void Menu::PlayerInfoLine(char* text, short line)
 {
 	if (line == 1) {
-		Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.230f, 0.3335f }, { 0.165f, 13 * 0.045f + -0.213f });
+		Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.230f, 0.3335f }, { 0.165f, 20 * 0.045f + -0.303f });
 		//Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.1385f, 0.2520f }, { 0.019f, 0.085f });
 	}
 	Drawing::Text(text, Settings::optionText, { Settings::menuX + 0.230f, (line * 0.030f) + 0.155f }, { 0.35f, 0.35f }, true);

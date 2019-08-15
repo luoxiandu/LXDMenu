@@ -35,7 +35,7 @@
 #define OFFSET_PLAYER_ARMOR						0x14B0			//armour
 #define OFFSET_PLAYER_INFO						0x10B8			//playerInfo struct
 #define OFFSET_PLAYER_INFO_WANTED_CAN_CHANGE	0x71C			//fWantedCanChange
-#define OFFSET_PLAYER_INFO_WANTED				0x798			//wanted level; DWORD
+#define OFFSET_PLAYER_INFO_WANTED				0x818			//wanted level; DWORD
 #define	OFFSET_PLAYER_INFO_RUN_SPD				0xE8			//run speed; def 1; float
 #define OFFSET_PLAYER_INFO_SWIM_SPD				0xE4			//swim speed; def 1; float
 #define OFFSET_PLAYER_INFO_FRAMEFLAGS			0x190			//frame flags; DWORD
