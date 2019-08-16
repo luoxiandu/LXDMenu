@@ -750,7 +750,7 @@ void Menu::End()
 		//Drawing::Text(Tools::StringToChar("Developed By huangmo"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
 	}
 }
-//貌似无法使用
+//信息提示
 int IconNotification(char *text, char *text2, char *Subject)
 {
 	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
@@ -911,16 +911,29 @@ void Menu::Checks::Keys()
 					}
 				}
 
-				//Teleport to waypoint.
+				//传送到导航点
 				if (KeyJustUp(VK_F5))
 				{
-					teleport_to_marker();
+					if (Features::tpKg == true)
+					{
+						teleport_to_marker();
+					}
+					else {
+						Features::notifyMap("~f~你还没有开启F5快捷键传送定点功能!");
+					}
 				}
 
-				//Teleport to Mission Objective
+				//传送到任务点
 				if (KeyJustUp(VK_F7))
 				{
-					//teleport_to_objective();
+					if (Features::rwtpKg == true)
+					{
+						teleport_to_objective();
+					}
+					else {
+						Features::notifyMap("~f~你还没有开启F7传送任务点功能!");
+					}
+					
 
 				}
 

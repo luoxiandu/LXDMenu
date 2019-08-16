@@ -44,6 +44,7 @@ void SET_ENTITY_INVINCIBLE(const int& entity, const bool& toggle)
 	static tSET_ENTITY_INVINCIBLE oSET_ENTITY_INVINCIBLE = (tSET_ENTITY_INVINCIBLE)(Memory::pattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 40 8A F2 E8 ? ? ? ? 33 DB").count(1).get(0).get<void>(0));
 	oSET_ENTITY_INVINCIBLE(entity, toggle);
 }
+//删除车辆
 void Features::DeleteVehicle(Ped PED_ID)
 {
 	Ped playerPed = PED_ID;
@@ -57,6 +58,7 @@ void Features::DeleteVehicle(Ped PED_ID)
 		VEHICLE::DELETE_VEHICLE(&Vehicle);
 	}
 }
+//信息框
 void Features::notifyMap(char* fmt, ...)
 {
 	char buf[2048] = { 0 };
@@ -181,7 +183,7 @@ void Features::UpdateLoop()
 
 	moneydropp ? dildomoneylocal(true) : NULL;
 
-	//stealth50k ? Stealth(true) : NULL;
+	stealth50k ? Stealth(true) : NULL;
 
 	//stealth10m ? Stealth(true) : NULL;
 
@@ -349,7 +351,33 @@ void Features::UpdateLoop()
 	flybool ? playerflyer(true) : NULL;
 
 } 
+//快捷键F5传送
+bool Features::tpKg = true;
+void Features::tpkg(bool toggle)
+{
+	if (Features::tpKg == true)
+	{
+		Features::tpKg = true;
+	}
+	else
+	{
+		Features::tpKg = false;
+	}
+}
+//快捷键F7传送
+bool Features::rwtpKg = true;
+void Features::rwtpkg(bool toggle)
+{
 
+	if (Features::rwtpKg == true)
+	{
+		Features::rwtpKg = true;
+	}
+	else
+	{
+		Features::rwtpKg = false;
+	}
+}
  bool Features::controler = false;
  bool Features::infammo = false;
 bool Features::freezed[35] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -1453,6 +1481,9 @@ void Features::OSKR(bool toggle)
 		Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_WEAPON_MANAGER, OFFSET_WEAPON_CURRENT, OFFSET_WEAPON_BULLET_DMG }, 10000.0f);
 	}
 }
+//传送到标点
+
+
 void ApplyForceToEntity(Entity e, float x, float y, float z)
 {
 	if (e != PLAYER::PLAYER_PED_ID() && NETWORK::NETWORK_HAS_CONTROL_OF_ENTITY(e) == FALSE)
@@ -2202,22 +2233,22 @@ void Features::teleporttocoords(Player player, Vector3 target)
 }
 
 
-
-void Features::Stealth(bool toggle) {
-	//static int delay;
-	//if (GAMEPLAY::GET_GAME_TIMER() > delay) {
-		//delay = GAMEPLAY::GET_GAME_TIMER() + 200;
-		//if (!STREAMING::HAS_MODEL_LOADED(0xEE5EBC97)) {
-			//STREAMING::REQUEST_MODEL(0xEE5EBC97);
-		//}
-		//else {
-			//Vector3 MyCurrentCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
-			//int pickup = OBJECT::CREATE_AMBIENT_PICKUP(0xCE6FDD6B, MyCurrentCoords.x, MyCurrentCoords.y, MyCurrentCoords.z, 1, 1, 0xEE5EBC97, 1, 1);
-			//ENTITY::SET_ENTITY_VISIBLE(pickup, false);
-			//STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(0xEE5EBC97);
-		//}
-	//}
-}
+//貌似刷钱
+/*void Features::Stealth(bool toggle) {
+	static int delay;
+	if (GAMEPLAY::GET_GAME_TIMER() > delay) {
+		delay = GAMEPLAY::GET_GAME_TIMER() + 200;
+		if (!STREAMING::HAS_MODEL_LOADED(0xEE5EBC97)) {
+			STREAMING::REQUEST_MODEL(0xEE5EBC97);
+		}
+		else {
+			Vector3 MyCurrentCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
+			int pickup = OBJECT::CREATE_AMBIENT_PICKUP(0xCE6FDD6B, MyCurrentCoords.x, MyCurrentCoords.y, MyCurrentCoords.z, 1, 1, 0xEE5EBC97, 1, 1);
+			ENTITY::SET_ENTITY_VISIBLE(pickup, false);
+			STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(0xEE5EBC97);
+		}
+	}
+}*/
 //Acceleration Multiplier vehicle SetMultipliers
 float Features::accelerationmultiplier = 0;
 float Features::brakesmultiplier = 0;

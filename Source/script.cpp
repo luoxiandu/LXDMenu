@@ -7605,7 +7605,7 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 Menu::MenuOption("世界选项", worldoptions);
 			 Menu::MenuOption("视觉冲击", versionsoptions);
 			 Menu::MenuOption("模型选项", modelObjects);
-			 Menu::MenuOption("成就解锁", recover);
+			 Menu::MenuOption("等级成就", recover);
 			 Menu::MenuOption("金钱供给", moneystealth);
 			 Menu::MenuOption("其它设置", miscoptions);
 			 Menu::Bool("颜色渐变", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
@@ -7643,7 +7643,7 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 //Menu::Bool("600k", Features::stealth600k, [] { Features::Stealth(Features::stealth600k); });
 			 //Menu::Bool("250k", Features::stealth250k, [] { Features::Stealth(Features::stealth250k); });
 			 //Menu::Bool("120k", Features::stealth120k, [] { Features::Stealth(Features::stealth120k); });
-			 //Menu::Bool("50k", Features::stealth50k, [] { Features::Stealth(Features::stealth50k); });
+			 // Menu::Bool("50k", Features::stealth50k, [] { Features::Stealth(Features::stealth50k); });
 			 Menu::Break("~g~---金钱掉落---");
 			 Menu::Bool("金钱雨", Features::moneyrain2k, [] { Features::RainMoney(Features::moneyrain2k); });
 			 Menu::Bool("掉落$2500", Features::moneydropp, [] { Features::dildomoneylocal(Features::moneydropp); });
@@ -8263,6 +8263,10 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 //Menu::DRAW_TEXTURE("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("传送选项");
 			 Menu::Subtitle("LOCATIONS");
+			 //快捷键传送
+			 Menu::Break("---快捷传送---");
+			 Menu::Bool("快捷键F5传送到导航点", Features::tpKg, [] { Features::tpkg(Features::tpKg); });
+			 Menu::Bool("快捷键F7传送到任务点",Features::rwtpKg, [] { Features::rwtpkg(Features::rwtpKg); });
 			 Menu::Option("传送到导航点", teleport_to_markerr);
 			 Menu::MenuOption("创意地图", teleportmapmodder);
 			 Menu::MenuOption("需要加载的地图", ipl);
@@ -8527,13 +8531,13 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 Menu::MenuOption("服装选项", OutfitOptions);
 			 Menu::MenuOption("动作选项", anim);
 			 Menu::MenuOption("自身效果", PTFX);
+			 if (Menu::Int("玩家透明度", shuzhi, 0, 255)) { ENTITY::SET_ENTITY_ALPHA(PLAYER::PLAYER_PED_ID(), shuzhi, 0); } //自慰
 			 Menu::Bool("自我无敌", Features::playerGodMode, [] { Features::GodMode(Features::playerGodMode); });
 			 Menu::Bool("不被通缉", Features::neverwanted, [] { Features::NeverGetWanted(Features::neverwanted); });
 			 Menu::Bool("脱离雷达", Features::orbool, [] { Features::OffRadar(Features::orbool); });
 			 Menu::Bool("禁用电话", Features::phonedisable, [] { Features::disablephone(); });
 			 //Menu::Bool("自我隐身", Features::playerinvisibility, [] { Features::Invisibility(Features::playerinvisibility); });
 			 //Menu::Bool("无视存在", Features::playernoragdoll, [] { Features::NoRagdoll(Features::playernoragdoll); });
-			 if(Menu::Int("玩家透明度", shuzhi, 0, 255)) { ENTITY::SET_ENTITY_ALPHA(PLAYER::PLAYER_PED_ID(), shuzhi, 0); } //自慰
 			 Menu::Bool("超级跳跃", Features::playersuperjump, [] { Features::SuperJump(Features::playersuperjump); });
 			 Menu::Bool("快速奔跑", Features::fastrun, [] { Features::RunFast(Features::fastrun); });
 			 Menu::Bool("加速游泳", Features::fastswim, [] { Features::SwimFast(Features::fastswim); });
@@ -8786,6 +8790,7 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 				 AI::CLEAR_PED_TASKS(playerPed);
 				 AI::CLEAR_PED_SECONDARY_TASK(playerPed);
 			 }
+			 if (Menu::Option("删除他正在驾驶的车")) { Features::DeleteVehicle(Features::Online::selectedPlayer); }
 			 if (Menu::Option("克隆一个他"))
 			 {
 				 PED::CLONE_PED(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 1, 1, 1);
@@ -8822,7 +8827,6 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 
 			 Menu::Title("强化功能");
 			 Menu::Subtitle("RECOVERY OPTIONS");
-			 Menu::MenuOption("金钱交易", moneystealth);
 			 Menu::MenuOption("性能解锁", RecoveryStats);
 			 if (Menu::Option("清除不良统计")) {
 				 STATS::STAT_SET_FLOAT(GAMEPLAY::GET_HASH_KEY("MPPLY_OVERALL_BADSPORT"), 0.0f, TRUE);

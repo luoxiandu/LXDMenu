@@ -18,7 +18,10 @@ namespace Features {
 	void Freezer(Player target);
 	extern bool RainbowMenu;
 	void rainbowmenu(bool toggle);
-	
+	extern bool tpKg;
+	void tpkg(bool toggle);
+	extern bool rwtpKg;
+	void rwtpkg(bool toggle);
 	extern bool freezed[35];
 	
 	extern bool expmeel;
