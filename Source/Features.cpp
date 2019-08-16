@@ -44,7 +44,38 @@ void SET_ENTITY_INVINCIBLE(const int& entity, const bool& toggle)
 	static tSET_ENTITY_INVINCIBLE oSET_ENTITY_INVINCIBLE = (tSET_ENTITY_INVINCIBLE)(Memory::pattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 40 8A F2 E8 ? ? ? ? 33 DB").count(1).get(0).get<void>(0));
 	oSET_ENTITY_INVINCIBLE(entity, toggle);
 }
+//删除车辆
+void Features::DeleteVehicle(Ped PED_ID)
+{
+	Ped playerPed = PED_ID;
+	if (PED::IS_PED_IN_ANY_VEHICLE(playerPed, false))
+	{
+		int Vehicle = PED::GET_VEHICLE_PED_IS_USING(playerPed);
+		if (!NETWORK::NETWORK_REQUEST_CONTROL_OF_ENTITY(Vehicle))
+			while (!NETWORK::NETWORK_REQUEST_CONTROL_OF_ENTITY(Vehicle));
 
+		ENTITY::SET_ENTITY_AS_MISSION_ENTITY(Vehicle, 1, 1);
+		VEHICLE::DELETE_VEHICLE(&Vehicle);
+	}
+}
+//信息框
+void Features::notifyMap(char* fmt, ...)
+{
+	char buf[2048] = { 0 };
+	va_list va_alist;
+
+	va_start(va_alist, fmt);
+	vsprintf_s(buf, fmt, va_alist);
+	va_end(va_alist);
+
+	char buff2[2048] = { 0 };
+	sprintf_s(buff2, "%s", buf);
+
+	UI::SET_TEXT_OUTLINE();
+	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
+	UI::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(buff2);
+	UI::_DRAW_NOTIFICATION(FALSE, FALSE);
+}	void Features::notifyMap(std::string str) { Features::notifyMap(&str[0]); }
 void Features::UpdateLoop()
 {
 	playerGodMode ? GodMode(true) : NULL;
@@ -156,15 +187,15 @@ void Features::UpdateLoop()
 
 	//stealth10m ? Stealth(true) : NULL;
 
-//	stealth15m ? Stealth(true) : NULL;
+	//stealth15m ? Stealth(true) : NULL;
 
 	//stealth12m ? Stealth(true) : NULL;
 
-//	stealth600k ? Stealth(true) : NULL;
+	//stealth600k ? Stealth(true) : NULL;
 
 	//stealth120k ? Stealth(true) : NULL;
 
-//	stealth250k ? Stealth(true) : NULL;
+	//stealth250k ? Stealth(true) : NULL;
 
 	//stealth90m ? Stealth(true) : NULL;
 
@@ -320,7 +351,33 @@ void Features::UpdateLoop()
 	flybool ? playerflyer(true) : NULL;
 
 } 
+//快捷键F5传送
+bool Features::tpKg = true;
+void Features::tpkg(bool toggle)
+{
+	if (Features::tpKg == true)
+	{
+		Features::tpKg = true;
+	}
+	else
+	{
+		Features::tpKg = false;
+	}
+}
+//快捷键F7传送
+bool Features::rwtpKg = true;
+void Features::rwtpkg(bool toggle)
+{
 
+	if (Features::rwtpKg == true)
+	{
+		Features::rwtpKg = true;
+	}
+	else
+	{
+		Features::rwtpKg = false;
+	}
+}
  bool Features::controler = false;
  bool Features::infammo = false;
 bool Features::freezed[35] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -332,7 +389,7 @@ void Features::Freezer(Player target) {
 }
 
 
-bool Features::RainbowMenu = false;
+bool Features::RainbowMenu = true;
 void Features::rainbowmenu(bool toggle)
 {
 
@@ -519,7 +576,7 @@ void CREATE_VEHICLE(LPCSTR modelName, float x, float y, float z, float heading, 
 	}
 	else
 	{
-		sprintf_s(statusText, "~r~无效的模型：~o~%s", modelName);
+		sprintf_s(statusText, "~r~无效的模型： ~o~%s", modelName);
 	}
 
 	//set_status_text(statusText);
@@ -537,7 +594,7 @@ void Features::spawn_vehicle(char* toSpawn) {
 		float heading = ENTITY::GET_ENTITY_HEADING(PLAYER::PLAYER_PED_ID());
 		float xVector = forward * sin(degToRad(heading)) * -1.f;
 		float yVector = forward * cos(degToRad(heading));
-		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, true, true);
+		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, false, false);
 		RequestControlOfEnt(veh);
 		VEHICLE::SET_VEHICLE_ENGINE_ON(veh, true, true, true);
 		VEHICLE::SET_VEHICLE_ON_GROUND_PROPERLY(veh);
@@ -767,17 +824,17 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	ostringstream Money, RP, Rank, Kills, Deaths, KD;
 
 
-	std::ostringstream Health; Health << "血量：~s~ " << healthPercent;
+	std::ostringstream Health; Health << "生命值：~s~ " << healthPercent;
 	float armor = PED::GET_PED_ARMOUR(ped);
 	float maxArmor = PLAYER::GET_PLAYER_MAX_ARMOUR(p);
 	float armorPercent = armor * 100 / maxArmor;
-	std::ostringstream Armor; Armor << "无敌：~s~ " << armorPercent;
+	std::ostringstream Armor; Armor << "是否无敌：~s~ " << armorPercent;
 	bool alive = !PED::IS_PED_DEAD_OR_DYING(ped, 1);
 	char* aliveStatus;
 	if (alive) aliveStatus = "Yes"; else aliveStatus = "No";
 	std::ostringstream Alive; Alive << "存活状态：~s~ " << aliveStatus;
 	bool inVehicle = PED::IS_PED_IN_ANY_VEHICLE(ped, 0);
-	std::ostringstream VehicleModel; VehicleModel << "载具：~s~ ";
+	std::ostringstream VehicleModel; VehicleModel << "载具:~s~ ";
 	std::ostringstream Speed; Speed << "速度：~s~ ";
 	std::ostringstream IsInAVehicle; IsInAVehicle << "在载具中：~s~ ";
 	if (inVehicle) {
@@ -801,7 +858,6 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 		Kills << "~w~击杀数：~s~ ";
 		Deaths << "~w~死亡数：~s~ ";
 		KD << "~w~击杀/死亡比(KD比)：~s~ ";
-
 	}
 	else {
 		RP << "经验值(RP)：~s~ " << rp;
@@ -811,7 +867,7 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 
 	}
 
-	std::ostringstream Weapon; Weapon << "武器：~s~";
+	std::ostringstream Weapon; Weapon << "武器： ~s~";
 
 
 	Hash weaponHash;
@@ -821,7 +877,7 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 			weaponName = "徒手";
 		}
 		else if (weaponHash == 2578778090) {
-			weaponName = "Knife";
+			weaponName = "未检测到";
 		}
 		else if (weaponHash == 0x678B81B1) {
 			weaponName = "Nightstick";
@@ -1007,7 +1063,7 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 			weaponName = "Railgun";
 		}
 		else {
-			weaponName = "未检测到";
+			weaponName = "Unarmed";
 		}
 		Weapon << weaponName;
 	}
@@ -1017,7 +1073,7 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	std::ostringstream Zone; Zone << "所处行政区：~s~" << UI::_GET_LABEL_TEXT(ZONE::GET_NAME_OF_ZONE(coords.x, coords.y, coords.z));
 	Hash streetName, crossingRoad;
 	PATHFIND::GET_STREET_NAME_AT_COORD(coords.x, coords.y, coords.z, &streetName, &crossingRoad);
-	std::ostringstream Street; Street << "所处街道：~s~" << UI::GET_STREET_NAME_FROM_HASH_KEY(streetName);
+	std::ostringstream Street; Street << "所处街道： ~s~" << UI::GET_STREET_NAME_FROM_HASH_KEY(streetName);
 	float distance = Get3DDistance(coords, myCoords);
 	std::ostringstream Distance; Distance << "相距距离: ~s~";
 
@@ -1425,6 +1481,9 @@ void Features::OSKR(bool toggle)
 		Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_WEAPON_MANAGER, OFFSET_WEAPON_CURRENT, OFFSET_WEAPON_BULLET_DMG }, 10000.0f);
 	}
 }
+//传送到标点
+
+
 void ApplyForceToEntity(Entity e, float x, float y, float z)
 {
 	if (e != PLAYER::PLAYER_PED_ID() && NETWORK::NETWORK_HAS_CONTROL_OF_ENTITY(e) == FALSE)
@@ -1467,18 +1526,57 @@ void Features::Superman(bool toggle)
 
 
 
-
-
-bool Features::playerGodMode = false;
+//原写法
+/*bool Features::playerGodMode = false;
 void Features::GodMode(bool toggle) {
+	static int armour_player = 0;
+	Player player = PLAYER::PLAYER_ID();
+	Ped playerPed = PLAYER::PLAYER_PED_ID();
 	if (playerGodMode == true)
 	{
+		if (armour_player == 0)
+		{
+			armour_player = PED::GET_PED_ARMOUR(playerPed);
+		}
+
 		ENTITY::SET_ENTITY_INVINCIBLE(PLAYER::PLAYER_PED_ID(), true);
+
 		//Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_PLAYER_INFO, OFFSET_ENTITY_GOD }, 1);
 	}
 	else {
 		ENTITY::SET_ENTITY_INVINCIBLE(PLAYER::PLAYER_PED_ID(), false);
 		//Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_PLAYER_INFO, OFFSET_ENTITY_GOD }, 0);
+	}
+}*/
+bool Features::playerGodMode = false;
+void Features::GodMode(bool toggle) {
+	static int armour_player = 0;
+	Player player = PLAYER::PLAYER_ID();
+	Ped playerPed = PLAYER::PLAYER_PED_ID();
+	if (armour_player == 0)
+	{
+		armour_player = PED::GET_PED_ARMOUR(playerPed);
+	}
+
+	if (toggle)
+	{
+		PLAYER::SET_PLAYER_INVINCIBLE(player, true);
+		ENTITY::SET_ENTITY_PROOFS(playerPed, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
+		PED::SET_PED_CAN_RAGDOLL(playerPed, FALSE);
+		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(playerPed, FALSE);
+		PED::ADD_ARMOUR_TO_PED(playerPed, PLAYER::GET_PLAYER_MAX_ARMOUR(player) - PED::GET_PED_ARMOUR(playerPed));
+	}
+	else
+	{
+		PLAYER::SET_PLAYER_INVINCIBLE(player, false);
+		ENTITY::SET_ENTITY_PROOFS(playerPed, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE);
+		PED::SET_PED_CAN_RAGDOLL(playerPed, TRUE);
+		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(playerPed, TRUE);
+		if (armour_player != 0)
+		{
+			PED::SET_PED_ARMOUR(playerPed, armour_player);
+			armour_player = 0;
+		}
 	}
 }
 bool Features::playertenkped = false;
@@ -2135,22 +2233,22 @@ void Features::teleporttocoords(Player player, Vector3 target)
 }
 
 
-
-void Features::Stealth(bool toggle) {
-	//static int delay;
-	//if (GAMEPLAY::GET_GAME_TIMER() > delay) {
-		//delay = GAMEPLAY::GET_GAME_TIMER() + 200;
-		//if (!STREAMING::HAS_MODEL_LOADED(0xEE5EBC97)) {
-			//STREAMING::REQUEST_MODEL(0xEE5EBC97);
-		//}
-		//else {
-			//Vector3 MyCurrentCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
-			//int pickup = OBJECT::CREATE_AMBIENT_PICKUP(0xCE6FDD6B, MyCurrentCoords.x, MyCurrentCoords.y, MyCurrentCoords.z, 1, 1, 0xEE5EBC97, 1, 1);
-			//ENTITY::SET_ENTITY_VISIBLE(pickup, false);
-			//STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(0xEE5EBC97);
-		//}
-	//}
-}
+//貌似刷钱
+/*void Features::Stealth(bool toggle) {
+	static int delay;
+	if (GAMEPLAY::GET_GAME_TIMER() > delay) {
+		delay = GAMEPLAY::GET_GAME_TIMER() + 200;
+		if (!STREAMING::HAS_MODEL_LOADED(0xEE5EBC97)) {
+			STREAMING::REQUEST_MODEL(0xEE5EBC97);
+		}
+		else {
+			Vector3 MyCurrentCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
+			int pickup = OBJECT::CREATE_AMBIENT_PICKUP(0xCE6FDD6B, MyCurrentCoords.x, MyCurrentCoords.y, MyCurrentCoords.z, 1, 1, 0xEE5EBC97, 1, 1);
+			ENTITY::SET_ENTITY_VISIBLE(pickup, false);
+			STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(0xEE5EBC97);
+		}
+	}
+}*/
 //Acceleration Multiplier vehicle SetMultipliers
 float Features::accelerationmultiplier = 0;
 float Features::brakesmultiplier = 0;

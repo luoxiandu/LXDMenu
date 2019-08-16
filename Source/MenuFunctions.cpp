@@ -739,7 +739,7 @@ void Menu::End()
 	int currop = Settings::currentOption;
 	float rate = 16.00 / (float)opcount;
 	if (opcount >= 16) {
-		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.110f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
+		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 		Drawing::Rect(Settings::line, { Settings::menuX, 17 * 0.035f + 0.1235f }, { 0.21f, 0.002f });
 		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((16 + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
 		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, 17 * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
@@ -748,7 +748,7 @@ void Menu::End()
 		Drawing::Rect(Settings::scroller, { Settings::menuX - 0.11f, 16 * 0.035f / 2.00f + ((currop > 16?currop - 16:0)* rate - (1 - rate) * 16 / 2.00f) * 0.035f + 0.1235f + 0.035f }, { 0.008f, rate * 16 * 0.035f });
 	}
 	else if (opcount > 0) {
-		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.110f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
+		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 		Drawing::Rect(Settings::line, { Settings::menuX, (opcount + 1) * 0.035f + 0.1235f }, { 0.21f, 0.002f });
 		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((opcount + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
 		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
@@ -757,15 +757,16 @@ void Menu::End()
 		Drawing::Rect(Settings::scroller, {Settings::menuX - 0.11f, opcount * 0.035f / 2.00f + 0.1235f + 0.035f }, {0.008f, opcount * 0.035f });
 	}
 }
-
+//��Ϣ��ʾ
 int IconNotification(char *text, char *text2, char *Subject)
 {
 	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
 	UI::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text);
-	//UI::_SET_NOTIFICATION_MESSAGE_CLAN_TAG("CHAR_GANGAPP", "CHAR_GANGAPP", false, 7, text2, Subject, 1.0, "___Menu");
+	UI::_SET_NOTIFICATION_MESSAGE_CLAN_TAG("CHAR_GANGAPP", "CHAR_GANGAPP", false, 7, text2, Subject, 1.0, "___Menu");
 	return UI::_DRAW_NOTIFICATION(1, 1);
 }
-//char * text = "Logged in";
+
+char * text = "Logged in";
 void PlaySoundFrontend_default(char* sound_name)
 {
 	AUDIO::PLAY_SOUND_FRONTEND(-1, sound_name, "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
@@ -798,8 +799,11 @@ void Menu::Checks::Keys()
 			if (GetTickCount() - Settings::keyPressPreviousTick3 > Settings::keyPressDelay3) {
 				if (IsKeyPressed(VK_F4) || CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlScriptRB) && CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlPhoneRight)) {
 					Settings::menuLevel == 0 ? MenuLevelHandler::MoveMenu(SubMenus::mainmenu) : Settings::menuLevel == 1 ? MenuLevelHandler::BackMenu() : NULL;
+					IconNotification(Menu::Tools::StringToChar("~w~�𾴵ģ�" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~��ӭʹ���ƿ���(Master)!"), "~r~Master Menu", " v1.0.0");
+					Features::notifyMap("����˵��~f~С����8246��������5ȷ��0����!");
 					if (firstopen) {
-						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(0)), "~r~Diamond Menu v4.0.1", text);
+						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+ "~f~,��ӭʹ���ƿ���(Master)!"), "~r~Master Menu", " v1.0.0");
+						//Features::notifyMap("~f~�𾴵ģ�" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,��ӭʹ���ƿ���(Master)!");
 						PlaySoundFrontend_default2("Hack_Success");
 
 						firstopen = false;
@@ -914,16 +918,29 @@ void Menu::Checks::Keys()
 					}
 				}
 
-				//Teleport to waypoint.
+				//���͵�������
 				if (KeyJustUp(VK_F5))
 				{
-					teleport_to_marker();
+					if (Features::tpKg == true)
+					{
+						teleport_to_marker();
+					}
+					else {
+						Features::notifyMap("~f~�㻹û�п���F5��ݼ��Ͷ��㹦��!");
+					}
 				}
 
-				//Teleport to Mission Objective
+				//���͵������
 				if (KeyJustUp(VK_F7))
 				{
-					//teleport_to_objective();
+					if (Features::rwtpKg == true)
+					{
+						teleport_to_objective();
+					}
+					else {
+						Features::notifyMap("~f~�㻹û�п���F7��������㹦��!");
+					}
+					
 
 				}
 

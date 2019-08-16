@@ -295,7 +295,7 @@ void teleport_to_marker()
 
 	if (coords.x == 0 && coords.y == 0)
 	{
-		//notifyMap("No Waypoint has been set!", 0);
+		Features::notifyMap("~f~你还没有设置导航点!");
 		return;
 	}
 
