@@ -183,7 +183,7 @@ void Features::UpdateLoop()
 
 	moneydropp ? dildomoneylocal(true) : NULL;
 
-	stealth50k ? Stealth(true) : NULL;
+	//stealth50k ? Stealth(true) : NULL;
 
 	//stealth10m ? Stealth(true) : NULL;
 
