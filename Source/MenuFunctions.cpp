@@ -737,20 +737,27 @@ void Menu::End()
 {
 	int opcount = Settings::optionCount;
 	int currop = Settings::currentOption;
+	float rate = 16.00 / (float)opcount;
 	if (opcount >= 16) {
 		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 		Drawing::Rect(Settings::line, { Settings::menuX, 17 * 0.035f + 0.1235f }, { 0.21f, 0.002f });
 		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((16 + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
-		//Drawing::Text(Tools::StringToChar("Developed By huangmo"), Settings::titleText3, { Settings::menuX, 17 * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, 17 * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		// Scroll bar
+		Drawing::Rect(Settings::optionRect, { Settings::menuX - 0.11f, 16 * 0.035f / 2.00f + 0.1235f + 0.035f }, { 0.010f, 16 * 0.035f + 0.002f/* margin */ });
+		Drawing::Rect(Settings::scroller, { Settings::menuX - 0.11f, 16 * 0.035f / 2.00f + ((currop > 16?currop - 16:0)* rate - (1 - rate) * 16 / 2.00f) * 0.035f + 0.1235f + 0.035f }, { 0.008f, rate * 16 * 0.035f });
 	}
 	else if (opcount > 0) {
 		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, 17 * 0.035f - 0.467f }, { 0.35f, 0.35f }, true);		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
-		Drawing::Rect(Settings::line, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1235f }, { 0.21f, 0.002f });
-		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((Settings::optionCount + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
-		//Drawing::Text(Tools::StringToChar("Developed By huangmo"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		Drawing::Rect(Settings::line, { Settings::menuX, (opcount + 1) * 0.035f + 0.1235f }, { 0.21f, 0.002f });
+		Drawing::Spriter("commonmenu", "shop_arrows_upanddown", Settings::menuX, ((opcount + 1) * 0.035f + 0.140f), 0.020f, 0.035f, 180, Settings::line.r, Settings::line.g, Settings::line.b, Settings::line.a);
+		//Drawing::Text(Tools::StringToChar("Developed By xHARDHeMPuS"), Settings::titleText3, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.125f }, { 0.5f, 0.5f }, true);
+		// Scroll bar
+		Drawing::Rect(Settings::optionRect, {Settings::menuX - 0.11f, opcount * 0.035f / 2.00f + 0.1235f + 0.035f }, {0.010f, opcount * 0.035f + 0.002f/* margin */ });
+		Drawing::Rect(Settings::scroller, {Settings::menuX - 0.11f, opcount * 0.035f / 2.00f + 0.1235f + 0.035f }, {0.008f, opcount * 0.035f });
 	}
 }
-//ĞÅÏ¢ÌáÊ¾
+//ä¿¡æ¯æç¤º
 int IconNotification(char *text, char *text2, char *Subject)
 {
 	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
@@ -792,11 +799,11 @@ void Menu::Checks::Keys()
 			if (GetTickCount() - Settings::keyPressPreviousTick3 > Settings::keyPressDelay3) {
 				if (IsKeyPressed(VK_F4) || CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlScriptRB) && CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlPhoneRight)) {
 					Settings::menuLevel == 0 ? MenuLevelHandler::MoveMenu(SubMenus::mainmenu) : Settings::menuLevel == 1 ? MenuLevelHandler::BackMenu() : NULL;
-					IconNotification(Menu::Tools::StringToChar("~w~×ğ¾´µÄ£º" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~»¶Ó­Ê¹ÓÃÕÆ¿ØÕß(Master)!"), "~r~Master Menu", " v1.0.0");
-					Features::notifyMap("°´¼üËµÃ÷£º~f~Ğ¡¼üÅÌ8246ÉÏÏÂ×óÓÒ5È·¶¨0·µ»Ø!");
+					IconNotification(Menu::Tools::StringToChar("~w~å°Šæ•¬çš„ï¼š" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~æ¬¢è¿ä½¿ç”¨æŒæ§è€…(Master)!"), "~r~Master Menu", " v1.0.0");
+					Features::notifyMap("æŒ‰é”®è¯´æ˜ï¼š~f~å°é”®ç›˜8246ä¸Šä¸‹å·¦å³5ç¡®å®š0è¿”å›!");
 					if (firstopen) {
-						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+ "~f~,»¶Ó­Ê¹ÓÃÕÆ¿ØÕß(Master)!"), "~r~Master Menu", " v1.0.0");
-						//Features::notifyMap("~f~×ğ¾´µÄ£º" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,»¶Ó­Ê¹ÓÃÕÆ¿ØÕß(Master)!");
+						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+ "~f~,æ¬¢è¿ä½¿ç”¨æŒæ§è€…(Master)!"), "~r~Master Menu", " v1.0.0");
+						//Features::notifyMap("~f~å°Šæ•¬çš„ï¼š" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,æ¬¢è¿ä½¿ç”¨æŒæ§è€…(Master)!");
 						PlaySoundFrontend_default2("Hack_Success");
 
 						firstopen = false;
@@ -911,7 +918,7 @@ void Menu::Checks::Keys()
 					}
 				}
 
-				//´«ËÍµ½µ¼º½µã
+				//ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				if (KeyJustUp(VK_F5))
 				{
 					if (Features::tpKg == true)
@@ -919,11 +926,11 @@ void Menu::Checks::Keys()
 						teleport_to_marker();
 					}
 					else {
-						Features::notifyMap("~f~Äã»¹Ã»ÓĞ¿ªÆôF5¿ì½İ¼ü´«ËÍ¶¨µã¹¦ÄÜ!");
+						Features::notifyMap("~f~ä½ è¿˜æ²¡æœ‰å¼€å¯F5å¿«æ·é”®ä¼ é€å®šç‚¹åŠŸèƒ½!");
 					}
 				}
 
-				//´«ËÍµ½ÈÎÎñµã
+				//ä¼ é€åˆ°ä»»åŠ¡ç‚¹
 				if (KeyJustUp(VK_F7))
 				{
 					if (Features::rwtpKg == true)
@@ -931,7 +938,7 @@ void Menu::Checks::Keys()
 						teleport_to_objective();
 					}
 					else {
-						Features::notifyMap("~f~Äã»¹Ã»ÓĞ¿ªÆôF7´«ËÍÈÎÎñµã¹¦ÄÜ!");
+						Features::notifyMap("~f~ä½ è¿˜æ²¡æœ‰å¼€å¯F7ä¼ é€ä»»åŠ¡ç‚¹åŠŸèƒ½!");
 					}
 					
 
@@ -1089,7 +1096,7 @@ void Menu::PlayerInfoTitle(char* text)
 void Menu::PlayerInfoLine(char* text, short line)
 {
 	if (line == 1) {
-		Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.230f, 0.3335f }, { 0.165f, 13 * 0.045f + -0.213f });
+		Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.230f, 0.3335f }, { 0.165f, 20 * 0.045f + -0.303f });
 		//Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.1385f, 0.2520f }, { 0.019f, 0.085f });
 	}
 	Drawing::Text(text, Settings::optionText, { Settings::menuX + 0.230f, (line * 0.030f) + 0.155f }, { 0.35f, 0.35f }, true);
