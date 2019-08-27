@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+
 #define PROP_MONEY_BAG_01 0x113FD533
 //#define PICKUP_MONEY_CASE 0x1E9A99F8
 
@@ -586,22 +587,22 @@ void Features::spawn_vehicle(char* toSpawn) {
 	Hash model = GAMEPLAY::GET_HASH_KEY(toSpawn);
 	if (STREAMING::IS_MODEL_VALID(model))
 	{
-
 		STREAMING::REQUEST_MODEL(model);
 		while (!STREAMING::HAS_MODEL_LOADED(model)) WAIT(0);
-		Vector3 ourCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), false);
+		Vector3 ourCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), true);
 		float forward = 5.f;
 		float heading = ENTITY::GET_ENTITY_HEADING(PLAYER::PLAYER_PED_ID());
 		float xVector = forward * sin(degToRad(heading)) * -1.f;
 		float yVector = forward * cos(degToRad(heading));
-		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, false, false);
+		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, true, true);
 		RequestControlOfEnt(veh);
 		VEHICLE::SET_VEHICLE_ENGINE_ON(veh, true, true, true);
 		VEHICLE::SET_VEHICLE_ON_GROUND_PROPERLY(veh);
 		DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
 		auto networkId = NETWORK::VEH_TO_NET(veh);
-		ENTITY::_SET_ENTITY_REGISTER(veh, true);
-		BypassOnlineVehicleKick();
+		ENTITY::_SET_ENTITY_SOMETHING(veh, true);
+		/*ENTITY::_SET_ENTITY_REGISTER(veh, true);
+		BypassOnlineVehicleKick();*/
 		if (NETWORK::NETWORK_GET_ENTITY_IS_NETWORKED(veh))
 			NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true);
 		if (Features::spawnincar)
@@ -622,6 +623,9 @@ void Features::spawn_vehicle(char* toSpawn) {
 				
 			}
 		}
+		WAIT(150);
+		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
+		ENTITY::SET_VEHICLE_AS_NO_LONGER_NEEDED(&veh);
 	}
 }
 
@@ -821,7 +825,7 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	int kills = globalHandle(1589819).At(p, 818).At(211).At(28).As<int>();
 	int deaths = globalHandle(1589819).At(p, 818).At(211).At(29).As<int>();
 	float kd = globalHandle(1589819).At(p, 818).At(211).At(26).As<float>();
-	ostringstream Money, RP, Rank, Kills, Deaths, KD;
+	std::ostringstream Money, RP, Rank, Kills, Deaths, KD;
 
 
 	std::ostringstream Health; Health << "ÉúÃüÖµ£º~s~ " << healthPercent;

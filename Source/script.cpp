@@ -6,6 +6,8 @@
 #include <fstream>
 #include <conio.h>
 
+extern class Auth;
+
 Vehicle veh;
 Object latestObj;
 
@@ -7585,6 +7587,7 @@ bool dropCash = false;
 Player player = PLAYER::PLAYER_ID();
 
 void main() {
+	Auth a;
 Menu::Files::StyleSaver::LoadStyles();
 Features::notifyMap("~f~尊敬的："+(std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,欢迎使用掌控者(Master)!");
 Features::notifyMap("~f~快捷键F4打开菜单!");
@@ -7594,10 +7597,9 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 		switch (Menu::Settings::currentMenu) {
 		case mainmenu:
 		{
-			 
 			 Menu::Title("Master Menu");
 			 Menu::Subtitle("~y~VERSION:1.48");
-			 Menu::MenuOption("线上选项", onlineoptions);
+			 Menu::MenuOption("线上选项" , onlineoptions);
 			 Menu::MenuOption("自我选项", playermenu);
 			 Menu::MenuOption("武器选项", weapon);
 			 Menu::MenuOption("载具选项", vehspawner);
