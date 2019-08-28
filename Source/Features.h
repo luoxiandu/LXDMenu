@@ -255,7 +255,8 @@ namespace Features {
 	
 	void WEATHERtacks();
 	void WANTEDLEVEL();
-
+	extern bool fmx;
+	void FMX();
 	void WANTEDLEVELL();
 	
 	extern bool WANTED;
@@ -289,14 +290,16 @@ namespace Features {
 	extern bool TAUNT;
 	
 	extern bool NETWORK;
-	
+	extern bool budaowen;
+	void budaowen1(bool toggle);
 	extern bool NETWORKCRC;
 	void REQUESTEVENT();
 	void PLAYERTAUNT();
 	void INCREMENT();
 	void NETWORK_CRC();
-	void LoadObjects(int Hash, float x, float y, float z, float Pitch, float Roll, float Yaw);
-	
+	/*void LoadObjects(int Hash, float x, float y, float z, float Pitch, float Roll, float Yaw);*/
+	void PlaceObjectByHash(Hash hash, float x, float y, float z, float pitch, float roll, float yaw, float heading, int id);
+
 	extern bool dropmoney;
 	void TeleportMazeBank();
 	void MazeBankobjs(int);
@@ -395,7 +398,8 @@ namespace Features {
 		void SetMultipliers();
 		extern bool PTLoopedO[35];
 		void PTLopperO(Player target);
-
+		extern bool bikeNoFall;
+		void nofallbike();
 		extern bool PTLooped;
 		
 		void StealthRP(Player player);

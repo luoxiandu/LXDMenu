@@ -51,11 +51,10 @@
 #include "MenuFunctions.h"
 #include "SubMenus.h"
 #include "Features.h"
-#include "Auth/Networking/sha512.hh"
-#include "Auth/Networking/Web2.0.h"
 #include "Auth.h"
 #include <locale>
 #include <codecvt>
+#include <sstream>
 #include <stdio.h>
 
 class globalHandle

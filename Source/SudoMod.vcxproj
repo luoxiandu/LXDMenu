@@ -89,6 +89,7 @@
       <AdditionalLibraryDirectories>$(ProjectDir)MinHook\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libMinHook-x64-v140-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateMapFile>false</GenerateMapFile>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -96,13 +97,43 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Auth.h" />
-    <ClInclude Include="Auth\Networking\atlrx.h" />
-    <ClInclude Include="Auth\Networking\RegExp.h" />
-    <ClInclude Include="Auth\Networking\sha1.hh" />
-    <ClInclude Include="Auth\Networking\sha512.hh" />
-    <ClInclude Include="Auth\Networking\StringProcess.h" />
-    <ClInclude Include="Auth\Networking\Web2.0.h" />
-    <ClInclude Include="Auth\Networking\WinHttpClient.h" />
+    <ClInclude Include="Auth\rapidjson\allocators.h" />
+    <ClInclude Include="Auth\rapidjson\document.h" />
+    <ClInclude Include="Auth\rapidjson\encodedstream.h" />
+    <ClInclude Include="Auth\rapidjson\encodings.h" />
+    <ClInclude Include="Auth\rapidjson\error\en.h" />
+    <ClInclude Include="Auth\rapidjson\error\error.h" />
+    <ClInclude Include="Auth\rapidjson\filereadstream.h" />
+    <ClInclude Include="Auth\rapidjson\filewritestream.h" />
+    <ClInclude Include="Auth\rapidjson\fwd.h" />
+    <ClInclude Include="Auth\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="Auth\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="Auth\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="Auth\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="Auth\rapidjson\internal\itoa.h" />
+    <ClInclude Include="Auth\rapidjson\internal\meta.h" />
+    <ClInclude Include="Auth\rapidjson\internal\pow10.h" />
+    <ClInclude Include="Auth\rapidjson\internal\regex.h" />
+    <ClInclude Include="Auth\rapidjson\internal\stack.h" />
+    <ClInclude Include="Auth\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="Auth\rapidjson\internal\strtod.h" />
+    <ClInclude Include="Auth\rapidjson\internal\swap.h" />
+    <ClInclude Include="Auth\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="Auth\rapidjson\memorybuffer.h" />
+    <ClInclude Include="Auth\rapidjson\memorystream.h" />
+    <ClInclude Include="Auth\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="Auth\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="Auth\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="Auth\rapidjson\pointer.h" />
+    <ClInclude Include="Auth\rapidjson\prettywriter.h" />
+    <ClInclude Include="Auth\rapidjson\rapidjson.h" />
+    <ClInclude Include="Auth\rapidjson\reader.h" />
+    <ClInclude Include="Auth\rapidjson\schema.h" />
+    <ClInclude Include="Auth\rapidjson\stream.h" />
+    <ClInclude Include="Auth\rapidjson\stringbuffer.h" />
+    <ClInclude Include="Auth\rapidjson\writer.h" />
+    <ClInclude Include="Auth\sdtsm\SM2.h" />
+    <ClInclude Include="Auth\sdtsm\SM3.h" />
     <ClInclude Include="CrossMapping.h" />
     <ClInclude Include="enums.h" />
     <ClInclude Include="Features.h" />
@@ -120,14 +151,22 @@
     <ClInclude Include="NativeInvoker.h" />
     <ClInclude Include="natives.h" />
     <ClInclude Include="script.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="SubMenus.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Auth.cpp" />
+    <ClCompile Include="Auth.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Auth\sdtsm\SM2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Auth\sdtsm\SM3.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CrossMapping.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
