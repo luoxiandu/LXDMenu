@@ -135,6 +135,7 @@ void generateString(unsigned char* dest, const unsigned int len)
 
 Auth::Auth()
 {
+	tpool = new ThreadPool(4);
 	request.timeout = 3000;
 }
 
@@ -322,10 +323,11 @@ bool Auth::is_authed_rate_limited()
 {
 	if(!is_authed_cache)
 		is_authed_cache = is_authed();
-	if (check_count++ > 2000)
+	else if (check_count++ > 2000)
 	{
 		check_count = 0;
-		is_authed_cache = is_authed();
+		tpool->enqueue([this] {this->is_authed_cache = this->is_authed(); });
+		// is_authed_cache = is_authed();
 	}
 	return is_authed_cache;
 }

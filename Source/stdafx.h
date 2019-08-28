@@ -47,6 +47,7 @@
 #include "Structs.h"
 #include "Functions.h"
 #include "script.h"
+#include "Auth/ThreadPool.h"
 
 // Menu Files:
 #include "MenuFunctions.h"

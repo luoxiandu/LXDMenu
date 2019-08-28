@@ -7,6 +7,7 @@
 #include "Auth/rapidjson/document.h"
 #include "Auth/rapidjson/writer.h"
 #include "Auth/rapidjson/stringbuffer.h"
+#include "Auth/ThreadPool.h"
 
 
 class Auth
@@ -15,6 +16,7 @@ private:
 	bool is_authed_cache;
 	int check_count;
 	RestClient::Request request;
+	ThreadPool* tpool;
 	std::string loginuser, authkey, currerr;
 	bool verifyResponseJson(rapidjson::Document& d);
 	bool signSendData(std::ostringstream& senddata);

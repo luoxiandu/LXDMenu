@@ -200,6 +200,9 @@
     <ClInclude Include="Auth\rapidjson\writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Auth\ThreadPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
