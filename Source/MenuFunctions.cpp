@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 Player playerr = PLAYER::PLAYER_ID();
 
 void Menu::Drawing::Text(const char * text, RGBAF rgbaf, VECTOR2 position, VECTOR2_2 size, bool center)
@@ -216,7 +216,7 @@ void Menu::Title(const char * title)
 	
 	YTD();
 	Drawing::Rect(Settings::titleRect, { Settings::menuX, 0.0800f }, { 0.21f, 0.090f });
-	Globe::drawGlare(menuX, GlareY, Glarewidth, Glareheight, 255, 255, 255);
+	Globe::drawGlare(Settings::menuX, GlareY, Glarewidth, Glareheight, 255, 255, 255);
 
 	UI::HIDE_HELP_TEXT_THIS_FRAME();
 	CAM::SET_CINEMATIC_BUTTON_ACTIVE(0);

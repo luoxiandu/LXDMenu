@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
 
 #define PROP_MONEY_BAG_01 0x113FD533
@@ -45,7 +45,7 @@ void SET_ENTITY_INVINCIBLE(const int& entity, const bool& toggle)
 	static tSET_ENTITY_INVINCIBLE oSET_ENTITY_INVINCIBLE = (tSET_ENTITY_INVINCIBLE)(Memory::pattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 40 8A F2 E8 ? ? ? ? 33 DB").count(1).get(0).get<void>(0));
 	oSET_ENTITY_INVINCIBLE(entity, toggle);
 }
-//É¾³ı³µÁ¾
+//åˆ é™¤è½¦è¾†
 void Features::DeleteVehicle(Ped PED_ID)
 {
 	Ped playerPed = PED_ID;
@@ -59,7 +59,7 @@ void Features::DeleteVehicle(Ped PED_ID)
 		VEHICLE::DELETE_VEHICLE(&Vehicle);
 	}
 }
-//ĞÅÏ¢¿ò
+//ä¿¡æ¯æ¡†
 void Features::notifyMap(char* fmt, ...)
 {
 	char buf[2048] = { 0 };
@@ -352,7 +352,7 @@ void Features::UpdateLoop()
 	flybool ? playerflyer(true) : NULL;
 
 } 
-//¿ì½İ¼üF5´«ËÍ
+//å¿«æ·é”®F5ä¼ é€
 bool Features::tpKg = true;
 void Features::tpkg(bool toggle)
 {
@@ -365,7 +365,7 @@ void Features::tpkg(bool toggle)
 		Features::tpKg = false;
 	}
 }
-//¿ì½İ¼üF7´«ËÍ
+//å¿«æ·é”®F7ä¼ é€
 bool Features::rwtpKg = true;
 void Features::rwtpkg(bool toggle)
 {
@@ -572,12 +572,12 @@ void CREATE_VEHICLE(LPCSTR modelName, float x, float y, float z, float heading, 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
 
 
-		sprintf_s(statusText, "~o~%s ~b~ÒÑÉú³É¡£", modelName);
+		sprintf_s(statusText, "~o~%s ~b~å·²ç”Ÿæˆã€‚", modelName);
 
 	}
 	else
 	{
-		sprintf_s(statusText, "~r~ÎŞĞ§µÄÄ£ĞÍ£º ~o~%s", modelName);
+		sprintf_s(statusText, "~r~æ— æ•ˆçš„æ¨¡å‹ï¼š ~o~%s", modelName);
 	}
 
 	//set_status_text(statusText);
@@ -828,21 +828,21 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	std::ostringstream Money, RP, Rank, Kills, Deaths, KD;
 
 
-	std::ostringstream Health; Health << "ÉúÃüÖµ£º~s~ " << healthPercent;
+	std::ostringstream Health; Health << "ç”Ÿå‘½å€¼ï¼š~s~ " << healthPercent;
 	float armor = PED::GET_PED_ARMOUR(ped);
 	float maxArmor = PLAYER::GET_PLAYER_MAX_ARMOUR(p);
 	float armorPercent = armor * 100 / maxArmor;
-	std::ostringstream Armor; Armor << "ÊÇ·ñÎŞµĞ£º~s~ " << armorPercent;
+	std::ostringstream Armor; Armor << "æ˜¯å¦æ— æ•Œï¼š~s~ " << armorPercent;
 	bool alive = !PED::IS_PED_DEAD_OR_DYING(ped, 1);
 	char* aliveStatus;
 	if (alive) aliveStatus = "Yes"; else aliveStatus = "No";
-	std::ostringstream Alive; Alive << "´æ»î×´Ì¬£º~s~ " << aliveStatus;
+	std::ostringstream Alive; Alive << "å­˜æ´»çŠ¶æ€ï¼š~s~ " << aliveStatus;
 	bool inVehicle = PED::IS_PED_IN_ANY_VEHICLE(ped, 0);
-	std::ostringstream VehicleModel; VehicleModel << "ÔØ¾ß:~s~ ";
-	std::ostringstream Speed; Speed << "ËÙ¶È£º~s~ ";
-	std::ostringstream IsInAVehicle; IsInAVehicle << "ÔÚÔØ¾ßÖĞ£º~s~ ";
+	std::ostringstream VehicleModel; VehicleModel << "è½½å…·:~s~ ";
+	std::ostringstream Speed; Speed << "é€Ÿåº¦ï¼š~s~ ";
+	std::ostringstream IsInAVehicle; IsInAVehicle << "åœ¨è½½å…·ä¸­ï¼š~s~ ";
 	if (inVehicle) {
-		IsInAVehicle << "ÊÇ";
+		IsInAVehicle << "æ˜¯";
 		Hash vehHash = ENTITY::GET_ENTITY_MODEL(PED::GET_VEHICLE_PED_IS_IN(ped, 0));
 		VehicleModel << UI::_GET_LABEL_TEXT(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(vehHash));
 		float vehSpeed = ENTITY::GET_ENTITY_SPEED(PED::GET_VEHICLE_PED_IS_IN(ped, 0));
@@ -851,37 +851,37 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 		Speed << vehSpeedConverted << " KM/H";
 	}
 	else {
-		IsInAVehicle << "·ñ";
+		IsInAVehicle << "å¦";
 		float speed = round(ENTITY::GET_ENTITY_SPEED(ped) * 100) / 100;
 		Speed << speed << " M/S";
 		VehicleModel << "--------";
 	}
-	std::ostringstream WantedLevel; WantedLevel << "Í¨¼©¼¶±ğ£º~s~ " << PLAYER::GET_PLAYER_WANTED_LEVEL(p);
+	std::ostringstream WantedLevel; WantedLevel << "é€šç¼‰çº§åˆ«ï¼š~s~ " << PLAYER::GET_PLAYER_WANTED_LEVEL(p);
 	if (!NETWORK::NETWORK_IS_PLAYER_CONNECTED(p)) {
-		RP << "~w~¾­ÑéÖµ(RP)£º~s~ ";
-		Kills << "~w~»÷É±Êı£º~s~ ";
-		Deaths << "~w~ËÀÍöÊı£º~s~ ";
-		KD << "~w~»÷É±/ËÀÍö±È(KD±È)£º~s~ ";
+		RP << "~w~ç»éªŒå€¼(RP)ï¼š~s~ ";
+		Kills << "~w~å‡»æ€æ•°ï¼š~s~ ";
+		Deaths << "~w~æ­»äº¡æ•°ï¼š~s~ ";
+		KD << "~w~å‡»æ€/æ­»äº¡æ¯”(KDæ¯”)ï¼š~s~ ";
 	}
 	else {
-		RP << "¾­ÑéÖµ(RP)£º~s~ " << rp;
-		Kills << "»÷É±Êı£º~s~ " << kills;
-		Deaths << "ËÀÍöÊı£º~s~ " << deaths;
-		KD << "»÷É±/ËÀÍö±È(KD±È)£º~s~ " << kd;
+		RP << "ç»éªŒå€¼(RP)ï¼š~s~ " << rp;
+		Kills << "å‡»æ€æ•°ï¼š~s~ " << kills;
+		Deaths << "æ­»äº¡æ•°ï¼š~s~ " << deaths;
+		KD << "å‡»æ€/æ­»äº¡æ¯”(KDæ¯”)ï¼š~s~ " << kd;
 
 	}
 
-	std::ostringstream Weapon; Weapon << "ÎäÆ÷£º ~s~";
+	std::ostringstream Weapon; Weapon << "æ­¦å™¨ï¼š ~s~";
 
 
 	Hash weaponHash;
 	if (WEAPON::GET_CURRENT_PED_WEAPON(ped, &weaponHash, 1)) {
 		char* weaponName;
 		if (weaponHash == 2725352035) {
-			weaponName = "Í½ÊÖ";
+			weaponName = "å¾’æ‰‹";
 		}
 		else if (weaponHash == 2578778090) {
-			weaponName = "Î´¼ì²âµ½";
+			weaponName = "æœªæ£€æµ‹åˆ°";
 		}
 		else if (weaponHash == 0x678B81B1) {
 			weaponName = "Nightstick";
@@ -1074,20 +1074,20 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	else Weapon << "Unarmed";
 	Vector3 myCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
 	Vector3 coords = ENTITY::GET_ENTITY_COORDS(ped, 1);
-	std::ostringstream Zone; Zone << "Ëù´¦ĞĞÕşÇø£º~s~" << UI::_GET_LABEL_TEXT(ZONE::GET_NAME_OF_ZONE(coords.x, coords.y, coords.z));
+	std::ostringstream Zone; Zone << "æ‰€å¤„è¡Œæ”¿åŒºï¼š~s~" << UI::_GET_LABEL_TEXT(ZONE::GET_NAME_OF_ZONE(coords.x, coords.y, coords.z));
 	Hash streetName, crossingRoad;
 	PATHFIND::GET_STREET_NAME_AT_COORD(coords.x, coords.y, coords.z, &streetName, &crossingRoad);
-	std::ostringstream Street; Street << "Ëù´¦½ÖµÀ£º ~s~" << UI::GET_STREET_NAME_FROM_HASH_KEY(streetName);
+	std::ostringstream Street; Street << "æ‰€å¤„è¡—é“ï¼š ~s~" << UI::GET_STREET_NAME_FROM_HASH_KEY(streetName);
 	float distance = Get3DDistance(coords, myCoords);
-	std::ostringstream Distance; Distance << "Ïà¾à¾àÀë: ~s~";
+	std::ostringstream Distance; Distance << "ç›¸è·è·ç¦»: ~s~";
 
 	if (distance > 1000) {
 		distance = round((distance / 1000) * 100) / 100;
-		Distance << distance << " ¹«Àï";
+		Distance << distance << " å…¬é‡Œ";
 	}
 	else {
 		distance = round(distance * 1000) / 100;
-		Distance << distance << " Ã×";
+		Distance << distance << " ç±³";
 	}
 
 	Menu::PlayerInfoTitle(playerName);
@@ -1117,25 +1117,25 @@ void Features::OnlinePlayerInfo(char* playerName, Player p)
 	GRAPHICS::DRAW_RECT(0.60f, 0.220f, 0.250f, 0.30f, 0, 0, 0, 222);
 	char *isPlayer = PLAYER::GET_PLAYER_NAME(Features::Online::selectedPlayer);
 	drawText(isPlayer, 0, 0.52f, 0.043f, 0.440f, 0.40f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
-	drawText("Ãû×Ö:", 0, 0.48f, 0.043f, 0.440f, 0.40f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
+	drawText("åå­—:", 0, 0.48f, 0.043f, 0.440f, 0.40f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//client Level
 	int Client_Rank = Read_Global(1581952 + (306 * Features::Online::selectedPlayer));
 	char *ClientRank_string = ItoS(Client_Rank);
 	char Rank_buf[90];
-	snprintf(Rank_buf, sizeof(Rank_buf), "µÈ¼¶: ~b~%s", ClientRank_string);
+	snprintf(Rank_buf, sizeof(Rank_buf), "ç­‰çº§: ~b~%s", ClientRank_string);
 	drawText(Rank_buf, 0, 0.48f, 0.0800f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//Client KD
 	int KD = Read_Global(1581972 + (306 * Features::Online::selectedPlayer));
 	float KD_Float = ItoF(KD);
 	char * KD_String = x_fs(KD_Float);
 	char KD_buf[90];
-	snprintf(KD_buf, sizeof(KD_buf), "É±µĞÊı: ~b~%s", KD_String);
+	snprintf(KD_buf, sizeof(KD_buf), "æ€æ•Œæ•°: ~b~%s", KD_String);
 	drawText(KD_buf, 0, 0.48f, 0.1100f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//Cash
 	int Client_Cash = Read_Global(1581949 + (306 * Features::Online::selectedPlayer));
 	char *ClientCash_string = ItoS(Client_Cash);
 	char Cash_buf[90];
-	snprintf(Cash_buf, sizeof(Cash_buf), "×Ê½ğ: ~b~$%s", ClientCash_string);
+	snprintf(Cash_buf, sizeof(Cash_buf), "èµ„é‡‘: ~b~$%s", ClientCash_string);
 	drawText(Cash_buf, 0, 0.48f, 0.1400f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//ID 
 	char * ID = ItoS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer));
@@ -1145,13 +1145,13 @@ void Features::OnlinePlayerInfo(char* playerName, Player p)
 	//Player Alive
 	bool isAlive = !PLAYER::IS_PLAYER_DEAD(Features::Online::selectedPlayer);
 	char *alivetext = "";
-	if (isAlive == true) { alivetext = "´æÔÚ: ~b~Yes"; }
-	else { alivetext = "´æÔÚ: ~r~No"; }
+	if (isAlive == true) { alivetext = "å­˜åœ¨: ~b~Yes"; }
+	else { alivetext = "å­˜åœ¨: ~r~No"; }
 	drawText(alivetext, 0, 0.64f, 0.200f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//Player Health
 	char * Health = ItoS(ENTITY::GET_ENTITY_HEALTH(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer)));
 	char Health_buf[90];
-	snprintf(Health_buf, sizeof(Health_buf), "ÉúÃüÖµ: ~b~%s", Health);
+	snprintf(Health_buf, sizeof(Health_buf), "ç”Ÿå‘½å€¼: ~b~%s", Health);
 	drawText(Health_buf, 0, 0.64f, 0.225f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//Street Name
 	Hash StreetName;
@@ -1159,12 +1159,12 @@ void Features::OnlinePlayerInfo(char* playerName, Player p)
 	char STreetN_buffer[90];
 	Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 0);
 	PATHFIND::GET_STREET_NAME_AT_COORD(coords.x, coords.y, coords.z, &StreetName, &CrossingRoad);
-	snprintf(STreetN_buffer, sizeof(STreetN_buffer), "½ÖµÀÎ»ÖÃ: ~b~%s ", UI::GET_STREET_NAME_FROM_HASH_KEY(StreetName));
+	snprintf(STreetN_buffer, sizeof(STreetN_buffer), "è¡—é“ä½ç½®: ~b~%s ", UI::GET_STREET_NAME_FROM_HASH_KEY(StreetName));
 	drawText(STreetN_buffer, 0, 0.48f, 0.247f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//Road Crossing
 	char RoadCross_Buff[100];
 
-	snprintf(RoadCross_Buff, sizeof(RoadCross_Buff), "µÀÂ·½»²æµã: ~b~%s ", UI::GET_STREET_NAME_FROM_HASH_KEY(CrossingRoad));
+	snprintf(RoadCross_Buff, sizeof(RoadCross_Buff), "é“è·¯äº¤å‰ç‚¹: ~b~%s ", UI::GET_STREET_NAME_FROM_HASH_KEY(CrossingRoad));
 	drawText(RoadCross_Buff, 0, 0.48f, 0.270f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 
 	
@@ -1312,7 +1312,7 @@ void Features::NeverGetWanted(bool toggle)
 		Memory::set_value<float>({ OFFSET_PLAYER , OFFSET_PLAYER_INFO , OFFSET_PLAYER_INFO_WANTED }, 0);
 	}
 }
-//²»µ¹ÎÌ
+//ä¸å€’ç¿
 bool Features::budaowen = false;
 void Features::budaowen1(bool toggle)
 {
@@ -1439,7 +1439,7 @@ void Features::featureTalkingPlayers(bool toggle)
 		if (NETWORK::NETWORK_IS_PLAYER_TALKING(i))
 		{
 			talker = PLAYER::GET_PLAYER_NAME(i);
-			snprintf(Talk, 100, "~r~Ëµ»°: ~s~%s", talker);
+			snprintf(Talk, 100, "~r~è¯´è¯: ~s~%s", talker);
 			Chat(Talk, i);
 		}
 	}
@@ -1499,7 +1499,7 @@ void Features::OSKR(bool toggle)
 		Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_WEAPON_MANAGER, OFFSET_WEAPON_CURRENT, OFFSET_WEAPON_BULLET_DMG }, 10000.0f);
 	}
 }
-//´«ËÍµ½±êµã
+//ä¼ é€åˆ°æ ‡ç‚¹
 
 
 void ApplyForceToEntity(Entity e, float x, float y, float z)
@@ -1544,7 +1544,7 @@ void Features::Superman(bool toggle)
 
 
 
-//Ô­Ğ´·¨
+//åŸå†™æ³•
 /*bool Features::playerGodMode = false;
 void Features::GodMode(bool toggle) {
 	static int armour_player = 0;
@@ -1650,7 +1650,7 @@ void Features::riskyOptins(bool toggle)
 	WAIT(0);
 }
 
-//ÎŞÊÓ´æÔÚ
+//æ— è§†å­˜åœ¨
 bool Features::playernoragdoll = false;
 void Features::NoRagdoll(bool toggle)
 {
@@ -2223,7 +2223,7 @@ void Features::numbani(bool toggle){
 	VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0), nu1);
 }
 
-//×ÔĞĞ³µ²»Ë¤µ¹
+//è‡ªè¡Œè½¦ä¸æ‘”å€’
 bool Features::bikeNoFall = false;
 void Features::nofallbike() {
 	PED::SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE(PLAYER::PLAYER_PED_ID(), bikeNoFall);
@@ -2257,7 +2257,7 @@ void Features::teleporttocoords(Player player, Vector3 target)
 }
 
 
-//Ã²ËÆË¢Ç®
+//è²Œä¼¼åˆ·é’±
 /*void Features::Stealth(bool toggle) {
 	static int delay;
 	if (GAMEPLAY::GET_GAME_TIMER() > delay) {
@@ -2288,10 +2288,10 @@ void Features::Speedometer(bool toggle) {
 
 
 	bool inVehicle = PED::IS_PED_IN_ANY_VEHICLE(ped, 0);
-	std::ostringstream VehicleModel; VehicleModel << "ÔØ¾ß:~s~ ";
+	std::ostringstream VehicleModel; VehicleModel << "è½½å…·:~s~ ";
 
 	std::ostringstream Speed; Speed << "Speed:~s~ ";
-	std::ostringstream IsInAVehicle; IsInAVehicle << "ÊÇ·ñ¼İÊ»ÖĞ:~s~ ";
+	std::ostringstream IsInAVehicle; IsInAVehicle << "æ˜¯å¦é©¾é©¶ä¸­:~s~ ";
 	if (inVehicle) {
 		IsInAVehicle << "Yes";
 		Hash vehHash = ENTITY::GET_ENTITY_MODEL(PED::GET_VEHICLE_PED_IS_IN(ped, 0));
@@ -2414,7 +2414,7 @@ void Features::antiattacks()
 {
 	Features::patchEvent(REVENT_KICK_VOTES_EVENT, true);
 }
-//·ÀÄ£ĞÍ
+//é˜²æ¨¡å‹
 bool Features::fmx = false;
 void Features::FMX() {
 	char* objects[136] = { "prop_bskball_01", "PROP_MP_RAMP_03", "PROP_MP_RAMP_02", "PROP_MP_RAMP_01", "PROP_JETSKI_RAMP_01", "PROP_WATER_RAMP_03", "PROP_VEND_SNAK_01", "PROP_TRI_START_BANNER", "PROP_TRI_FINISH_BANNER", "PROP_TEMP_BLOCK_BLOCKER", "PROP_SLUICEGATEL", "PROP_SKIP_08A", "PROP_SAM_01", "PROP_RUB_CONT_01B", "PROP_ROADCONE01A", "PROP_MP_ARROW_BARRIER_01", "PROP_HOTEL_CLOCK_01", "PROP_LIFEBLURB_02", "PROP_COFFIN_02B", "PROP_MP_NUM_1", "PROP_MP_NUM_2", "PROP_MP_NUM_3", "PROP_MP_NUM_4", "PROP_MP_NUM_5", "PROP_MP_NUM_6", "PROP_MP_NUM_7", "PROP_MP_NUM_8", "PROP_MP_NUM_9", "prop_xmas_tree_int", "prop_bumper_car_01", "prop_beer_neon_01", "prop_space_rifle", "prop_dummy_01", "prop_rub_trolley01a", "prop_wheelchair_01_s", "PROP_CS_KATANA_01", "PROP_CS_DILDO_01", "prop_armchair_01", "prop_bin_04a", "prop_chair_01a", "prop_dog_cage_01", "prop_dummy_plane", "prop_golf_bag_01", "prop_arcade_01", "hei_prop_heist_emp", "prop_alien_egg_01", "prop_air_towbar_01", "hei_prop_heist_tug", "prop_air_luggtrolley", "PROP_CUP_SAUCER_01", "prop_wheelchair_01", "prop_ld_toilet_01", "prop_acc_guitar_01", "prop_bank_vaultdoor", "p_v_43_safe_s", "p_spinning_anus_s", "prop_can_canoe", "prop_air_woodsteps", "Prop_weed_01", "prop_a_trailer_door_01", "prop_apple_box_01", "prop_air_fueltrail1", "prop_barrel_02a", "prop_barrel_float_1", "prop_barrier_wat_03b", "prop_air_fueltrail2", "prop_air_propeller01", "prop_windmill_01", "prop_Ld_ferris_wheel", "p_tram_crash_s", "p_oil_slick_01", "p_ld_stinger_s", "p_ld_soc_ball_01", "prop_juicestand", "p_oil_pjack_01_s", "prop_barbell_01", "prop_barbell_100kg", "p_parachute1_s", "p_cablecar_s", "prop_beach_fire", "prop_lev_des_barge_02", "prop_lev_des_barge_01", "prop_a_base_bars_01", "prop_beach_bars_01", "prop_air_bigradar", "prop_weed_pallet", "prop_artifact_01", "prop_attache_case_01", "prop_large_gold", "prop_roller_car_01", "prop_water_corpse_01", "prop_water_corpse_02", "prop_dummy_01", "prop_atm_01", "hei_prop_carrier_docklight_01", "hei_prop_carrier_liferafts", "hei_prop_carrier_ord_03", "hei_prop_carrier_defense_02", "hei_prop_carrier_defense_01", "hei_prop_carrier_radar_1", "hei_prop_carrier_radar_2", "hei_prop_hei_bust_01", "hei_prop_wall_alarm_on", "hei_prop_wall_light_10a_cr", "prop_afsign_amun", "prop_afsign_vbike", "prop_aircon_l_01", "prop_aircon_l_02", "prop_aircon_l_03", "prop_aircon_l_04", "prop_airhockey_01", "prop_air_bagloader", "prop_air_blastfence_01", "prop_air_blastfence_02", "prop_air_cargo_01a", "prop_air_chock_01", "prop_air_chock_03", "prop_air_gasbogey_01", "prop_air_generator_03", "prop_air_stair_02", "prop_amb_40oz_02", "prop_amb_40oz_03", "prop_amb_beer_bottle", "prop_amb_donut", "prop_amb_handbag_01", "prop_amp_01", "prop_anim_cash_pile_02", "prop_asteroid_01", "prop_arm_wrestle_01", "prop_ballistic_shield", "prop_bank_shutter", "prop_barier_conc_02b", "prop_barier_conc_05a", "prop_barrel_01a", "prop_bar_stool_01", "prop_basejump_target_01" };
