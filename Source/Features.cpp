@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 
 
+
 #define PROP_MONEY_BAG_01 0x113FD533
 //#define PICKUP_MONEY_CASE 0x1E9A99F8
 
