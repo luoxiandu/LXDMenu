@@ -757,7 +757,7 @@ void Menu::End()
 		Drawing::Rect(Settings::scroller, {Settings::menuX - 0.11f, opcount * 0.035f / 2.00f + 0.1235f + 0.035f }, {0.008f, opcount * 0.035f });
 	}
 }
-//信息提示
+//��Ϣ��ʾ
 int IconNotification(char *text, char *text2, char *Subject)
 {
 	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
@@ -799,11 +799,11 @@ void Menu::Checks::Keys()
 			if (GetTickCount() - Settings::keyPressPreviousTick3 > Settings::keyPressDelay3) {
 				if (IsKeyPressed(VK_F4) || CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlScriptRB) && CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlPhoneRight)) {
 					Settings::menuLevel == 0 ? MenuLevelHandler::MoveMenu(SubMenus::mainmenu) : Settings::menuLevel == 1 ? MenuLevelHandler::BackMenu() : NULL;
-					IconNotification(Menu::Tools::StringToChar("~w~尊敬的：" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~欢迎使用掌控者(Master)!"), "~r~Master Menu", " v1.0.0");
-					Features::notifyMap("按键说明：~f~小键盘8246上下左右5确定0返回!");
+					IconNotification(Menu::Tools::StringToChar("~w~�𾴵ģ�" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~��ӭʹ���ƿ���(Master)!"), "~r~Master Menu", " v1.0.0");
+					Features::notifyMap("����˵��~f~С����8246��������5ȷ��0����!");
 					if (firstopen) {
-						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+ "~f~,欢迎使用掌控者(Master)!"), "~r~Master Menu", " v1.0.0");
-						//Features::notifyMap("~f~尊敬的：" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,欢迎使用掌控者(Master)!");
+						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+ "~f~,��ӭʹ���ƿ���(Master)!"), "~r~Master Menu", " v1.0.0");
+						//Features::notifyMap("~f~�𾴵ģ�" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,��ӭʹ���ƿ���(Master)!");
 						PlaySoundFrontend_default2("Hack_Success");
 
 						firstopen = false;
@@ -926,11 +926,11 @@ void Menu::Checks::Keys()
 						teleport_to_marker();
 					}
 					else {
-						Features::notifyMap("~f~你还没有开启F5快捷键传送定点功能!");
+						Features::notifyMap("~f~�㻹û�п���F5��ݼ��Ͷ��㹦��!");
 					}
 				}
 
-				//传送到任务点
+				//���͵������
 				if (KeyJustUp(VK_F7))
 				{
 					if (Features::rwtpKg == true)
@@ -938,7 +938,7 @@ void Menu::Checks::Keys()
 						teleport_to_objective();
 					}
 					else {
-						Features::notifyMap("~f~你还没有开启F7传送任务点功能!");
+						Features::notifyMap("~f~�㻹û�п���F7��������㹦��!");
 					}
 					
 

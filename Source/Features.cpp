@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+
 #define PROP_MONEY_BAG_01 0x113FD533
 //#define PICKUP_MONEY_CASE 0x1E9A99F8
 
@@ -586,22 +587,22 @@ void Features::spawn_vehicle(char* toSpawn) {
 	Hash model = GAMEPLAY::GET_HASH_KEY(toSpawn);
 	if (STREAMING::IS_MODEL_VALID(model))
 	{
-
 		STREAMING::REQUEST_MODEL(model);
 		while (!STREAMING::HAS_MODEL_LOADED(model)) WAIT(0);
-		Vector3 ourCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), false);
+		Vector3 ourCoords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), true);
 		float forward = 5.f;
 		float heading = ENTITY::GET_ENTITY_HEADING(PLAYER::PLAYER_PED_ID());
 		float xVector = forward * sin(degToRad(heading)) * -1.f;
 		float yVector = forward * cos(degToRad(heading));
-		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, false, false);
+		Vehicle veh = VEHICLE::CREATE_VEHICLE(model, ourCoords.x + xVector, ourCoords.y + yVector, ourCoords.z, heading, true, true);
 		RequestControlOfEnt(veh);
 		VEHICLE::SET_VEHICLE_ENGINE_ON(veh, true, true, true);
 		VEHICLE::SET_VEHICLE_ON_GROUND_PROPERLY(veh);
 		DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
 		auto networkId = NETWORK::VEH_TO_NET(veh);
-		ENTITY::_SET_ENTITY_REGISTER(veh, true);
-		BypassOnlineVehicleKick();
+		ENTITY::_SET_ENTITY_SOMETHING(veh, true);
+		/*ENTITY::_SET_ENTITY_REGISTER(veh, true);
+		BypassOnlineVehicleKick();*/
 		if (NETWORK::NETWORK_GET_ENTITY_IS_NETWORKED(veh))
 			NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true);
 		if (Features::spawnincar)
@@ -622,6 +623,9 @@ void Features::spawn_vehicle(char* toSpawn) {
 				
 			}
 		}
+		WAIT(150);
+		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
+		ENTITY::SET_VEHICLE_AS_NO_LONGER_NEEDED(&veh);
 	}
 }
 
@@ -821,7 +825,7 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	int kills = globalHandle(1589819).At(p, 818).At(211).At(28).As<int>();
 	int deaths = globalHandle(1589819).At(p, 818).At(211).At(29).As<int>();
 	float kd = globalHandle(1589819).At(p, 818).At(211).At(26).As<float>();
-	ostringstream Money, RP, Rank, Kills, Deaths, KD;
+	std::ostringstream Money, RP, Rank, Kills, Deaths, KD;
 
 
 	std::ostringstream Health; Health << "生命值：~s~ " << healthPercent;
@@ -1308,7 +1312,21 @@ void Features::NeverGetWanted(bool toggle)
 		Memory::set_value<float>({ OFFSET_PLAYER , OFFSET_PLAYER_INFO , OFFSET_PLAYER_INFO_WANTED }, 0);
 	}
 }
-
+//不倒翁
+bool Features::budaowen = false;
+void Features::budaowen1(bool toggle)
+{
+	if (toggle == true);
+	{
+		Ped PLAYER_PED_ID = PLAYER::PLAYER_PED_ID();
+		Player PLAYER_ID = PLAYER::PLAYER_ID();
+		PED::SET_PED_CAN_RAGDOLL(PLAYER_PED_ID, false);
+		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(PLAYER_PED_ID, false);
+		PED::SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE(PLAYER_PED_ID, false);
+		PLAYER::GIVE_PLAYER_RAGDOLL_CONTROL(PLAYER_ID, true);
+		PED::SET_PED_RAGDOLL_ON_COLLISION(PLAYER_PED_ID, false);
+	}
+}
 bool Features::fastrun = false;
 bool Features::fastswim = false;
 void Features::SwimFast(bool toggle)
@@ -1626,21 +1644,23 @@ void Features::RemoteOff(Player target)
 bool Features::playerinvisibility = false;
 void Features::Invisibility(bool toggle)
 {
-	if (playerinvisibility == true)
+	if (playerinvisibility)
 	{
-		Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_SET_ENTITY_VISIBL }, 1);
+		ENTITY::SET_ENTITY_VISIBLE1(PLAYER::PLAYER_PED_ID(), false, 0);
 	}
 	else
 	{
-		Memory::set_value<float>({ OFFSET_PLAYER, OFFSET_SET_ENTITY_VISIBL }, 66879);
+		ENTITY::SET_ENTITY_VISIBLE1(PLAYER::PLAYER_PED_ID(), true, 0);
 	}
 }
+
 
 void Features::riskyOptins(bool toggle)
 {
 	WAIT(0);
 }
 
+//无视存在
 bool Features::playernoragdoll = false;
 void Features::NoRagdoll(bool toggle)
 {
@@ -2213,7 +2233,21 @@ void Features::numbani(bool toggle){
 	VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT(PED::GET_VEHICLE_PED_IS_IN(PLAYER::PLAYER_PED_ID(), 0), nu1);
 }
 
-
+//自行车不摔倒
+bool Features::bikeNoFall = false;
+void Features::nofallbike() {
+	PED::SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE(PLAYER::PLAYER_PED_ID(), bikeNoFall);
+}
+bool Features::playertenkped = false;
+int Features::TimePD;
+int Features::TimePD1;
+int Features::TimePD2;
+int Features::TimePD3;
+int Features::TimePD4;
+int Features::TimePD5;
+int Features::TimePD6;
+int Features::TimePD7;
+int Features::TimePD8;
 
 
 void Features::teleporttocoords(Player player, Vector3 target)
@@ -2390,6 +2424,33 @@ void Features::antiattacks()
 {
 	Features::patchEvent(REVENT_KICK_VOTES_EVENT, true);
 }
+//防模型
+bool Features::fmx = false;
+void Features::FMX() {
+	char* objects[136] = { "prop_bskball_01", "PROP_MP_RAMP_03", "PROP_MP_RAMP_02", "PROP_MP_RAMP_01", "PROP_JETSKI_RAMP_01", "PROP_WATER_RAMP_03", "PROP_VEND_SNAK_01", "PROP_TRI_START_BANNER", "PROP_TRI_FINISH_BANNER", "PROP_TEMP_BLOCK_BLOCKER", "PROP_SLUICEGATEL", "PROP_SKIP_08A", "PROP_SAM_01", "PROP_RUB_CONT_01B", "PROP_ROADCONE01A", "PROP_MP_ARROW_BARRIER_01", "PROP_HOTEL_CLOCK_01", "PROP_LIFEBLURB_02", "PROP_COFFIN_02B", "PROP_MP_NUM_1", "PROP_MP_NUM_2", "PROP_MP_NUM_3", "PROP_MP_NUM_4", "PROP_MP_NUM_5", "PROP_MP_NUM_6", "PROP_MP_NUM_7", "PROP_MP_NUM_8", "PROP_MP_NUM_9", "prop_xmas_tree_int", "prop_bumper_car_01", "prop_beer_neon_01", "prop_space_rifle", "prop_dummy_01", "prop_rub_trolley01a", "prop_wheelchair_01_s", "PROP_CS_KATANA_01", "PROP_CS_DILDO_01", "prop_armchair_01", "prop_bin_04a", "prop_chair_01a", "prop_dog_cage_01", "prop_dummy_plane", "prop_golf_bag_01", "prop_arcade_01", "hei_prop_heist_emp", "prop_alien_egg_01", "prop_air_towbar_01", "hei_prop_heist_tug", "prop_air_luggtrolley", "PROP_CUP_SAUCER_01", "prop_wheelchair_01", "prop_ld_toilet_01", "prop_acc_guitar_01", "prop_bank_vaultdoor", "p_v_43_safe_s", "p_spinning_anus_s", "prop_can_canoe", "prop_air_woodsteps", "Prop_weed_01", "prop_a_trailer_door_01", "prop_apple_box_01", "prop_air_fueltrail1", "prop_barrel_02a", "prop_barrel_float_1", "prop_barrier_wat_03b", "prop_air_fueltrail2", "prop_air_propeller01", "prop_windmill_01", "prop_Ld_ferris_wheel", "p_tram_crash_s", "p_oil_slick_01", "p_ld_stinger_s", "p_ld_soc_ball_01", "prop_juicestand", "p_oil_pjack_01_s", "prop_barbell_01", "prop_barbell_100kg", "p_parachute1_s", "p_cablecar_s", "prop_beach_fire", "prop_lev_des_barge_02", "prop_lev_des_barge_01", "prop_a_base_bars_01", "prop_beach_bars_01", "prop_air_bigradar", "prop_weed_pallet", "prop_artifact_01", "prop_attache_case_01", "prop_large_gold", "prop_roller_car_01", "prop_water_corpse_01", "prop_water_corpse_02", "prop_dummy_01", "prop_atm_01", "hei_prop_carrier_docklight_01", "hei_prop_carrier_liferafts", "hei_prop_carrier_ord_03", "hei_prop_carrier_defense_02", "hei_prop_carrier_defense_01", "hei_prop_carrier_radar_1", "hei_prop_carrier_radar_2", "hei_prop_hei_bust_01", "hei_prop_wall_alarm_on", "hei_prop_wall_light_10a_cr", "prop_afsign_amun", "prop_afsign_vbike", "prop_aircon_l_01", "prop_aircon_l_02", "prop_aircon_l_03", "prop_aircon_l_04", "prop_airhockey_01", "prop_air_bagloader", "prop_air_blastfence_01", "prop_air_blastfence_02", "prop_air_cargo_01a", "prop_air_chock_01", "prop_air_chock_03", "prop_air_gasbogey_01", "prop_air_generator_03", "prop_air_stair_02", "prop_amb_40oz_02", "prop_amb_40oz_03", "prop_amb_beer_bottle", "prop_amb_donut", "prop_amb_handbag_01", "prop_amp_01", "prop_anim_cash_pile_02", "prop_asteroid_01", "prop_arm_wrestle_01", "prop_ballistic_shield", "prop_bank_shutter", "prop_barier_conc_02b", "prop_barier_conc_05a", "prop_barrel_01a", "prop_bar_stool_01", "prop_basejump_target_01" };
+	for (int i = 0; i < 5; i++) {
+		Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::PLAYER_PED_ID(), 1);
+		GAMEPLAY::CLEAR_AREA_OF_PEDS(coords.x, coords.y, coords.z, 2, 0);
+		GAMEPLAY::CLEAR_AREA_OF_OBJECTS(coords.x, coords.y, coords.z, 2, 0);
+		GAMEPLAY::CLEAR_AREA_OF_VEHICLES(coords.x, coords.y, coords.z, 2, 0, 0, 0, 0, 0);
+		for (int i = 0; i < 136; i++) {
+			Object obj = OBJECT::GET_CLOSEST_OBJECT_OF_TYPE(coords.x, coords.y, coords.z, 4.0, GAMEPLAY::GET_HASH_KEY(objects[i]), 0, 0, 1);
+
+			if (ENTITY::DOES_ENTITY_EXIST(obj) && ENTITY::IS_ENTITY_ATTACHED_TO_ENTITY(obj, PLAYER::PLAYER_PED_ID())) {
+				RequestControlOfEnt(obj);
+				int netID = NETWORK::NETWORK_GET_NETWORK_ID_FROM_ENTITY(obj);
+				NETWORK::SET_NETWORK_ID_CAN_MIGRATE(netID, 1);
+				Features::RequestControlOfid(netID);
+				ENTITY::DETACH_ENTITY(obj, 1, 1);
+				if (NETWORK::NETWORK_HAS_CONTROL_OF_ENTITY(obj)) {
+					ENTITY::SET_ENTITY_AS_MISSION_ENTITY(obj, 1, 1);
+					ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&obj);
+					ENTITY::DELETE_ENTITY(&obj);
+				}
+			}
+		}
+	}
+}
 bool Features::WEATHER = false;
 void Features::WEATHERtacks()
 {
@@ -2431,7 +2492,7 @@ void Features::NETWORK_CRC()
 	Features::patchEvent(REVENT_NETWORK_CRC_HASH_CHECK_EVENT, true);
 }
 
-void Features::LoadObjects(int Hash,  float x, float y, float z, float Pitch, float Roll, float Yaw){
+/*void Features::LoadObjects(int Hash,  float x, float y, float z, float Pitch, float Roll, float Yaw){
 	STREAMING::REQUEST_MODEL(Hash);
 	int obj = OBJECT::CREATE_OBJECT(Hash, x, y, z, 1, 1, 0);
 	ENTITY::SET_ENTITY_ROTATION(obj, Pitch, Roll, Yaw, 2, 1);
@@ -2440,6 +2501,25 @@ void Features::LoadObjects(int Hash,  float x, float y, float z, float Pitch, fl
 	ENTITY::SET_ENTITY_LOD_DIST(obj, 90000);
 	STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(Hash);
 	ENTITY::SET_OBJECT_AS_NO_LONGER_NEEDED(&obj);
+}*/
+Object mapMods[250];
+int mapModsIndex = 0;
+void Features::PlaceObjectByHash(Hash hash, float x, float y, float z, float pitch, float roll, float yaw, float heading, int id)
+{
+	if (STREAMING::IS_MODEL_IN_CDIMAGE(hash)) {
+		STREAMING::REQUEST_MODEL(hash);
+		while (!STREAMING::HAS_MODEL_LOADED(hash)) WAIT(0);
+		Object obj = OBJECT::CREATE_OBJECT_NO_OFFSET(hash, x, y, z, 1, 0, 0);
+		//SET_ENTITY_HEADING(obj, heading);
+		//SET_ENTITY_ROTATION(obj, pitch, roll, yaw, 2, 1);
+		ENTITY::SET_ENTITY_LOD_DIST(obj, 696969);
+		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(obj);
+		ENTITY::FREEZE_ENTITY_POSITION(obj, 1);
+		ENTITY::SET_ENTITY_ROTATION(obj, pitch, roll, yaw, 0, 1);
+		mapMods[mapModsIndex] = obj;
+		if (mapModsIndex <= 250) mapModsIndex++;
+		WAIT(25);
+	}
 }
 
 void Features::TeleportMazeBank() {
@@ -2448,7 +2528,7 @@ void Features::TeleportMazeBank() {
 		handle = PED::GET_VEHICLE_PED_IS_IN(handle, 0);
 	ENTITY::SET_ENTITY_COORDS(handle, -74.94243, -818.63446, 326.174347, 1, 0, 0, 1);
 }
-void Features::MazeBankobjs(int)
+/*void Features::MazeBankobjs(int)
 {
 	LoadObjects(-173040310, -63.310, -807.672, 324.074, 10.115, -1.606, -39.057); 
 	LoadObjects(-173040310, -61.991, -809.437, 324.080, 10.240, -0.023, -47.198); 
@@ -2501,7 +2581,7 @@ void Features::MazeBankobjs(int)
 	LoadObjects(1212630005, - 80.958, - 824.657, 325.633, 0.0, 0.0, 144.400);
 	LoadObjects(1212630005, - 83.703, - 821.398, 325.633, 0.0, 0.0, 113.200);
 
-}
+}*/
 
 
 bool Features::dropmoney = false;
