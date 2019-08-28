@@ -30,6 +30,7 @@
 #include <MinHook.h>
 #include <timeapi.h>
 #include <time.h>
+#include <shlobj.h>
 
 // Additional Header Files:
 #include "Log.h"

@@ -7587,17 +7587,78 @@ Player player = PLAYER::PLAYER_ID();
 
 void main() {
 	Auth a;
-Menu::Files::StyleSaver::LoadStyles();
-Features::notifyMap("~f~尊敬的："+(std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,欢迎使用掌控者(Master)!");
-Features::notifyMap("~f~快捷键F4打开菜单!");
+	bool logged_in = false;
+	std::string username, password;
+	char buffer[128];
+	SHGetSpecialFolderPathA(GetDesktopWindow(), buffer, CSIDL_LOCAL_APPDATA, true);
+	std::string profilepath = buffer;
+	Menu::Files::StyleSaver::LoadStyles();
+	CreateDirectoryA((profilepath + "\\MasterMenu").c_str(), NULL);
+	std::ifstream configfile((profilepath + "\\MasterMenu\\auth.json").c_str());
+	std::string configjson;
+	configfile >> configjson;
+	configfile.close();
+	rapidjson::Document configd;
+	configd.Parse(configjson.c_str());
+	if (configd["username"].IsString() && configd["password"].IsString())
+	{
+		username = std::string(configd["username"].GetString());
+		password = std::string(configd["password"].GetString());
+		logged_in = a.login(username, password);
+	}
+	while (!logged_in) {
+		Menu::Checks::Keys();
+		Features::rainbowmenu(true);
+		Menu::Title("登录");
+		Menu::Subtitle("~HUD_COLOUR_GOLD~欢迎来到MasterMenu！ ¦");
+		if (a.hasErr()) Menu::Option((std::string("~r~~h~") + a.getErr()).c_str());
+		Menu::Option(("~HUD_COLOUR_GOLD~用户名：~s~<C>" + username + "</C>").c_str(), [&username] {
+			GAMEPLAY::DISPLAY_ONSCREEN_KEYBOARD(true, "", "", "", "", "", "", 32);
+			while (GAMEPLAY::UPDATE_ONSCREEN_KEYBOARD() == 0) WAIT(0);
+			if (!GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT()) return;
+			username = std::string(GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT());
+			});
+		Menu::Option(("~HUD_COLOUR_GOLD~密码：~s~<C>" + [&password]() {std::stringstream stream; for (size_t i = 0; i < password.length(); i++) stream << "*"; return stream.str(); }() + "</C>").c_str(), [&password] {
+			GAMEPLAY::DISPLAY_ONSCREEN_KEYBOARD(true, "", "", "", "", "", "", 32);
+			while (GAMEPLAY::UPDATE_ONSCREEN_KEYBOARD() == 0) WAIT(0);
+			if (!GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT()) return;
+			password = std::string(GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT());
+			});
+		Menu::Option("~h~~g~登录", [&logged_in, &a, &username, &password, &profilepath] () {
+			logged_in = a.login(username, password);
+			if (logged_in)
+			{
+				std::ofstream newconfigfile((profilepath + "\\MasterMenu\\auth.json").c_str());
+				rapidjson::Document d;
+				d.SetObject();
+				rapidjson::Value u, p;
+				u.SetString(rapidjson::StringRef(username.c_str()));
+				p.SetString(rapidjson::StringRef(password.c_str()));
+				d.AddMember("username", u, d.GetAllocator());
+				d.AddMember("password", p, d.GetAllocator());
+				rapidjson::StringBuffer buffer;
+				rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+				d.Accept(writer);
+				newconfigfile << buffer.GetString() << std::endl;
+				newconfigfile.close();
+			}
+			});
+		Menu::Option("~h~~r~退出", [] { exit(0); });
+		Menu::End();
+		WAIT(0);
+	}
+	Features::notifyMap("~f~尊敬的："+(std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,欢迎使用掌控者(Master)!");
+	Features::notifyMap("~f~快捷键F4打开菜单!");
 	while (true) {
+		if (!a.is_authed_rate_limited())  // 如果授权出了问题就直接退出
+			exit(0);
 		Menu::Checks::Keys();
 		Features::UpdateLoop();
 		switch (Menu::Settings::currentMenu) {
 		case mainmenu:
 		{
 			 Menu::Title("Master Menu");
-			 Menu::Subtitle("~y~VERSION:1.48");
+			 Menu::Subtitle("~y~VERSION:1.48 ¦");
 			 Menu::MenuOption("线上选项" , onlineoptions);
 			 Menu::MenuOption("自我选项", playermenu);
 			 Menu::MenuOption("武器选项", weapon);
@@ -7610,8 +7671,6 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 Menu::MenuOption("金钱供给", moneystealth);
 			 Menu::MenuOption("其它设置", miscoptions);
 			 Menu::Bool("颜色渐变", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
-			 
-
 		 }
 		 break;
 #pragma endregion
@@ -9714,12 +9773,13 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 Menu::Subtitle("STATUS/INFORMATIONS");
 			 Menu::Option("编程 : ~y~荒陌");
 			 Menu::Option("状态 : ~g~未被检测到");
-			 Menu::Option("GTA5.exe : ~g~v1.0.1737.1");
+			 Menu::Option("GTA5.exe : ~b~v1.0.1737.1");
 			 Menu::Option("支持线上版本 : ~g~1.48");
-			 Menu::Option("程序版本: ~g~1.0.0");
-			 Menu::Option("发布日期: ~g~Aug 03, 2019");
-			 Menu::Option("~HUD_COLOUR_GOLD~俱乐部帐户:");
-			 Menu::Option(PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()));
+			 Menu::Option("程序版本: ~r~1.0.0");
+			 Menu::Option("发布日期: ~c~Aug 03, 2019");
+			 Menu::Option((std::string("~HUD_COLOUR_GOLD~∑GTA账号：~q~") + PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())).c_str());
+			 Menu::Option((std::string("~HUD_COLOUR_GOLD~已登录用户：~p~") + a.getUsername()).c_str());
+			 Menu::Option((std::string("~HUD_COLOUR_GOLD~授权码后五位：~p~") + a.getAuthKey()).c_str());
 		 }
 		 break;
 #pragma region Outfit Options

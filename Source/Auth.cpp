@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_ERRORS
@@ -28,20 +28,20 @@ const char* client_public_key_hexstr = "A905EE38C83C2DDBC528396B0DA2341E7FFE7418
 int main()
 {
 	Auth a;
-	cout << (a.login(std::string("qzhsjz"), std::string("86.corrode")) ? "µÇÂ¼³É¹¦" : "µÇÂ¼Ê§°Ü") << endl;
-	cout << (a.is_authed() ? "ÈÏÖ¤³É¹¦" : "ÈÏÖ¤Ê§°Ü") << endl;
+	cout << (a.login(std::string("qzhsjz"), std::string("86.corrode")) ? "ç™»å½•æˆåŠŸ" : "ç™»å½•å¤±è´¥") << endl;
+	cout << (a.is_authed() ? "è®¤è¯æˆåŠŸ" : "è®¤è¯å¤±è´¥") << endl;
 	getchar();
 	return 0;
 }
 **/
 
 /************************************************************************
-*   ¹¦ÄÜ£º½«Ò»¸öÊ®Áù½øÖÆ×Ö½Ú´®×ª»»³É ASCII Âë±íÊ¾µÄÊ®Áù½øÖÆµÄ×Ö·û´®
-*   ÊäÈë²ÎÊı£ºpHex    -- Ê®Áù½øÖÆÊı×Ö½Ú´®Ê×µØÖ·
-*            pAscii -- ×ª»»ºóµÄ ASCII Âë±íÊ¾µÄÊ®Áù½øÖÆ×Ö·û´®µÄÊ×µØÖ·
-*            nLen    -- Òª×ª»»µÄÊ®Áù½øÖÆÊıµÄ³¤¶È£¨×Ö½ÚÊı£©
-*   Êä³ö²ÎÊı£ºNone
-*   ×¢£º  ×ª»»ºóµÄ½á¹ûÈ«²¿ÊÇ´óĞ´ ASCII ±íÊ¾µÄÊ®Áù½øÖÆÊı
+*   åŠŸèƒ½ï¼šå°†ä¸€ä¸ªåå…­è¿›åˆ¶å­—èŠ‚ä¸²è½¬æ¢æˆ ASCII ç è¡¨ç¤ºçš„åå…­è¿›åˆ¶çš„å­—ç¬¦ä¸²
+*   è¾“å…¥å‚æ•°ï¼špHex    -- åå…­è¿›åˆ¶æ•°å­—èŠ‚ä¸²é¦–åœ°å€
+*            pAscii -- è½¬æ¢åçš„ ASCII ç è¡¨ç¤ºçš„åå…­è¿›åˆ¶å­—ç¬¦ä¸²çš„é¦–åœ°å€
+*            nLen    -- è¦è½¬æ¢çš„åå…­è¿›åˆ¶æ•°çš„é•¿åº¦ï¼ˆå­—èŠ‚æ•°ï¼‰
+*   è¾“å‡ºå‚æ•°ï¼šNone
+*   æ³¨ï¼š  è½¬æ¢åçš„ç»“æœå…¨éƒ¨æ˜¯å¤§å†™ ASCII è¡¨ç¤ºçš„åå…­è¿›åˆ¶æ•°
 ************************************************************************/
 void HexToAscii(unsigned char* pHex, unsigned char* pAscii, int nLen)
 {
@@ -66,12 +66,12 @@ void HexToAscii(unsigned char* pHex, unsigned char* pAscii, int nLen)
 }
 
 /****************************************************************************
-*   ¹¦ÄÜ£º½«Ò»¸ö ASCII Âë±íÊ¾µÄÊ®Áù½øÖÆ×Ö·û´®×ª»»³ÉÊ®Áù½øÖÆµÄ×Ö½Ú´®
-*   ÊäÈë²ÎÊı£ºpAscii -- ×ª»»ºóµÄ ASCII Âë±íÊ¾µÄÊ®Áù½øÖÆ×Ö·û´®µÄÊ×µØÖ·
-*            pHex   -- Ê®Áù½øÖÆÊı×Ö½Ú´®Ê×µØÖ·
-*            nLen   -- Òª×ª»»µÄ ASCII Âë±íÊ¾µÄÊ®Áù½øÖÆ×Ö·û´®µÄ³¤¶È£¨×Ö½ÚÊı£©
-*   Êä³ö²ÎÊı£ºNone
-*   ×¢£º  ÒªÇóÊäÈëµÄ ASCII Âë±íÊ¾µÄÊ®Áù½øÖÆÊıµÄ×Ö·û¸öÊı±ØĞëÎªÅ¼Êı£¬³ıÁËÊÇ1 - 9 ºÍ A(a) - F(f) ÒÔÍâÃ»ÓĞ±ğµÄ×Ö·û
+*   åŠŸèƒ½ï¼šå°†ä¸€ä¸ª ASCII ç è¡¨ç¤ºçš„åå…­è¿›åˆ¶å­—ç¬¦ä¸²è½¬æ¢æˆåå…­è¿›åˆ¶çš„å­—èŠ‚ä¸²
+*   è¾“å…¥å‚æ•°ï¼špAscii -- è½¬æ¢åçš„ ASCII ç è¡¨ç¤ºçš„åå…­è¿›åˆ¶å­—ç¬¦ä¸²çš„é¦–åœ°å€
+*            pHex   -- åå…­è¿›åˆ¶æ•°å­—èŠ‚ä¸²é¦–åœ°å€
+*            nLen   -- è¦è½¬æ¢çš„ ASCII ç è¡¨ç¤ºçš„åå…­è¿›åˆ¶å­—ç¬¦ä¸²çš„é•¿åº¦ï¼ˆå­—èŠ‚æ•°ï¼‰
+*   è¾“å‡ºå‚æ•°ï¼šNone
+*   æ³¨ï¼š  è¦æ±‚è¾“å…¥çš„ ASCII ç è¡¨ç¤ºçš„åå…­è¿›åˆ¶æ•°çš„å­—ç¬¦ä¸ªæ•°å¿…é¡»ä¸ºå¶æ•°ï¼Œé™¤äº†æ˜¯1 - 9 å’Œ A(a) - F(f) ä»¥å¤–æ²¡æœ‰åˆ«çš„å­—ç¬¦
 ****************************************************************************/
 void AsciiToHex(unsigned char* pAscii, unsigned char* pHex, int nLen)
 {
@@ -100,7 +100,7 @@ void AsciiToHex(unsigned char* pAscii, unsigned char* pHex, int nLen)
 	}   // for (int i = ...)
 }
 
-// ×Ö½ÚĞò×ª»»
+// å­—èŠ‚åºè½¬æ¢
 void EndianSwap(U8* pData, int startIndex, int length)
 {
 	int i, cnt, end, start;
@@ -116,7 +116,7 @@ void EndianSwap(U8* pData, int startIndex, int length)
 	}
 }
 
-// Ëæ»úÊ®Áù½øÖÆ´óÊıÉú³É
+// éšæœºåå…­è¿›åˆ¶å¤§æ•°ç”Ÿæˆ
 const unsigned char allHexChar[17] = "0123456789abcdef";
 void generateString(unsigned char* dest, const unsigned int len)
 {
@@ -135,17 +135,17 @@ void generateString(unsigned char* dest, const unsigned int len)
 
 Auth::Auth()
 {
-	
+	request.timeout = 3000;
 }
 
 Auth::~Auth()
 {
-	
+	logout();
 }
 
-bool Auth::signSendData(std::ostringstream& senddata)
+inline bool Auth::signSendData(std::ostringstream& senddata)
 {
-	// ¶Ô±íµ¥Êı¾İ½øĞĞ SM3ÕªÒª ºÍ SM2Ç©Ãû
+	// å¯¹è¡¨å•æ•°æ®è¿›è¡Œ SM3æ‘˜è¦ å’Œ SM2ç­¾å
 	U8 senddata_hash[33] = { 0 };
 	unsigned char senddata_sign[65] = { 0 }, random_hexstr[65] = { 0 }, random[33] = { 0 }, client_private_key[33] = { 0 }, client_public_key[65] = { 0 };
 	unsigned int senddata_sign_len;
@@ -157,7 +157,7 @@ bool Auth::signSendData(std::ostringstream& senddata)
 	SM3_Hash((U8*)msg.c_str(), strlen(msg.c_str()), senddata_hash, 32);
 	if (0 == EccSign(senddata_hash, 32, random, 32, client_private_key, 32, senddata_sign, &senddata_sign_len))
 	{
-		// Ç©Ãû¸½¼Ó»Ø±íµ¥
+		// ç­¾åé™„åŠ å›è¡¨å•
 		senddata << "&sign=";
 		for (int i = 0; i < 64; i++)
 			senddata << std::hex << std::setw(2) << std::setfill('0') << (int)senddata_sign[i];
@@ -167,9 +167,9 @@ bool Auth::signSendData(std::ostringstream& senddata)
 		return false;
 }
 
-bool Auth::verifyResponseJson(rapidjson::Document &d)
+inline bool Auth::verifyResponseJson(rapidjson::Document &d)
 {
-	// ÑéÖ¤ÏìÓ¦ÊÇ·ñºÏ·¨
+	// éªŒè¯å“åº”æ˜¯å¦åˆæ³•
 	std::ostringstream recvdata;
 	struct NameComparator {
 		bool operator()(const rapidjson::Value::Member& lhs, const rapidjson::Value::Member& rhs) const {
@@ -180,47 +180,48 @@ bool Auth::verifyResponseJson(rapidjson::Document &d)
 	recvdata << "gen_time=" << d["gen_time"].GetString();
 	for (auto& m : d["payload"].GetObject())
 		recvdata << "&" << m.name.GetString() << "=" << m.value.GetString();
-	std::cout << "½ÓÊÕµ½µÄÉæÃÜ±íµ¥£º" << recvdata.str() << std::endl;
+	std::cout << "æ¥æ”¶åˆ°çš„æ¶‰å¯†è¡¨å•ï¼š" << recvdata.str() << std::endl;
 	U8 recvdata_hash[33] = { 0 };
 	unsigned char server_public_key[65] = { 0 }, recvdata_sign[65] = { 0 };
 	AsciiToHex((unsigned char*)d["sign"].GetString(), recvdata_sign, 128);
 	AsciiToHex((unsigned char*)server_public_key_hexstr, server_public_key, 128);
 	std::string msg = recvdata.str();
-	SM3_Hash((U8*)msg.c_str(), strlen(msg.c_str()), recvdata_hash, 32); // ¼ÆËãÕªÒª
+	SM3_Hash((U8*)msg.c_str(), strlen(msg.c_str()), recvdata_hash, 32); // è®¡ç®—æ‘˜è¦
 	return 0 == EccVerify(recvdata_hash, 32, server_public_key, 64, recvdata_sign, 64);
 }
 
 bool  Auth::login(std::string& username, std::string& password)
 {
 	std::ostringstream senddata;
-	// »ñÈ¡µ±Ç°Ê±¼ä
+	// è·å–å½“å‰æ—¶é—´
 	time_t gentime;
 	time(&gentime);
-	// ¿ªÊ¼¹¹ÔìÇëÇó±íµ¥Êı¾İ
-	senddata << "HWID=" << "testHWID";
+	// å¼€å§‹æ„é€ è¯·æ±‚è¡¨å•æ•°æ®
+	senddata << "HWID=" << getHWID();
 	senddata << "&gen_time=" << gentime;
 	senddata << "&password=" << password;
 	senddata << "&username=" << username;
 	senddata << "&ver=" << menu_version;
-	signSendData(senddata); // ¶Ô±íµ¥Ç©Ãû
-	// ½øĞĞÍøÂçÇëÇó
-	RestClient::Response response = RestClient::post("http://127.0.0.1:8000/auth/login", "application/x-www-form-urlencoded", senddata.str(), &request);
+	signSendData(senddata); // å¯¹è¡¨å•ç­¾å
+	// è¿›è¡Œç½‘ç»œè¯·æ±‚
+	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/login", "application/x-www-form-urlencoded", senddata.str(), &request);
 	request.set_cookie(response.cookies);
-	// ½âÎöÊÕµ½µÄJSONÊı¾İ
+	// è§£ææ”¶åˆ°çš„JSONæ•°æ®
 	rapidjson::Document d;
 	d.Parse(response.body.c_str());
-	// ÅĞ¶ÏÏìÓ¦ÊÇ·ñÕı³£
+	// åˆ¤æ–­å“åº”æ˜¯å¦æ­£å¸¸
 	if (d.IsObject() && d["payload"].IsObject())
 	{
 		time_t recvtime;
 		time(&recvtime);
-		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // ÑéÖ¤ÏìÓ¦ÊÇ·ñÔÚ2ÃëÒÔÄÚĞÂÏÊÉú³É
+		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // éªŒè¯å“åº”æ˜¯å¦åœ¨2ç§’ä»¥å†…æ–°é²œç”Ÿæˆ
 		{
-			if (verifyResponseJson(d)) // ÑéÇ©Í¨¹ı
+			if (verifyResponseJson(d)) // éªŒç­¾é€šè¿‡
 			{
-				// ÅĞ¶ÏÏìÓ¦²¢¼ÓÔØÊı¾İ
+				// åˆ¤æ–­å“åº”å¹¶åŠ è½½æ•°æ®
 				if (d["status"] == "suc")
 				{
+					currerr = std::string();
 					loginuser = std::string(d["payload"]["user"].GetString());
 					authkey = std::string(d["payload"]["auth"].GetString());
 					return true;
@@ -232,25 +233,25 @@ bool  Auth::login(std::string& username, std::string& password)
 				}
 				else
 				{
-					currerr = std::string("·şÎñÆ÷×´Ì¬´íÎó");
+					currerr = std::string("æœåŠ¡å™¨çŠ¶æ€é”™è¯¯");
 					return false;
 				}
 			}
 			else
 			{
-				currerr = std::string("·Ç·¨µÄ·şÎñÆ÷");
+				currerr = std::string("éæ³•çš„æœåŠ¡å™¨");
 				return false;
 			}
 		}
 		else
 		{
-			currerr = std::string("·şÎñÆ÷ÏìÓ¦³¬Ê±");
+			currerr = std::string("æœåŠ¡å™¨å“åº”è¶…æ—¶");
 			return false;
 		}
 	}
 	else
 	{
-		currerr = std::string("·şÎñÆ÷ÏìÓ¦²»ºÏ·¨");
+		currerr = std::string("æœåŠ¡å™¨å“åº”ä¸åˆæ³•");
 		return false;
 	}
 }
@@ -258,32 +259,33 @@ bool  Auth::login(std::string& username, std::string& password)
 bool  Auth::is_authed()
 {
 	std::ostringstream senddata;
-	// »ñÈ¡µ±Ç°Ê±¼ä
+	// è·å–å½“å‰æ—¶é—´
 	time_t gentime;
 	time(&gentime);
-	// ¿ªÊ¼¹¹ÔìÇëÇó±íµ¥Êı¾İ
-	senddata << "HWID=" << "testHWID";
+	// å¼€å§‹æ„é€ è¯·æ±‚è¡¨å•æ•°æ®
+	senddata << "HWID=" << getHWID();
 	senddata << "&gen_time=" << gentime;
 	senddata << "&ver=" << menu_version;
-	signSendData(senddata); // ¶Ô±íµ¥Ç©Ãû
-	// ½øĞĞÍøÂçÇëÇó
-	RestClient::Response response = RestClient::post("http://127.0.0.1:8000/auth/hb", "application/x-www-form-urlencoded", senddata.str(), &request);
+	signSendData(senddata); // å¯¹è¡¨å•ç­¾å
+	// è¿›è¡Œç½‘ç»œè¯·æ±‚
+	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/hb", "application/x-www-form-urlencoded", senddata.str(), &request);
 	//request.set_cookie(response.cookies);
-	// ½âÎöÊÕµ½µÄJSONÊı¾İ
+	// è§£ææ”¶åˆ°çš„JSONæ•°æ®
 	rapidjson::Document d;
 	d.Parse(response.body.c_str());
-	// ÅĞ¶ÏÏìÓ¦ÊÇ·ñÕı³£
+	// åˆ¤æ–­å“åº”æ˜¯å¦æ­£å¸¸
 	if (d.IsObject() && d["payload"].IsObject())
 	{
 		time_t recvtime;
 		time(&recvtime);
-		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // ÑéÖ¤ÏìÓ¦ÊÇ·ñÔÚ2ÃëÒÔÄÚĞÂÏÊÉú³É
+		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // éªŒè¯å“åº”æ˜¯å¦åœ¨2ç§’ä»¥å†…æ–°é²œç”Ÿæˆ
 		{
-			if (verifyResponseJson(d)) // ÑéÇ©Í¨¹ı
+			if (verifyResponseJson(d)) // éªŒç­¾é€šè¿‡
 			{
-				// ÅĞ¶ÏÏìÓ¦²¢¼ÓÔØÊı¾İ
+				// åˆ¤æ–­å“åº”å¹¶åŠ è½½æ•°æ®
 				if (d["status"] == "suc")
 				{
+					currerr = std::string();
 					return true;
 				}
 				else if (d["status"] == "err")
@@ -293,58 +295,71 @@ bool  Auth::is_authed()
 				}
 				else
 				{
-					currerr = std::string("·şÎñÆ÷×´Ì¬´íÎó");
+					currerr = std::string("æœåŠ¡å™¨çŠ¶æ€é”™è¯¯");
 					return false;
 				}
 			}
 			else
 			{
-				currerr = std::string("·Ç·¨µÄ·şÎñÆ÷");
+				currerr = std::string("éæ³•çš„æœåŠ¡å™¨");
 				return false;
 			}
 		}
 		else
 		{
-			currerr = std::string("·şÎñÆ÷ÏìÓ¦³¬Ê±");
+			currerr = std::string("æœåŠ¡å™¨å“åº”è¶…æ—¶");
 			return false;
 		}
 	}
 	else
 	{
-		currerr = std::string("·şÎñÆ÷ÏìÓ¦²»ºÏ·¨");
+		currerr = std::string("æœåŠ¡å™¨å“åº”ä¸åˆæ³•");
 		return false;
 	}
+}
+
+bool Auth::is_authed_rate_limited()
+{
+	if(!is_authed_cache)
+		is_authed_cache = is_authed();
+	if (check_count++ > 2000)
+	{
+		check_count = 0;
+		is_authed_cache = is_authed();
+	}
+	return is_authed_cache;
 }
 
 bool  Auth::logout()
 {
 	std::ostringstream senddata;
-	// »ñÈ¡µ±Ç°Ê±¼ä
+	// è·å–å½“å‰æ—¶é—´
 	time_t gentime;
 	time(&gentime);
-	// ¿ªÊ¼¹¹ÔìÇëÇó±íµ¥Êı¾İ
-	senddata << "HWID=" << "testHWID";
+	// å¼€å§‹æ„é€ è¯·æ±‚è¡¨å•æ•°æ®
+	senddata << "HWID=" << getHWID();
 	senddata << "&gen_time=" << gentime;
 	senddata << "&ver=" << menu_version;
-	signSendData(senddata); // ¶Ô±íµ¥Ç©Ãû
-	// ½øĞĞÍøÂçÇëÇó
-	RestClient::Response response = RestClient::post("http://127.0.0.1:8000/auth/logout", "application/x-www-form-urlencoded", senddata.str());
+	signSendData(senddata); // å¯¹è¡¨å•ç­¾å
+	// è¿›è¡Œç½‘ç»œè¯·æ±‚
+	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/logout", "application/x-www-form-urlencoded", senddata.str());
 	request.set_cookie(response.cookies);
-	// ½âÎöÊÕµ½µÄJSONÊı¾İ
+	// è§£ææ”¶åˆ°çš„JSONæ•°æ®
 	rapidjson::Document d;
 	d.Parse(response.body.c_str());
-	// ÅĞ¶ÏÏìÓ¦ÊÇ·ñÕı³£
+	// åˆ¤æ–­å“åº”æ˜¯å¦æ­£å¸¸
 	if (d.IsObject() && d["payload"].IsObject())
 	{
 		time_t recvtime;
 		time(&recvtime);
-		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // ÑéÖ¤ÏìÓ¦ÊÇ·ñÔÚ2ÃëÒÔÄÚĞÂÏÊÉú³É
+		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // éªŒè¯å“åº”æ˜¯å¦åœ¨2ç§’ä»¥å†…æ–°é²œç”Ÿæˆ
 		{
-			if (verifyResponseJson(d)) // ÑéÇ©Í¨¹ı
+			if (verifyResponseJson(d)) // éªŒç­¾é€šè¿‡
 			{
-				// ÅĞ¶ÏÏìÓ¦²¢¼ÓÔØÊı¾İ
+				// åˆ¤æ–­å“åº”å¹¶åŠ è½½æ•°æ®
 				if (d["status"] == "suc")
 				{
+					currerr = std::string();
 					return true;
 				}
 				else if (d["status"] == "err")
@@ -354,25 +369,25 @@ bool  Auth::logout()
 				}
 				else
 				{
-					currerr = std::string("·şÎñÆ÷×´Ì¬´íÎó");
+					currerr = std::string("æœåŠ¡å™¨çŠ¶æ€é”™è¯¯");
 					return false;
 				}
 			}
 			else
 			{
-				currerr = std::string("·Ç·¨µÄ·şÎñÆ÷");
+				currerr = std::string("éæ³•çš„æœåŠ¡å™¨");
 				return false;
 			}
 		}
 		else
 		{
-			currerr = std::string("·şÎñÆ÷ÏìÓ¦³¬Ê±");
+			currerr = std::string("æœåŠ¡å™¨å“åº”è¶…æ—¶");
 			return false;
 		}
 	}
 	else
 	{
-		currerr = std::string("·şÎñÆ÷ÏìÓ¦²»ºÏ·¨");
+		currerr = std::string("æœåŠ¡å™¨å“åº”ä¸åˆæ³•");
 		return false;
 	}
 }
@@ -387,7 +402,27 @@ const char* Auth::getAuthKey()
 	return authkey.c_str();
 }
 
+const char* Auth::getHWID()
+{
+	HW_PROFILE_INFOA hwid;
+	GetCurrentHwProfileA(&hwid);
+	
+	U8 hwid_hash[33] = { 0 };
+	SM3_Hash((U8*)hwid.szHwProfileGuid, strlen(hwid.szHwProfileGuid), hwid_hash, 32);
+
+	std::ostringstream hwidstream;
+	for (int i = 0; i < 32; i++)
+		hwidstream << std::hex << std::setw(2) << std::setfill('0') << (int)hwid_hash[i];
+
+	return hwidstream.str().c_str();
+}
+
 const char* Auth::getErr()
 {
 	return currerr.c_str();
+}
+
+bool Auth::hasErr()
+{
+	return !currerr.empty();
 }
