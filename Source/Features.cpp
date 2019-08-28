@@ -1597,16 +1597,6 @@ void Features::GodMode(bool toggle) {
 		}
 	}
 }
-bool Features::playertenkped = false;
-int Features::TimePD;
-int Features::TimePD1;
-int Features::TimePD2;
-int Features::TimePD3;
-int Features::TimePD4;
-int Features::TimePD5;
-int Features::TimePD6;
-int Features::TimePD7;
-int Features::TimePD8;
 void Features::TenKPedMoney(bool toggle)
 {
 	Features::TimePD = timeGetTime();

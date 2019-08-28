@@ -9937,7 +9937,14 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 Features::LoadInfoplayer(PLAYER::GET_PLAYER_NAME(Features::Online::selectedPlayer), Features::Online::selectedPlayer);
 			 Menu::Title(PLAYER::GET_PLAYER_NAME(Features::Online::selectedPlayer));
 			 Menu::Option("传送到这个人", [] {Features::Online::TeleportToPlayer(Features::Online::selectedPlayer); });
-			 			 if (Menu::Option("传送到他的车上")) {
+			 if (Menu::Option("传送到我")) {
+			int Me = PLAYER::PLAYER_PED_ID();
+			Vector3 MyPosition = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(Me, 0.0, 0.0, 0.0);
+			 int selectedPed = Features::Online::selectedPlayer;
+			 Features::teleporttocoords(selectedPed, MyPosition);
+
+				}
+			 if (Menu::Option("传送到他的车上")) {
 			Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
 			 for (int i = -1; i < 16; i++)
 			 {
@@ -9946,7 +9953,7 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 PED::SET_PED_INTO_VEHICLE(PLAYER::PLAYER_PED_ID(), veh, i);
 			 }
 			}
-						 }
+			}
 			 Menu::MenuOption("控制选项", attachoptions);
 			 Menu::MenuOption("粒子效果", PTFXO);
 			 Menu::MenuOption("远程控制", Remotes);
@@ -11627,14 +11634,6 @@ Features::notifyMap("~f~快捷键F4打开菜单!");
 			 //Menu::DRAW_TEXTURE("shopui_title_exec_vechupgrade", "shopui_title_exec_vechupgrade", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("传送选项");
 			 Menu::Subtitle("TELEPORT OPTIONS");
-			 /*if (Menu::Option("Teleport to Me")) {
-
-				 int Me = PLAYER::PLAYER_PED_ID();
-				 Vector3 MyPosition = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(Me, 0.0, 0.0, 0.0);
-				 int selectedPed = Features::Online::selectedPlayer;
-				 Features::teleporttocoords(selectedPed, MyPosition);
-
-			 }*/
 			 if (Menu::Option("传送到附近车上")) {
 				 Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
 				 for (int i = -1; i < 16; i++)
