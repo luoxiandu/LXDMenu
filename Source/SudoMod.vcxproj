@@ -133,6 +133,10 @@
     <ClInclude Include="Auth\rapidjson\stream.h" />
     <ClInclude Include="Auth\rapidjson\stringbuffer.h" />
     <ClInclude Include="Auth\rapidjson\writer.h" />
+    <ClInclude Include="Auth\restclient-cpp\restclient.hpp" />
+    <ClInclude Include="Auth\restclient-cpp\textconv_helper.hpp" />
+    <ClInclude Include="Auth\restclient-cpp\winhttp_helper.hpp" />
+    <ClInclude Include="Auth\restclient-cpp\winnet_helper.hpp" />
     <ClInclude Include="Auth\sdtsm\SM2.h" />
     <ClInclude Include="Auth\sdtsm\SM3.h" />
     <ClInclude Include="Auth\ThreadPool.h" />
@@ -153,6 +157,7 @@
     <ClInclude Include="NativeInvoker.h" />
     <ClInclude Include="natives.h" />
     <ClInclude Include="script.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="SubMenus.h" />
     <ClInclude Include="targetver.h" />
@@ -160,7 +165,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Auth.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Auth\sdtsm\SM2.cpp">

@@ -8,7 +8,7 @@
 #include "Auth/rapidjson/writer.h"
 #include "Auth/rapidjson/stringbuffer.h"
 #include "Auth/ThreadPool.h"
-
+#pragma execution_character_set("utf-8")
 
 class Auth
 {

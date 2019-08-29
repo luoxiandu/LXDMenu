@@ -1089,17 +1089,18 @@ void Menu::AddSmallTitle2(char* text)
 
 void Menu::PlayerInfoTitle(char* text)
 {
-	Drawing::Rect(Settings::titleRect, { Settings::menuX + 0.230f,  0.1250f }, { 0.165f, 0.045f });
 	Drawing::Text(text, Settings::titleText, { Settings::menuX + 0.230f, 0.1097f }, { 0.425f, 0.425f }, true);
+	Drawing::Rect(Settings::titleRect, { Settings::menuX + 0.230f,  0.1250f }, { 0.165f, 0.045f });
 }
 
 void Menu::PlayerInfoLine(char* text, short line)
 {
 	if (line == 1) {
-		Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.230f, 0.3335f }, { 0.165f, 20 * 0.045f + -0.303f });
+		// Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.230f, 0.3335f }, { 0.165f, 16 * 0.045f });
 		//Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.1385f, 0.2520f }, { 0.019f, 0.085f });
 	}
 	Drawing::Text(text, Settings::optionText, { Settings::menuX + 0.230f, (line * 0.030f) + 0.155f }, { 0.35f, 0.35f }, true);
+	Drawing::Rect(Settings::optionRect, { Settings::menuX + 0.230f, (line * 0.030f) + 0.170f }, { 0.165f, 0.030f });
 }
 
 void Menu::AddSmallInfo3(char* text, short line)

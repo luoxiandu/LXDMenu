@@ -7624,7 +7624,7 @@ void main() {
 			if (!GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT()) return;
 			password = std::string(GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT());
 			});
-		Menu::Option("~h~~g~登录", [&logged_in, &a, &username, &password, &profilepath] () {
+		Menu::Option("~h~~g~登录", [&logged_in, &a, &username, &password, &profilepath] {
 			logged_in = a.login(username, password);
 			if (logged_in)
 			{
@@ -7649,8 +7649,9 @@ void main() {
 	}
 	Features::notifyMap("~f~尊敬的："+(std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,欢迎使用掌控者(Master)!");
 	Features::notifyMap("~f~快捷键F4打开菜单!");
+	int autherrcount = 0;
 	while (true) {
-		if (!a.is_authed_rate_limited())  // 如果授权出了问题就直接退出
+		if (!a.is_authed_rate_limited() && autherrcount++ > 5)  // 如果授权出了问题就直接退出
 			exit(0);
 		Menu::Checks::Keys();
 		Features::UpdateLoop();

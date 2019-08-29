@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_ERRORS
+#define _USE_WIHTTP_INTERFACE
 #include "Auth/sdtsm/SM2.h"
 #include "Auth/sdtsm/SM3.h"
 
@@ -206,53 +207,61 @@ bool  Auth::login(std::string& username, std::string& password)
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
 	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/login", "application/x-www-form-urlencoded", senddata.str(), &request);
-	request.set_cookie(response.cookies);
-	// 解析收到的JSON数据
-	rapidjson::Document d;
-	d.Parse(response.body.c_str());
-	// 判断响应是否正常
-	if (d.IsObject() && d["payload"].IsObject())
+	if (200 == response.code)
 	{
-		time_t recvtime;
-		time(&recvtime);
-		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // 验证响应是否在2秒以内新鲜生成
+		request.set_cookie(response.cookies);
+		// 解析收到的JSON数据
+		rapidjson::Document d;
+		d.Parse(response.body.c_str());
+		// 判断响应是否正常
+		if (d.IsObject() && d["payload"].IsObject())
 		{
-			if (verifyResponseJson(d)) // 验签通过
+			time_t recvtime;
+			time(&recvtime);
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 3) // 验证响应是否在3秒以内新鲜生成
 			{
-				// 判断响应并加载数据
-				if (d["status"] == "suc")
+				if (verifyResponseJson(d)) // 验签通过
 				{
-					currerr = std::string();
-					loginuser = std::string(d["payload"]["user"].GetString());
-					authkey = std::string(d["payload"]["auth"].GetString());
-					return true;
-				}
-				else if (d["status"] == "err")
-				{
-					currerr = std::string(d["payload"]["message"].GetString());
-					return false;
+					// 判断响应并加载数据
+					if (d["status"] == "suc")
+					{
+						currerr = std::string();
+						loginuser = std::string(d["payload"]["user"].GetString());
+						authkey = std::string(d["payload"]["auth"].GetString());
+						return true;
+					}
+					else if (d["status"] == "err")
+					{
+						currerr = std::string(d["payload"]["message"].GetString());
+						return false;
+					}
+					else
+					{
+						currerr = std::string("服务器状态错误");
+						return false;
+					}
 				}
 				else
 				{
-					currerr = std::string("服务器状态错误");
+					currerr = std::string("非法的服务器");
 					return false;
 				}
 			}
 			else
 			{
-				currerr = std::string("非法的服务器");
+				currerr = std::string("服务器响应超时");
 				return false;
 			}
 		}
 		else
 		{
-			currerr = std::string("服务器响应超时");
+			currerr = std::string("服务器响应不合法");
 			return false;
 		}
 	}
 	else
 	{
-		currerr = std::string("服务器响应不合法");
+		currerr = std::string("网络错误，请重试");
 		return false;
 	}
 }
@@ -270,51 +279,58 @@ bool  Auth::is_authed()
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
 	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/hb", "application/x-www-form-urlencoded", senddata.str(), &request);
-	//request.set_cookie(response.cookies);
-	// 解析收到的JSON数据
-	rapidjson::Document d;
-	d.Parse(response.body.c_str());
-	// 判断响应是否正常
-	if (d.IsObject() && d["payload"].IsObject())
+	if (200 == response.code)
 	{
-		time_t recvtime;
-		time(&recvtime);
-		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // 验证响应是否在2秒以内新鲜生成
+		// 解析收到的JSON数据
+		rapidjson::Document d;
+		d.Parse(response.body.c_str());
+		// 判断响应是否正常
+		if (d.IsObject() && d["payload"].IsObject())
 		{
-			if (verifyResponseJson(d)) // 验签通过
+			time_t recvtime;
+			time(&recvtime);
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 3) // 验证响应是否在3秒以内新鲜生成
 			{
-				// 判断响应并加载数据
-				if (d["status"] == "suc")
+				if (verifyResponseJson(d)) // 验签通过
 				{
-					currerr = std::string();
-					return true;
-				}
-				else if (d["status"] == "err")
-				{
-					currerr = std::string(d["payload"]["message"].GetString());
-					return false;
+					// 判断响应并加载数据
+					if (d["status"] == "suc")
+					{
+						currerr = std::string();
+						return true;
+					}
+					else if (d["status"] == "err")
+					{
+						currerr = std::string(d["payload"]["message"].GetString());
+						return false;
+					}
+					else
+					{
+						currerr = std::string("服务器状态错误");
+						return false;
+					}
 				}
 				else
 				{
-					currerr = std::string("服务器状态错误");
+					currerr = std::string("非法的服务器");
 					return false;
 				}
 			}
 			else
 			{
-				currerr = std::string("非法的服务器");
+				currerr = std::string("服务器响应超时");
 				return false;
 			}
 		}
 		else
 		{
-			currerr = std::string("服务器响应超时");
+			currerr = std::string("服务器响应不合法");
 			return false;
 		}
 	}
 	else
 	{
-		currerr = std::string("服务器响应不合法");
+		currerr = std::string("网络错误，请重试");
 		return false;
 	}
 }
@@ -327,7 +343,6 @@ bool Auth::is_authed_rate_limited()
 	{
 		check_count = 0;
 		tpool->enqueue([this] {this->is_authed_cache = this->is_authed(); });
-		// is_authed_cache = is_authed();
 	}
 	return is_authed_cache;
 }
@@ -345,51 +360,59 @@ bool  Auth::logout()
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
 	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/logout", "application/x-www-form-urlencoded", senddata.str());
-	request.set_cookie(response.cookies);
-	// 解析收到的JSON数据
-	rapidjson::Document d;
-	d.Parse(response.body.c_str());
-	// 判断响应是否正常
-	if (d.IsObject() && d["payload"].IsObject())
+	if (200 == response.code)
 	{
-		time_t recvtime;
-		time(&recvtime);
-		if (abs(recvtime - atoi(d["gen_time"].GetString())) < 2) // 验证响应是否在2秒以内新鲜生成
+		request.set_cookie(response.cookies);
+		// 解析收到的JSON数据
+		rapidjson::Document d;
+		d.Parse(response.body.c_str());
+		// 判断响应是否正常
+		if (d.IsObject() && d["payload"].IsObject())
 		{
-			if (verifyResponseJson(d)) // 验签通过
+			time_t recvtime;
+			time(&recvtime);
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 3) // 验证响应是否在3秒以内新鲜生成
 			{
-				// 判断响应并加载数据
-				if (d["status"] == "suc")
+				if (verifyResponseJson(d)) // 验签通过
 				{
-					currerr = std::string();
-					return true;
-				}
-				else if (d["status"] == "err")
-				{
-					currerr = std::string(d["payload"]["message"].GetString());
-					return false;
+					// 判断响应并加载数据
+					if (d["status"] == "suc")
+					{
+						currerr = std::string();
+						return true;
+					}
+					else if (d["status"] == "err")
+					{
+						currerr = std::string(d["payload"]["message"].GetString());
+						return false;
+					}
+					else
+					{
+						currerr = std::string("服务器状态错误");
+						return false;
+					}
 				}
 				else
 				{
-					currerr = std::string("服务器状态错误");
+					currerr = std::string("非法的服务器");
 					return false;
 				}
 			}
 			else
 			{
-				currerr = std::string("非法的服务器");
+				currerr = std::string("服务器响应超时");
 				return false;
 			}
 		}
 		else
 		{
-			currerr = std::string("服务器响应超时");
+			currerr = std::string("服务器响应不合法");
 			return false;
 		}
 	}
 	else
 	{
-		currerr = std::string("服务器响应不合法");
+		currerr = std::string("网络错误，请重试");
 		return false;
 	}
 }
