@@ -7,6 +7,7 @@ enum SubMenus {
 	PTFXO,
 	playermenu,
 	recover,
+	recoverRank,
 	weapon,
 	objectoptions,
 	onlinemenu_playerlist,

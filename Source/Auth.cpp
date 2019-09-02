@@ -21,9 +21,9 @@
 
 int menu_version = 1.0;
 
-const char* client_private_key_hexstr = "D2F58410E5A3B13BD25A89574C5AEB771042E6403C8F55F81309D593D3071B83";
-const char* server_public_key_hexstr = "86D2E8E41C9A1BECFD336BBE1D3C888C60AF0B9D1C483441007494B712657A70BA1CC8BB5CE850141FF8E12F4ABB5266A51C442EAA3408041A18A0A114154376";
-const char* client_public_key_hexstr = "A905EE38C83C2DDBC528396B0DA2341E7FFE7418B0775E35E54D2345CF1D1C5E7E4BEC2E32384C743A2932F261B493CCDCDA5CDDC3C59F8C034EBE4D6DA15801";
+const char* client_private_key_hexstr = "977EDC91A8BB5825B1D7FAED03B2CF8D87758AFF3A116259EBD25CDAA0FC4612";
+const char* server_public_key_hexstr = "66F16DF14487954D7FF05DA7543B1181134E12D378AD1EE0EC73DC779127B29DB9433AFA50FE33FAD09FF0DD044B91D8D6DC848978F871474E10460A1C1387E5";
+const char* client_public_key_hexstr = "1A29FE06888C6AB8968321171518387052DB33D4C6348ABBEA4D01010A89824C08EAB62D79FDF573044054EE3BC9694E0F782AF6FF290CB07D2A7B3D6C80A0E1";
 
 /**
 int main()
@@ -218,7 +218,7 @@ bool  Auth::login(std::string& username, std::string& password)
 		{
 			time_t recvtime;
 			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 3) // 验证响应是否在3秒以内新鲜生成
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 5) // 验证响应是否在5秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -289,7 +289,7 @@ bool  Auth::is_authed()
 		{
 			time_t recvtime;
 			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 3) // 验证响应是否在3秒以内新鲜生成
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 5) // 验证响应是否在5秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -339,7 +339,7 @@ bool Auth::is_authed_rate_limited()
 {
 	if(!is_authed_cache)
 		is_authed_cache = is_authed();
-	else if (check_count++ > 2000)
+	else if (check_count++ > 300)
 	{
 		check_count = 0;
 		tpool->enqueue([this] {this->is_authed_cache = this->is_authed(); });
@@ -359,7 +359,7 @@ bool  Auth::logout()
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
-	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/logout", "application/x-www-form-urlencoded", senddata.str());
+	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/logout", "application/x-www-form-urlencoded", senddata.str(), &request);
 	if (200 == response.code)
 	{
 		request.set_cookie(response.cookies);
@@ -371,7 +371,7 @@ bool  Auth::logout()
 		{
 			time_t recvtime;
 			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 3) // 验证响应是否在3秒以内新鲜生成
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 5) // 验证响应是否在5秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -427,7 +427,7 @@ const char* Auth::getAuthKey()
 	return authkey.c_str();
 }
 
-const char* Auth::getHWID()
+std::string Auth::getHWID()
 {
 	HW_PROFILE_INFOA hwid;
 	GetCurrentHwProfileA(&hwid);
@@ -435,11 +435,15 @@ const char* Auth::getHWID()
 	U8 hwid_hash[33] = { 0 };
 	SM3_Hash((U8*)hwid.szHwProfileGuid, strlen(hwid.szHwProfileGuid), hwid_hash, 32);
 
+	char* ret = new char[65];
+	memset(ret, 0, 65);
 	std::ostringstream hwidstream;
 	for (int i = 0; i < 32; i++)
-		hwidstream << std::hex << std::setw(2) << std::setfill('0') << (int)hwid_hash[i];
+		hwidstream << std::setiosflags(std::ios::uppercase) << std::hex << std::setw(2) << std::setfill('0') << (int)hwid_hash[i];
 
-	return hwidstream.str().c_str();
+	std::string hwidstr = hwidstream.str();
+
+	return hwidstr;
 }
 
 const char* Auth::getErr()

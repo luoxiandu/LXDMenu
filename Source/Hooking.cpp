@@ -1,4 +1,4 @@
-//Hooking.cpp
+﻿//Hooking.cpp
 #pragma once
 #include "stdafx.h"
 #include <stdlib.h>
@@ -319,7 +319,8 @@ void __stdcall ScriptFunction(LPVOID lpParameter)
 	}
 	catch (...)
 	{
-		Log::Fatal("Failed scriptFiber");
+		// GBK 文本：外挂线程初始化失败，请检查外挂文件完整性。（是不是漏放了外挂资源文件等）
+		Log::Fatal("\xCD\xE2\xB9\xD2\xCF\xDF\xB3\xCC\xB3\xF5\xCA\xBC\xBB\xAF\xCA\xA7\xB0\xDC\xA3\xAC\xC7\xEB\xBC\xEC\xB2\xE9\xCD\xE2\xB9\xD2\xCE\xC4\xBC\xFE\xCD\xEA\xD5\xFB\xD0\xD4\xA1\xA3\xA3\xA8\xCA\xC7\xB2\xBB\xCA\xC7\xC2\xA9\xB7\xC5\xC1\xCB\xCD\xE2\xB9\xD2\xD7\xCA\xD4\xB4\xCE\xC4\xBC\xFE\xB5\xC8\xA3\xA9");
 	}
 }
 
@@ -484,7 +485,8 @@ uint64_t	CPattern::virtual_find_pattern(uint64_t address, BYTE* btMask, char* sz
 
 void	failPat(const char* name)
 {
-	Log::Fatal("Failed to find %s pattern.", name);
+	// Bypass %s 失败！游戏可能已经更新，请等待版本升级。
+	Log::Fatal("\x42\x79\x70\x61\x73\x73\x20\x25\x73\x20\xCA\xA7\xB0\xDC\xA3\xA1\xD3\xCE\xCF\xB7\xBF\xC9\xC4\xDC\xD2\xD1\xBE\xAD\xB8\xFC\xD0\xC2\xA3\xAC\xC7\xEB\xB5\xC8\xB4\xFD\xB0\xE6\xB1\xBE\xC9\xFD\xBC\xB6\xA1\xA3", name);
 	exit(0);
 }
 
@@ -882,9 +884,10 @@ void WAIT(DWORD ms)
 }
 
 
-
+extern Auth authserver;
 DWORD WINAPI CleanupThread(LPVOID lpParam)
 {
+	while(!authserver.logout());
 	for (int i = 0; i < Hooking::m_hooks.size(); i++)
 		MH_QueueDisableHook(Hooking::m_hooks[i]);
 	MH_ApplyQueued();

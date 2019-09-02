@@ -799,8 +799,8 @@ void Menu::Checks::Keys()
 			if (GetTickCount() - Settings::keyPressPreviousTick3 > Settings::keyPressDelay3) {
 				if (IsKeyPressed(VK_F4) || CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlScriptRB) && CONTROLS::IS_DISABLED_CONTROL_PRESSED(0, ControlPhoneRight)) {
 					Settings::menuLevel == 0 ? MenuLevelHandler::MoveMenu(SubMenus::mainmenu) : Settings::menuLevel == 1 ? MenuLevelHandler::BackMenu() : NULL;
-					IconNotification(Menu::Tools::StringToChar("~w~�𾴵ģ�" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~��ӭʹ���ƿ���(Master)!"), "~r~Master Menu", " v1.0.0");
-					Features::notifyMap("����˵��~f~С����8246��������5ȷ��0����!");
+					// IconNotification(Menu::Tools::StringToChar("~w~�𾴵ģ�" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + ",~f~��ӭʹ���ƿ���(Master)!"), "~r~Master Menu", " v1.0.0");
+					// Features::notifyMap("����˵��~f~С����8246��������5ȷ��0����!");
 					if (firstopen) {
 						//IconNotification(Menu::Tools::StringToChar("~w~Welcome " + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())+ "~f~,��ӭʹ���ƿ���(Master)!"), "~r~Master Menu", " v1.0.0");
 						//Features::notifyMap("~f~�𾴵ģ�" + (std::string)PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID()) + "~f~,��ӭʹ���ƿ���(Master)!");
@@ -926,7 +926,7 @@ void Menu::Checks::Keys()
 						teleport_to_marker();
 					}
 					else {
-						Features::notifyMap("~f~�㻹û�п���F5��ݼ��Ͷ��㹦��!");
+						Features::notifyMap("~f~您没有设置导航点！");
 					}
 				}
 
@@ -938,7 +938,7 @@ void Menu::Checks::Keys()
 						teleport_to_objective();
 					}
 					else {
-						Features::notifyMap("~f~�㻹û�п���F7��������㹦��!");
+						Features::notifyMap("~f~未检测到任何目标点！");
 					}
 					
 

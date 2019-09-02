@@ -60,6 +60,15 @@ void Features::DeleteVehicle(Ped PED_ID)
 		VEHICLE::DELETE_VEHICLE(&Vehicle);
 	}
 }
+
+int Features::IconNotification(char* text, char* text2, char* Subject)
+{
+	UI::_SET_NOTIFICATION_TEXT_ENTRY("STRING");
+	UI::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text);
+	UI::_SET_NOTIFICATION_MESSAGE_CLAN_TAG("CHAR_GANGAPP", "CHAR_GANGAPP", false, 7, text2, Subject, 1.0, "___Menu");
+	return UI::_DRAW_NOTIFICATION(1, 1);
+}
+
 //信息框
 void Features::notifyMap(char* fmt, ...)
 {
@@ -833,7 +842,7 @@ void Features::LoadInfoplayer(char* playerName, Player p) {
 	float armor = PED::GET_PED_ARMOUR(ped);
 	float maxArmor = PLAYER::GET_PLAYER_MAX_ARMOUR(p);
 	float armorPercent = armor * 100 / maxArmor;
-	std::ostringstream Armor; Armor << "是否无敌：~s~ " << armorPercent;
+	std::ostringstream Armor; Armor << "护甲值：~s~ " << armorPercent;
 	bool alive = !PED::IS_PED_DEAD_OR_DYING(ped, 1);
 	char* aliveStatus;
 	if (alive) aliveStatus = "Yes"; else aliveStatus = "No";
@@ -1313,20 +1322,11 @@ void Features::NeverGetWanted(bool toggle)
 		Memory::set_value<float>({ OFFSET_PLAYER , OFFSET_PLAYER_INFO , OFFSET_PLAYER_INFO_WANTED }, 0);
 	}
 }
-//不倒翁
-bool Features::budaowen = false;
-void Features::budaowen1(bool toggle)
+//防踢出载具
+bool Features::antiknockoff = false;
+void Features::antiKnockOff(bool toggle)
 {
-	if (toggle == true);
-	{
-		Ped PLAYER_PED_ID = PLAYER::PLAYER_PED_ID();
-		Player PLAYER_ID = PLAYER::PLAYER_ID();
-		PED::SET_PED_CAN_RAGDOLL(PLAYER_PED_ID, false);
-		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(PLAYER_PED_ID, false);
-		PED::SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE(PLAYER_PED_ID, false);
-		PLAYER::GIVE_PLAYER_RAGDOLL_CONTROL(PLAYER_ID, true);
-		PED::SET_PED_RAGDOLL_ON_COLLISION(PLAYER_PED_ID, false);
-	}
+		PED::SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE(PLAYER::PLAYER_PED_ID(), !toggle);
 }
 bool Features::fastrun = false;
 bool Features::fastswim = false;
@@ -1440,7 +1440,7 @@ void Features::featureTalkingPlayers(bool toggle)
 		if (NETWORK::NETWORK_IS_PLAYER_TALKING(i))
 		{
 			talker = PLAYER::GET_PLAYER_NAME(i);
-			snprintf(Talk, 100, "~r~说话: ~s~%s", talker);
+			snprintf(Talk, 100, "~s~%s ~r~说了一句话", talker);
 			Chat(Talk, i);
 		}
 	}
@@ -3632,13 +3632,10 @@ bool Features::moneydropp = false;
 void Features::dildomoneylocal(bool toogle) {
 	Ped iPed = PLAYER::PLAYER_PED_ID();
 	{
-
-		if ((timeGetTime() - TimePD8 > 1000)) // Time between drops
+		if ((timeGetTime() - TimePD8 > 3000)) // Time between drops
 		{
 			void CashDrop(int pedHandle, char* CashModel, int Value);
-
 			{
-				
 				Vector3 coords = ENTITY::GET_ENTITY_COORDS(iPed, FALSE);
 				//int CashHash = -422877666; // prop_cs_dildo
 				//int CashHash = -1803909274;  // prop_paper_bag_small = -1803909274

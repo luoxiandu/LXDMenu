@@ -4,6 +4,7 @@ namespace Features {
 	void notifyMap(char* fmt, ...);
 	void notifyMap(std::string str);
 	void UpdateLoop();
+	int IconNotification(char* text, char* text2, char* Subject);
 	void DeleteVehicle(Ped PED_ID);
 	void TPtoWaypoint();
 
@@ -290,9 +291,9 @@ namespace Features {
 	extern bool TAUNT;
 	
 	extern bool NETWORK;
-	extern bool budaowen;
-	void budaowen1(bool toggle);
+	extern bool antiknockoff;
 	extern bool NETWORKCRC;
+	void antiKnockOff(bool toggle);
 	void REQUESTEVENT();
 	void PLAYERTAUNT();
 	void INCREMENT();

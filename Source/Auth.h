@@ -30,7 +30,7 @@ public:
 	bool logout();
 	const char* getUsername();
 	const char* getAuthKey();
-	const char* getHWID();
+	std::string getHWID();
 	const char* getErr();
 	bool hasErr();
 };
