@@ -166,6 +166,9 @@ namespace Features {
 
 	void StealthDrop2(int amount);
 
+
+	extern bool copslevelup;
+	void copslevelupfunc();
 	
 
 	extern bool savenewdrop;
@@ -350,114 +353,116 @@ namespace Features {
 	void withdraw(long amount);
 
 	void animation(char* anim, char* dict);
-		void clearanim();
+	void clearanim();
 
-		extern bool esper;
-		void esp(Player target);
+	extern bool esper;
+	void esp(Player target);
 
-		void teleportallcoordsns(Vector3 target);
+	void teleportallcoordsns(Vector3 target);
 
-		void SpoofName(std::string name);
+	void SpoofName(std::string name);
 
 		
 
-		void clearbala();
+	void clearbala();
 
-		void TinyPlayer(bool toggle);
-		void changeplate();
-		void trapcage(Ped ped);
-		void trapall();
+	void TinyPlayer(bool toggle);
+	void changeplate();
+	void trapcage(Ped ped);
+	void trapall();
 
-		extern bool betiny;
-		extern bool spectate[32];
-		void specter(Player target);
-		extern float accelerationmultiplier;
-		extern float brakesmultiplier;
-		extern float suspensionseight;
-		extern float accelerationfloat;
-		extern float brakeforcefloat;
-		extern float tractionfloat;
-		extern float deformfloat;
-		extern float upshiftfloat;
-		extern float suspensionfloat;
-		void updatePhysics();
-		void acceleration();
-		void brakeforce();
-		void traction();
-		void deform();
-		void upshift();
-		void suspension();
-		extern bool vehiclegravitybool;
-		void vehiclegravity();
-		extern bool killpedsbool;
-		void killpeds();
+	extern bool betiny;
+	extern bool spectate[32];
+	void specter(Player target);
+	extern float accelerationmultiplier;
+	extern float brakesmultiplier;
+	extern float suspensionseight;
+	extern float accelerationfloat;
+	extern float brakeforcefloat;
+	extern float tractionfloat;
+	extern float deformfloat;
+	extern float upshiftfloat;
+	extern float suspensionfloat;
+	void updatePhysics();
+	void acceleration();
+	void brakeforce();
+	void traction();
+	void deform();
+	void upshift();
+	void suspension();
+	extern bool vehiclegravitybool;
+	void vehiclegravity();
+	extern bool killpedsbool;
+	void killpeds();
 
-		void PTFXCALL(char *call1, char *call2, char *name);
-		extern bool Speedometerbool;
-		void Speedometer(bool toggle);
+	void PTFXCALL(char *call1, char *call2, char *name);
+	extern bool Speedometerbool;
+	void Speedometer(bool toggle);
 
-		void SetMultipliers();
-		extern bool PTLoopedO[35];
-		void PTLopperO(Player target);
-		extern bool bikeNoFall;
-		void nofallbike();
-		extern bool PTLooped;
+	void SetMultipliers();
+	extern bool PTLoopedO[35];
+	void PTLopperO(Player target);
+	extern bool bikeNoFall;
+	void nofallbike();
+	extern bool PTLooped;
 		
-		void StealthRP(Player player);
-		void StealthDropende(Player player);
-		extern int reamount;
-		extern bool StealthLooptoggler[35];
-		void StealthLoopre(Player player);
-		extern std::string name;
-		extern std::string pw;
-		extern bool StealthLooptogglerall;
-		void StealthLoopreall();
+	void StealthRP(Player player);
+	void StealthDropende(Player player);
+	extern int reamount;
+	extern bool StealthLooptoggler[35];
+	void StealthLoopre(Player player);
+	extern std::string name;
+	extern std::string pw;
+	extern bool StealthLooptogglerall;
+	void StealthLoopreall();
 
-		extern bool rapidfirer;
-		void rapidmaker();
-		extern bool WeaponFirework;
-		void featureWeaponFirework(bool toogle);
-		extern bool WeaponRPG;
-		void featureWeaponRPG(bool toogle);
-		extern bool FakeBags;
-		void featureFakeBags(bool toogle);
-		extern bool TeleportGun;
-		void featureTeleportGun(bool toogle);
-		extern bool RhinoGun;
-		void featureRhinoGun(bool toogle);
-		extern bool PantoGun;
-		void featurePantoGun(bool toogle);
-		extern int time;
-		extern bool explodepedsbool;
-		void explodepeds();
-		extern bool explodepedsbool;
-		void explodepeds();
-		extern bool explodenearbyvehiclesbool;
-		void explodenearbyvehicles();
-		extern bool deletenearbyvehiclesbool;
-		void deletenearbyvehicles();
+	extern bool rapidfirer;
+	void rapidmaker();
+	extern bool WeaponFirework;
+	void featureWeaponFirework(bool toogle);
+	extern bool WeaponRPG;
+	void featureWeaponRPG(bool toogle);
+	extern bool FakeBags;
+	void featureFakeBags(bool toogle);
+	extern bool TeleportGun;
+	void featureTeleportGun(bool toogle);
+	extern bool RhinoGun;
+	void featureRhinoGun(bool toogle);
+	extern bool PantoGun;
+	void featurePantoGun(bool toogle);
+	extern int time;
+	extern bool explodepedsbool;
+	void explodepeds();
+	extern bool explodepedsbool;
+	void explodepeds();
+	extern bool explodenearbyvehiclesbool;
+	void explodenearbyvehicles();
+	extern bool deletenearbyvehiclesbool;
+	void deletenearbyvehicles();
 
-		extern int amount;
-		extern int amount5;
-		extern int amount6;
-		extern int amount2;
-		extern int amount3;
-		extern bool banked;
-		extern bool giver;
-		void StealthDropinte();
-		extern bool moneydropp;
-		void dildomoneylocal(bool toogle);
-		extern bool moneydropp2k;
-		void dildmoney(bool toogle);
+	extern int amount;
+	extern int amount5;
+	extern int amount6;
+	extern int amount2;
+	extern int amount3;
+	extern bool banked;
+	extern bool giver;
+	void StealthDropinte();
+	extern bool moneydropp;
+	void dildomoneylocal(bool toogle);
+	extern bool moneydropp2k;
+	void dildmoney(bool toogle);
 
-		extern bool spawnincar;
-		extern bool spawnmaxed;
+	extern bool spawnincar;
+	extern bool spawnmaxed;
 
-		extern bool nStealthLooptogglerall;
-		void nStealthLoopreall();
-		extern bool nStealthLooptoggler[35];
-		void nStealthLoopre(Player player);
-		
+	extern bool nStealthLooptogglerall;
+	void nStealthLoopreall();
+	extern bool nStealthLooptoggler[35];
+	void nStealthLoopre(Player player);
+
+	void ToggleReportProtection(bool);
+	extern bool ReportProtection;
 	
 	namespace Online {
 		extern int selectedPlayer;
@@ -466,4 +471,8 @@ namespace Features {
 	}
 }
 
-
+namespace ReportProtectionHook {
+	bool(*f_incrementStatEventHandler)(char*, char*, float);
+	uintptr_t* m_incrementStatEventVTable;
+	bool hookedIncrementStatEventHandler(char* a1, char* a2, float a3);
+}

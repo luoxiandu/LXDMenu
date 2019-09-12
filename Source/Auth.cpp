@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int menu_version = 1.0;
+int menu_version = 1.05;
 
 const char* client_private_key_hexstr = "977EDC91A8BB5825B1D7FAED03B2CF8D87758AFF3A116259EBD25CDAA0FC4612";
 const char* server_public_key_hexstr = "66F16DF14487954D7FF05DA7543B1181134E12D378AD1EE0EC73DC779127B29DB9433AFA50FE33FAD09FF0DD044B91D8D6DC848978F871474E10460A1C1387E5";
@@ -196,17 +196,19 @@ bool  Auth::login(std::string& username, std::string& password)
 {
 	std::ostringstream senddata;
 	// 获取当前时间
-	time_t gentime;
-	time(&gentime);
+	// time_t gentime;
+	// time(&gentime);
+	// gentime = NETWORK::_GET_POSIX_TIME();
+	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << gentime;
+	senddata << "&gen_time=" << curTime;
 	senddata << "&password=" << password;
 	senddata << "&username=" << username;
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
-	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/login", "application/x-www-form-urlencoded", senddata.str(), &request);
+	RestClient::Response response = RestClient::post("http://47.75.254.17/auth/login", "application/x-www-form-urlencoded", senddata.str(), &request);
 	if (200 == response.code)
 	{
 		request.set_cookie(response.cookies);
@@ -228,6 +230,7 @@ bool  Auth::login(std::string& username, std::string& password)
 						currerr = std::string();
 						loginuser = std::string(d["payload"]["user"].GetString());
 						authkey = std::string(d["payload"]["auth"].GetString());
+						authtype = std::string(d["payload"]["authtype"].GetString());
 						return true;
 					}
 					else if (d["status"] == "err")
@@ -270,15 +273,17 @@ bool  Auth::is_authed()
 {
 	std::ostringstream senddata;
 	// 获取当前时间
-	time_t gentime;
-	time(&gentime);
+	// time_t gentime;
+	// time(&gentime);
+	// gentime = NETWORK::_GET_POSIX_TIME();
+	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << gentime;
+	senddata << "&gen_time=" << curTime;
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
-	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/hb", "application/x-www-form-urlencoded", senddata.str(), &request);
+	RestClient::Response response = RestClient::post("http://47.75.254.17/auth/hb", "application/x-www-form-urlencoded", senddata.str(), &request);
 	if (200 == response.code)
 	{
 		// 解析收到的JSON数据
@@ -351,15 +356,17 @@ bool  Auth::logout()
 {
 	std::ostringstream senddata;
 	// 获取当前时间
-	time_t gentime;
-	time(&gentime);
+	// time_t gentime;
+	// time(&gentime);
+	// gentime = NETWORK::_GET_POSIX_TIME();
+	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << gentime;
+	senddata << "&gen_time=" << curTime;
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
-	RestClient::Response response = RestClient::post("http://39.97.241.22:8000/auth/logout", "application/x-www-form-urlencoded", senddata.str(), &request);
+	RestClient::Response response = RestClient::post("http://47.75.254.17/auth/logout", "application/x-www-form-urlencoded", senddata.str(), &request);
 	if (200 == response.code)
 	{
 		request.set_cookie(response.cookies);
@@ -427,7 +434,7 @@ const char* Auth::getAuthKey()
 	return authkey.c_str();
 }
 
-std::string Auth::getHWID()
+inline std::string Auth::getHWID()
 {
 	HW_PROFILE_INFOA hwid;
 	GetCurrentHwProfileA(&hwid);
@@ -444,6 +451,11 @@ std::string Auth::getHWID()
 	std::string hwidstr = hwidstream.str();
 
 	return hwidstr;
+}
+
+std::string Auth::getAuthType()
+{
+	return authtype;
 }
 
 const char* Auth::getErr()

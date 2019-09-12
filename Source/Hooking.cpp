@@ -615,6 +615,12 @@ void Hooking::FindPatterns()
 
 	Log::Msg("Found 'p_eventHook' pattern.");
 
+	auto p_incrementStatEventVTable = Memory::pattern("48 8D 05 ? ? ? ? 48 89 03 48 8B C3 48 83 C4 ? 5B C3 CC 48 8B C4").count(1);
+	Log::Msg("Found 'p_incrementStatEventVTable' pattern.");
+	ReportProtectionHook::m_incrementStatEventVTable = reinterpret_cast<uintptr_t*>(reinterpret_cast<char*>(p_incrementStatEventVTable.get(0).get<char>(0)) + *reinterpret_cast<int*>(p_incrementStatEventVTable.get(0).get<int>(3)) + 7);
+	ReportProtectionHook::f_incrementStatEventHandler = *reinterpret_cast<bool(**)(char*, char*, float)>(&ReportProtectionHook::m_incrementStatEventVTable[7]);
+	*reinterpret_cast<bool(**)(char*, char*, float)>(&ReportProtectionHook::m_incrementStatEventVTable[7]) = &ReportProtectionHook::hookedIncrementStatEventHandler;
+
 
 	setFn<fpTriggerScriptEvent>("trigger_script_event", "\x48\x8B\xC4\x48\x89\x58\x08\x48\x89\x68\x10\x48\x89\x70\x18\x48\x89\x78\x20\x41\x56\x48\x81\xEC\x00\x00\x00\x00\x45\x8B\xF0\x41\x8B\xF9", "xxxxxxxxxxxxxxxxxxxxxxxx????xxxxxx", &Hooking::trigger_script_event);
 
@@ -778,14 +784,14 @@ void Hooking::FindPatterns()
 
 
 	// Old and detected
-	/*CPattern pattern_modelCheck("\x48\x85\xC0\x0F\x84\x00\x00\x00\x00\x8B\x48\x50", "xxxxx????xxx");
-	auto ptr = pattern_modelCheck.find(0).get(0).get<char>(0);
-	ptr == nullptr ? Log::Msg("Found 'modelCheck2' pattern.") : Memory::nop(ptr, 24);
+	//CPattern pattern_modelCheck("\x48\x85\xC0\x0F\x84\x00\x00\x00\x00\x8B\x48\x50", "xxxxx????xxx");
+	//auto ptr = pattern_modelCheck.find(0).get(0).get<char>(0);
+	//ptr == nullptr ? Log::Msg("Found 'modelCheck2' pattern.") : Memory::nop(ptr, 24);
 
 	//Bypass is player model allowed to spawn checks
-	CPattern pattern_modelSpawn("\x48\x8B\xC8\xFF\x52\x30\x84\xC0\x74\x05\x48", "xxxxxxxxxxx");
-	ptr = pattern_modelSpawn.find(0).get(0).get<char>(8);
-	ptr == nullptr ? Log::Error("Loaded .ini vehicle spawner.") : Memory::nop(ptr, 2);*/
+	//CPattern pattern_modelSpawn("\x48\x8B\xC8\xFF\x52\x30\x84\xC0\x74\x05\x48", "xxxxxxxxxxx");
+	//auto ptr = pattern_modelSpawn.find(0).get(0).get<char>(8);
+	//ptr == nullptr ? Log::Error("Loaded .ini vehicle spawner.") : Memory::nop(ptr, 2);
 
 	// Get active script thread
 	c_location = p_activeThread.count(1).get(0).get<char>(1);

@@ -77,7 +77,7 @@ bool risky = false;
 std::string namech;
 bool GalExist()
 {
-	DWORD dwAttrib = GetFileAttributesA(".\\MasterMenu");
+	DWORD dwAttrib = GetFileAttributesA(".\\24KMenu");
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES && dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
 }
 static char* DiamondDLC[] = {
@@ -7586,6 +7586,12 @@ bool dropCash = false;
 Player player = PLAYER::PLAYER_ID();
 Auth authserver;
 
+int dologout()
+{
+	authserver.logout();
+	return 0;
+}
+
 void main() {
 	bool logged_in = false;
 	std::string username, password;
@@ -7593,8 +7599,8 @@ void main() {
 	SHGetSpecialFolderPathA(GetDesktopWindow(), buffer, CSIDL_LOCAL_APPDATA, true);
 	std::string profilepath = buffer;
 	Menu::Files::StyleSaver::LoadStyles();
-	CreateDirectoryA((profilepath + "\\MasterMenu").c_str(), NULL);
-	std::ifstream configfile((profilepath + "\\MasterMenu\\auth.json").c_str());
+	CreateDirectoryA((profilepath + "\\24KMenu").c_str(), NULL);
+	std::ifstream configfile((profilepath + "\\24KMenu\\auth.json").c_str());
 	std::string configjson;
 	configfile >> configjson;
 	configfile.close();
@@ -7604,15 +7610,22 @@ void main() {
 	{
 		username = std::string(configd["username"].GetString());
 		password = std::string(configd["password"].GetString());
-		logged_in = authserver.login(username, password);
+		int i = 5;
+		while (!logged_in && i--)
+		{
+			authserver.curTime = NETWORK::_GET_POSIX_TIME() + 10;
+			logged_in = authserver.login(username, password);
+			WAIT(500);
+		}
 	}
 	Features::tpKg = false;
 	Features::rwtpKg = false;
 	while (!logged_in) {
+		authserver.curTime = NETWORK::_GET_POSIX_TIME() + 10;
 		Menu::Checks::Keys();
 		Features::rainbowmenu(true);
 		Menu::Title("登录");
-		Menu::Subtitle("~HUD_COLOUR_GOLD~欢迎来到MasterMenu！ ¦");
+		Menu::Subtitle("~HUD_COLOUR_GOLD~欢迎来到24K Menu！ ¦");
 		if (authserver.hasErr()) Menu::Option((std::string("~r~~h~") + authserver.getErr()).c_str());
 		Menu::Option(("~HUD_COLOUR_GOLD~用户名：~s~<C>" + username + "</C>").c_str(), [&username] {
 			GAMEPLAY::DISPLAY_ONSCREEN_KEYBOARD(true, "", "", "", "", "", "", 32);
@@ -7630,7 +7643,7 @@ void main() {
 			logged_in = authserver.login(username, password);
 			if (logged_in)
 			{
-				std::ofstream newconfigfile((profilepath + "\\MasterMenu\\auth.json").c_str());
+				std::ofstream newconfigfile((profilepath + "\\24KMenu\\auth.json").c_str());
 				rapidjson::Document d;
 				d.SetObject();
 				rapidjson::Value u, p;
@@ -7649,12 +7662,14 @@ void main() {
 		Menu::End();
 		WAIT(0);
 	}
+	_onexit(dologout);
 	Features::tpKg = true;
 	Features::rwtpKg = true;
-	Features::IconNotification((char *)(std::string("尊敬的 Master Menu 用户") + authserver.getUsername() + "，请开始您的仙境之旅吧！").c_str(), "~r~Master Menu", " v1.0.0");
+	Features::IconNotification((char *)(std::string("尊敬的 24K Menu 用户") + authserver.getUsername() + "，请开始您的仙境之旅吧！").c_str(), "~r~24K Menu", " v1.0.5");
 	Features::notifyMap("按F4打开菜单");
 	int autherrcount = 0;
 	while (true) {
+		authserver.curTime = NETWORK::_GET_POSIX_TIME() + 10;
 		if (!authserver.is_authed_rate_limited() && autherrcount++ > 5)  // 如果授权出了问题就直接退出
 			// 与授权服务器失去连接，如果频繁出现此类错误，请向组织反馈。如果可以的话，请一并反馈运营商和网络环境的信息，以便我们提供更好的体验。
 			Log::Fatal("\xD3\xEB\xCA\xDA\xC8\xA8\xB7\xFE\xCE\xF1\xC6\xF7\xCA\xA7\xC8\xA5\xC1\xAC\xBD\xD3\xA3\xAC\xC8\xE7\xB9\xFB\xC6\xB5\xB7\xB1\xB3\xF6\xCF\xD6\xB4\xCB\xC0\xE0\xB4\xED\xCE\xF3\xA3\xAC\xC7\xEB\xCF\xF2\xD7\xE9\xD6\xAF\xB7\xB4\xC0\xA1\xA1\xA3\xC8\xE7\xB9\xFB\xBF\xC9\xD2\xD4\xB5\xC4\xBB\xB0\xA3\xAC\xC7\xEB\xD2\xBB\xB2\xA2\xB7\xB4\xC0\xA1\xD4\xCB\xD3\xAA\xC9\xCC\xBA\xCD\xCD\xF8\xC2\xE7\xBB\xB7\xBE\xB3\xB5\xC4\xD0\xC5\xCF\xA2\xA3\xAC\xD2\xD4\xB1\xE3\xCE\xD2\xC3\xC7\xCC\xE1\xB9\xA9\xB8\xFC\xBA\xC3\xB5\xC4\xCC\xE5\xD1\xE9\xA1\xA3");
@@ -7663,34 +7678,51 @@ void main() {
 		switch (Menu::Settings::currentMenu) {
 		case mainmenu:
 		{
-			 Menu::Title("Master Menu");
-			 Menu::Subtitle("~y~VERSION: 1.0.1 beta ¦");
+			 Menu::Title("24K Menu");
+			 Menu::Subtitle("~y~VERSION: 1.0.5 ¦");
+			 Menu::MenuOption("防护选项", protectedmenu);
 			 Menu::MenuOption("战局选项" , onlineoptions);
 			 Menu::MenuOption("自身选项", playermenu);
 			 Menu::MenuOption("武器选项", weapon);
 			 Menu::MenuOption("载具选项", vehicle);
-			 Menu::MenuOption("载具生成", vehspawner);
+			 // Menu::MenuOption("载具生成", vehspawner);
 			 Menu::MenuOption("传送选项", teleports);
 			 Menu::MenuOption("世界选项", worldoptions);
 			 Menu::MenuOption("镜头特效", versionsoptions);
-			 Menu::MenuOption("模型选项", modelObjects);
-			 Menu::MenuOption("账号服务", recover);
+			 if (authserver.getAuthType() == "MEMBER")
+				 Menu::Lock("模型选项");
+			 else
+				Menu::MenuOption("模型选项", modelObjects);
+			 if (authserver.getAuthType() == "MEMBER")
+				 Menu::Lock("账号服务");
+			 else
+				Menu::MenuOption("账号服务", recover);
 			 Menu::MenuOption("其它设置", miscoptions);
 			 Menu::Bool("颜色渐变", Features::RainbowMenu, [] { Features::rainbowmenu(Features::RainbowMenu); });
+			 /*****
+			 int gtatime = NETWORK::_GET_POSIX_TIME();
+			 time_t pctime;
+			 time(&pctime);
+			 std::ostringstream timestream;
+			 timestream << "GTA:" << gtatime  << " PC:" << pctime;
+			 Menu::Option(timestream.str().c_str());
+			 *****/
 		 }
 		 break;
 #pragma endregion
 #pragma region OLINE OPTIONS
 		case onlineoptions:
 		{
-			Menu::Title("线上选项");
+			Menu::Title("战局选项");
 			Menu::Subtitle("OLINE OPTIONS");
-			Menu::MenuOption("防护选项", protectedmenu);
-			Menu::MenuOption("全局控制", allplayers);
+			if (authserver.getAuthType() == "MEMBER")
+				Menu::Lock("全局控制");
+			else
+				Menu::MenuOption("全局控制", allplayers);
 			for (int i = 0; i < 32; ++i) {
 				if (ENTITY::DOES_ENTITY_EXIST(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i))) {
 					Menu::MenuOption(PLAYER::GET_PLAYER_NAME(i), onlinemenu_selected) ? Features::Online::selectedPlayer = i : NULL;
-					if (Menu::Settings::currentOption == i + 1 + 2)
+					if (Menu::Settings::currentOption == i + 2)
 					{
 						Features::LoadInfoplayer(PLAYER::GET_PLAYER_NAME(i), i);
 					}
@@ -7717,8 +7749,9 @@ void main() {
 			 Menu::Bool("掉落$2500", Features::moneydropp, [] { Features::dildomoneylocal(Features::moneydropp); });
 			 // Menu::Int("金额", Features::amount5, 0, 2147483647, 1000000);
 			 // Menu::Bool("确认删钱", Features::remover, [] { Features::Stealth(Features::remover); });
-			 Menu::Int("刷钱金额", Features::amount, 0, 15000000, 1000000);
-			 Menu::Bool("刷钱开关", Features::giver);
+			 Menu::Int("自由刷钱 - 金额", Features::amount, 1000000, 15000000, 1000000);
+			 Menu::Bool("自由刷钱 - 开关", Features::giver);
+			 Menu::Bool("最新安全刷钱1000万", Features::newstealth);
 			 
 
 		 }
@@ -7795,9 +7828,9 @@ void main() {
 				 }
 			 }
 			 Menu::Bool("无限子弹", Features::infammo, [] { Features::noreloadv(Features::infammo); });
-			 Menu::Bool("彩虹枪", Features::rbgun, [] { Features::RBGuner(Features::rbgun); });
-			 Menu::Bool("一击必杀", Features::osk, [] { Features::OSKR(Features::osk); });
+			 Menu::Bool("一击必杀", Features::osk);
 			 Menu::Bool("快速射击", Features::rapidfirer);
+			 Menu::Bool("彩虹枪", Features::rbgun, [] { Features::RBGuner(Features::rbgun); });
 			 Menu::Bool("烟花枪", Features::WeaponFirework, [] {Features::featureWeaponFirework(Features::WeaponFirework); }); //done
 			 Menu::Bool("钱袋枪", Features::FakeBags, [] {Features::featureFakeBags(Features::FakeBags); }); //done
 			 Menu::Bool("火炮枪", Features::WeaponRPG, [] {Features::featureWeaponRPG(Features::WeaponRPG); }); //done
@@ -9723,11 +9756,11 @@ void main() {
 			 Menu::Option("状态 : ~g~未检测");
 			 Menu::Option("GTA5.exe : ~b~v1.0.1737.1");
 			 Menu::Option("支持线上版本 : ~g~1.48");
-			 Menu::Option("程序版本 : ~r~1.0.1");
+			 Menu::Option("外挂版本 : ~r~1.0.5");
 			 Menu::Option("发布日期 : ~c~Sep 1, 2019");
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~∑GTA账号：~q~") + PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())).c_str());
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~已登录用户：~p~") + authserver.getUsername()).c_str());
-			 Menu::Option((std::string("~HUD_COLOUR_GOLD~授权码后五位：~p~") + authserver.getAuthKey()).c_str());
+			 Menu::Option((std::string("~HUD_COLOUR_GOLD~在用授权：~p~") + authserver.getAuthKey() + " - " + authserver.getAuthType()).c_str());
 			 Menu::Option("~y~基于NanoBase和MinHook，感谢他们");
 		 }
 		 break;
@@ -9885,8 +9918,8 @@ void main() {
 			 Menu::Subtitle("ANIMATIONS OPTIONS");
 			 Menu::MenuOption("场景动作", senas);
 			 if (Menu::Option("~r~停止 ~w~动作")) { Features::clearanim(); }
-			 if (Menu::Option("给予性行为")) { Features::doAnimation("rcmpaparazzo_2", "shag_loop_poppy"); }
-			 if (Menu::Option("性行为受益者")) { Features::doAnimation("rcmpaparazzo_2", "shag_loop_a"); }
+			 if (Menu::Option("操别人")) { Features::doAnimation("rcmpaparazzo_2", "shag_loop_poppy"); }
+			 if (Menu::Option("被操")) { Features::doAnimation("rcmpaparazzo_2", "shag_loop_a"); }
 			 if (Menu::Option("脱衣舞表演")) { Features::doAnimation("mini@strip_club@private_dance@part1", "priv_dance_p1"); }
 			 if (Menu::Option("钢管舞表演")) { Features::doAnimation("mini@strip_club@pole_dance@pole_dance1", "pd_dance_01"); }
 			 if (Menu::Option("俯卧撑")) { Features::doAnimation("amb@world_human_push_ups@male@base", "base"); }
@@ -9966,76 +9999,101 @@ void main() {
 			 Menu::Subtitle("ONLINE PLAYERS");
 			 Features::LoadInfoplayer(PLAYER::GET_PLAYER_NAME(Features::Online::selectedPlayer), Features::Online::selectedPlayer);
 			 Menu::Title(PLAYER::GET_PLAYER_NAME(Features::Online::selectedPlayer));
+			 if (Features::Online::selectedPlayer != PLAYER::PLAYER_ID()) { Menu::Bool("远程观看", Features::spectate[Features::Online::selectedPlayer], [] { Features::specter(Features::spectate[Features::Online::selectedPlayer]); }); }
 			 Menu::Option("传送过去", [] {Features::Online::TeleportToPlayer(Features::Online::selectedPlayer); });
 			 if (Menu::Option("传送过来")) {
-			int Me = PLAYER::PLAYER_PED_ID();
-			Vector3 MyPosition = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(Me, 0.0, 0.0, 0.0);
-			 int selectedPed = Features::Online::selectedPlayer;
-			 Features::teleporttocoords(selectedPed, MyPosition);
-
-				}
+				int Me = PLAYER::PLAYER_PED_ID();
+				Vector3 MyPosition = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(Me, 0.0, 0.0, 0.0);
+				 int selectedPed = Features::Online::selectedPlayer;
+				 Features::teleporttocoords(selectedPed, MyPosition);
+			 }
 			 if (Menu::Option("上他的车")) {
-			Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
-			 for (int i = -1; i < 16; i++)
-			 {
-			 if (VEHICLE::IS_VEHICLE_SEAT_FREE(veh, i))
-			 {
-			 PED::SET_PED_INTO_VEHICLE(PLAYER::PLAYER_PED_ID(), veh, i);
-			 }
-			}
-			}
-			 Menu::MenuOption("控制选项", attachoptions);
-			 Menu::MenuOption("镜头特效", PTFXO);
-			 Menu::MenuOption("远程控制", Remotes);
-			 Menu::Bool("检测发言", Features::TalkingPlayers, [] { Features::featureTalkingPlayers(Features::TalkingPlayers); });
-             Menu::Bool("喷水", Features::playerwaterloop[Features::Online::selectedPlayer], [] { Features::WaterLoop(Features::playerwaterloop[Features::Online::selectedPlayer]); });
-			 Menu::Bool("喷火", Features::playerfireloop[Features::Online::selectedPlayer], [] { Features::FireLoop(Features::playerfireloop[Features::Online::selectedPlayer]); });
-			 Menu::Bool("冻结", Features::freezed[Features::Online::selectedPlayer], [] { Features::Freezer(Features::freezed[Features::Online::selectedPlayer]); });
-			 Menu::Bool("失控", Features::fuckedhandling[Features::Online::selectedPlayer], [] { Features::fuckhandling(Features::fuckedhandling[Features::Online::selectedPlayer]); });
-			 Menu::Bool("镜头晃动", Features::camshaker[Features::Online::selectedPlayer], [] { Features::shakecam(Features::camshaker[Features::Online::selectedPlayer]); });
-			 if (Features::Online::selectedPlayer != PLAYER::PLAYER_ID()) { Menu::Bool("远程观看", Features::spectate[Features::Online::selectedPlayer], [] { Features::specter(Features::spectate[Features::Online::selectedPlayer]); }); }
-			 Menu::Bool("循环爆炸", Features::exploder[Features::Online::selectedPlayer], [] { Features::explodeloop(Features::exploder[Features::Online::selectedPlayer]); });
-			 Menu::Bool("掉钱袋", Features::savenewdrop2[Features::Online::selectedPlayer], [] {Features::dildmoney(Features::savenewdrop2[Features::Online::selectedPlayer]); });
-			 if (Menu::Option("爆炸")) {
-				 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
-				 FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1000.f, true, false, 1000.f);
-			 }
-			 if (Menu::Option("踢出载具")) { 
-				 Ped playerPed = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
-				 RequestControlOfEnt(playerPed);
-				 AI::CLEAR_PED_TASKS_IMMEDIATELY(playerPed);
-				 AI::CLEAR_PED_TASKS(playerPed);
-				 AI::CLEAR_PED_SECONDARY_TASK(playerPed);
-			 }
-			 if (Menu::Option("删除载具")) { Features::DeleteVehicle(Features::Online::selectedPlayer); }
-			 if (Menu::Option("克隆"))
-			 {
-				 PED::CLONE_PED(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 1, 1, 1);
-			 }
-			if ( Menu::Option("附身")) {
-				if (player != PLAYER::PLAYER_PED_ID())
-				{
-					ENTITY::ATTACH_ENTITY_TO_ENTITY(PLAYER::PLAYER_PED_ID(), PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 0, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, true, true, false, true, 2, true);
+				Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
+				 for (int i = -1; i < 16; i++)
+				 {
+				 if (VEHICLE::IS_VEHICLE_SEAT_FREE(veh, i))
+				 {
+				 PED::SET_PED_INTO_VEHICLE(PLAYER::PLAYER_PED_ID(), veh, i);
+				 }
 				}
-			}
-			if ( Menu::Option("清除被套模型")) {
-				ENTITY::DETACH_ENTITY(PLAYER::PLAYER_PED_ID(), true, true);
-			}
-			if (Menu::Option("套笼子")) {
-				Features::trapcage(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer));
-			}
-			if (Menu::Option("给予所有武器")) {
-				 uint Weapons[] = { 0x99B507EA, 0x678B81B1, 0x4E875F73, 0x958A4A8F, 0x440E4788, 0x84BD7BFD, 0x1B06D571, 0x5EF9FEC4, 0x22D8FE39, 0x99AEEB3B, 0x13532244, 0x2BE6766B, 0xEFE7E2DF, 0xBFEFFF6D, 0x83BF0278, 0xAF113F99, 0x9D07F764, 0x7FD62962, 0x1D073A89, 0x7846A318, 0xE284C527, 0x9D61E50F, 0x3656C8C1, 0x05FC3C11, 0x0C472FE2, 0x33058E22, 0xA284510B, 0x4DD2DC56, 0xB1CA77B1, 0x687652CE, 0x42BF8A85, 0x93E220BD, 0x2C3731D9, 0xFDBC8A50, 0x24B17070, 0x060EC506, 0x34A67B97, 0xFDBADCED, 0x23C9F95C, 0x497FACC3, 0xF9E6AA4B, 0x61012683, 0xC0A3098D, 0xD205520E, 0xBFD21232, 0x7F229F94, 0x92A27487, 0x083839C4, 0x7F7497E5, 0xA89CB99E, 0x3AABBBAA, 0xC734385A, 0x787F0BB, 0x47757124, 0xD04C944D };
-				 for (int i = 0; i < (sizeof(Weapons) / 4); i++) {
-					 WEAPON::GIVE_DELAYED_WEAPON_TO_PED(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), Weapons[i], 9999, 1);
-					 WAIT(10);
+			 }
+			 if (authserver.getAuthType() == "MEMBER")
+			 {
+				 Menu::Lock("控制选项");
+				 Menu::Lock("镜头特效");
+				 Menu::Lock("远程控制");
+				 Menu::Lock("检测发言");
+				 Menu::Lock("喷水");
+				 Menu::Lock("喷火");
+				 Menu::Lock("冻结");
+				 Menu::Lock("失控");
+				 Menu::Lock("镜头晃动");
+				 Menu::Lock("循环爆炸");
+				 Menu::Lock("掉钱袋");
+				 Menu::Lock("爆炸");
+				 Menu::Lock("踢出载具");
+				 Menu::Lock("删除载具");
+				 Menu::Lock("克隆");
+				 Menu::Lock("附身");
+				 Menu::Lock("清除被套模型");
+				 Menu::Lock("套笼子");
+				 Menu::Lock("给予所有武器");
+				 Menu::Lock("清除所有武器");
+			 }
+			 else
+			 {
+				 Menu::MenuOption("控制选项", attachoptions);
+				 Menu::MenuOption("镜头特效", PTFXO);
+				 Menu::MenuOption("远程控制", Remotes);
+				 Menu::Bool("检测发言", Features::TalkingPlayers, [] { Features::featureTalkingPlayers(Features::TalkingPlayers); });
+				 Menu::Bool("喷水", Features::playerwaterloop[Features::Online::selectedPlayer], [] { Features::WaterLoop(Features::playerwaterloop[Features::Online::selectedPlayer]); });
+				 Menu::Bool("喷火", Features::playerfireloop[Features::Online::selectedPlayer], [] { Features::FireLoop(Features::playerfireloop[Features::Online::selectedPlayer]); });
+				 Menu::Bool("冻结", Features::freezed[Features::Online::selectedPlayer], [] { Features::Freezer(Features::freezed[Features::Online::selectedPlayer]); });
+				 Menu::Bool("失控", Features::fuckedhandling[Features::Online::selectedPlayer], [] { Features::fuckhandling(Features::fuckedhandling[Features::Online::selectedPlayer]); });
+				 Menu::Bool("镜头晃动", Features::camshaker[Features::Online::selectedPlayer], [] { Features::shakecam(Features::camshaker[Features::Online::selectedPlayer]); });
+				 Menu::Bool("循环爆炸", Features::exploder[Features::Online::selectedPlayer], [] { Features::explodeloop(Features::exploder[Features::Online::selectedPlayer]); });
+				 Menu::Bool("掉钱袋", Features::savenewdrop2[Features::Online::selectedPlayer], [] {Features::dildmoney(Features::savenewdrop2[Features::Online::selectedPlayer]); });
+				 if (Menu::Option("爆炸")) {
+					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
+					 FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1000.f, true, false, 1000.f);
+				 }
+				 if (Menu::Option("踢出载具")) {
+					 Ped playerPed = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
+					 RequestControlOfEnt(playerPed);
+					 AI::CLEAR_PED_TASKS_IMMEDIATELY(playerPed);
+					 AI::CLEAR_PED_TASKS(playerPed);
+					 AI::CLEAR_PED_SECONDARY_TASK(playerPed);
+				 }
+				 if (Menu::Option("删除载具")) { Features::DeleteVehicle(Features::Online::selectedPlayer); }
+				 if (Menu::Option("克隆"))
+				 {
+					 PED::CLONE_PED(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 1, 1, 1);
+				 }
+				 if (Menu::Option("附身")) {
+					 if (player != PLAYER::PLAYER_PED_ID())
+					 {
+						 ENTITY::ATTACH_ENTITY_TO_ENTITY(PLAYER::PLAYER_PED_ID(), PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 0, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, true, true, false, true, 2, true);
+					 }
+				 }
+				 if (Menu::Option("清除被套模型")) {
+					 ENTITY::DETACH_ENTITY(PLAYER::PLAYER_PED_ID(), true, true);
+				 }
+				 if (Menu::Option("套笼子")) {
+					 Features::trapcage(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer));
+				 }
+				 if (Menu::Option("给予所有武器")) {
+					 uint Weapons[] = { 0x99B507EA, 0x678B81B1, 0x4E875F73, 0x958A4A8F, 0x440E4788, 0x84BD7BFD, 0x1B06D571, 0x5EF9FEC4, 0x22D8FE39, 0x99AEEB3B, 0x13532244, 0x2BE6766B, 0xEFE7E2DF, 0xBFEFFF6D, 0x83BF0278, 0xAF113F99, 0x9D07F764, 0x7FD62962, 0x1D073A89, 0x7846A318, 0xE284C527, 0x9D61E50F, 0x3656C8C1, 0x05FC3C11, 0x0C472FE2, 0x33058E22, 0xA284510B, 0x4DD2DC56, 0xB1CA77B1, 0x687652CE, 0x42BF8A85, 0x93E220BD, 0x2C3731D9, 0xFDBC8A50, 0x24B17070, 0x060EC506, 0x34A67B97, 0xFDBADCED, 0x23C9F95C, 0x497FACC3, 0xF9E6AA4B, 0x61012683, 0xC0A3098D, 0xD205520E, 0xBFD21232, 0x7F229F94, 0x92A27487, 0x083839C4, 0x7F7497E5, 0xA89CB99E, 0x3AABBBAA, 0xC734385A, 0x787F0BB, 0x47757124, 0xD04C944D };
+					 for (int i = 0; i < (sizeof(Weapons) / 4); i++) {
+						 WEAPON::GIVE_DELAYED_WEAPON_TO_PED(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), Weapons[i], 9999, 1);
+						 WAIT(10);
+					 }
+				 }
+				 if (Menu::Option("清除所有武器")) {
+					 WEAPON::REMOVE_ALL_PED_WEAPONS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), true);
 				 }
 			 }
-			 if (Menu::Option("清除所有武器")) {
-				 WEAPON::REMOVE_ALL_PED_WEAPONS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), true);
-			 }
-			 
 		 }
+			 
 		 break;
 #pragma endregion
 #pragma region Recovery Menu
@@ -10092,6 +10150,7 @@ void main() {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_BAD_CREW_EMBLEM"), 0, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_GAME_EXPLOITS"), 0, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_EXPLOITS"), 0, 1);
+				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_TC_ANNOYINGME"), 0, 1);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_ISPUNISHED"), 0, 1);
 			 }
 		 }
@@ -10103,6 +10162,7 @@ void main() {
 
 			 Menu::Title("账号服务 - 刷级");
 			 Menu::Subtitle("RANK OPTIONS");
+			 Menu::Bool("警星刷经验", Features::copslevelup);
 			 if (Menu::Option("刷级到 88")) {
 				 Features::SetRank(88);
 			 }
@@ -10202,7 +10262,7 @@ void main() {
 			 
 			 Menu::Title("菜单位置");
 			 Menu::Subtitle("SETTINGS OPTIONS");
-			 Menu::MenuOption("Master Menu", settingsmenu_theme);
+			 // Menu::MenuOption("菜单样式", settingsmenu_theme);
 			 if (Menu::Option("界面右移 >")) { Menu::Settings::menuX = 0.85f; }
 			 if (Menu::Option("界面左移 <")) { Menu::Settings::menuX = 0.15f; }
 			 
@@ -10214,21 +10274,21 @@ void main() {
 		 case protectedmenu:
 		 {
 
-			 Menu::Title("保护选项");
+			 Menu::Title("防护选项");
 			 Menu::Subtitle("PROTECTION OPTIONS");
-			 Menu::Bool("防信息轰炸", Features::votes, [] { Features::kickvotes(); });
-			 Menu::Bool("防攻击(防踢)", Features::att, [] { Features::antiattacks(); });
-			 Menu::Bool("防踢出载具", Features::antiknockoff, [] { Features::antiKnockOff(Features::antiknockoff); });
-			 Menu::Bool("防模型", Features::fmx, [] { Features::FMX(); });
-			 Menu::Bool("防火", Features::profire, [] { Features::antifire(); });
-			 Menu::Bool("防爆炸", Features::explosion, [] { Features::antiexplosion(); });
-			 Menu::Bool("防掉钱袋", Features::bypass, [] { Features::moneyBypass(); });
-			 Menu::Bool("防恶意举报", Features::NETWORK, [] { Features::INCREMENT(); });
-			 Menu::Bool("天气保护", Features::WEATHER, [] { Features::WEATHERtacks(); });
-			 Menu::Bool("防通缉级别", Features::WANTED, [] { Features::WANTEDLEVEL(); });
-			 Menu::Bool("防控制", Features::RAGDOLL, [] { Features::REQUESTEVENT(); });
-			 Menu::Bool("防清除武器", Features::revweapons, [] { Features::remoweapons(); });
-			 Menu::Option("正在开发-尽情期待!!!");
+			 Menu::Bool("实时屏蔽举报", Features::ReportProtection, [] { Features::ToggleReportProtection(Features::ReportProtection); });
+			 // Menu::Bool("防信息轰炸", Features::votes, [] { Features::kickvotes(); });
+			 // Menu::Bool("防攻击(防踢)", Features::att, [] { Features::antiattacks(); });
+			 // Menu::Bool("防踢出载具", Features::antiknockoff, [] { Features::antiKnockOff(Features::antiknockoff); });
+			 // Menu::Bool("防模型", Features::fmx, [] { Features::FMX(); });
+			 // Menu::Bool("防火", Features::profire, [] { Features::antifire(); });
+			 // Menu::Bool("防爆炸", Features::explosion, [] { Features::antiexplosion(); });
+			 // Menu::Bool("防掉钱袋", Features::bypass, [] { Features::moneyBypass(); });
+			 // Menu::Bool("防恶意举报", Features::NETWORK, [] { Features::INCREMENT(); });
+			 // Menu::Bool("天气保护", Features::WEATHER, [] { Features::WEATHERtacks(); });
+			 // Menu::Bool("防通缉级别", Features::WANTED, [] { Features::WANTEDLEVEL(); });
+			 // Menu::Bool("防控制", Features::RAGDOLL, [] { Features::REQUESTEVENT(); });
+			 // Menu::Bool("防清除武器", Features::revweapons, [] { Features::remoweapons(); });
 		 }
 		 break;
 		 case headerpic:
@@ -11293,6 +11353,8 @@ void main() {
 			 
 			 Menu::Title("载具生成");
 			 Menu::Subtitle("VEHICLE SPAWNER");
+			 Menu::Bool("即刷即上", Features::spawnincar);
+			 Menu::Bool("直接满改", Features::spawnmaxed);
 			 Menu::MenuOption("DLC 车辆", dlcvehicles);
 			 Menu::MenuOption("超级跑车", Super);
 			 Menu::MenuOption("运动车辆", Sports);
@@ -11317,176 +11379,174 @@ void main() {
 			 Menu::MenuOption("火车", Trains);
 			 Menu::MenuOption("公用车辆", Utility);
 			 Menu::MenuOption("货车", Vans);
-			 Menu::Bool("刷车进入车内", Features::spawnincar);
-			 Menu::Bool("刷出最高等级", Features::spawnmaxed);
 			 break;
 		 case CasinoVehicles:
 			 Menu::Title("Casino");
 			 Menu::Subtitle("CASINO DLC 1.47");
-			 for (auto car : DiamondDLC) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : DiamondDLC) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Super:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Super");
 			 Menu::Subtitle("Category Super");
-			 for (auto car : Super1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Super1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Sports:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Sports");
 			 Menu::Subtitle("Category Sports");
-			 for (auto car : Sports1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Sports1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case SportClassic:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Sports Classic");
 			 Menu::Subtitle("Category Sports Classic");
-			 for (auto car : SportsClassics1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : SportsClassics1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Offroad:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Offroad");
 			 Menu::Subtitle("Category Offroad");
-			 for (auto car : OffRoad1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : OffRoad1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Sedans:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Sedans");
 			 Menu::Subtitle("Category Sedans");
-			 for (auto car : Sedans1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Sedans1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Coupes:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Coupes");
 			 Menu::Subtitle("Category Coupes");
-			 for (auto car : Coupes1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Coupes1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Muscle:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Muscle");
 			 Menu::Subtitle("Category Muscle");
-			 for (auto car : Muscle1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Muscle1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Boats:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Boats");
 			 Menu::Subtitle("Category Boats");
-			 for (auto car : Boats1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Boats1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Commercial:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Commercial");
 			 Menu::Subtitle("Category Commercial");
-			 for (auto car : Commercial1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Commercial1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Compacts:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Compacts");
 			 Menu::Subtitle("Category Compacts");
-			 for (auto car : Compacts1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Compacts1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Cycles:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Cycles");
 			 Menu::Subtitle("Category Cycles");
-			 for (auto car : Cycles1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Cycles1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Emergency:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Emergency");
 			 Menu::Subtitle("Category Emergency");
-			 for (auto car : Emergency1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Emergency1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Helicopters:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Helicopters");
 			 Menu::Subtitle("Category Helicopters");
-			 for (auto car : Helicopters1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Helicopters1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Industrial:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Industrial");
 			 Menu::Subtitle("Category Industrial");
-			 for (auto car : Industrial1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Industrial1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Military:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Military");
 			 Menu::Subtitle("Category Military");
-			 for (auto car : Military1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Military1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Motorcycles:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Motorcycles");
 			 Menu::Subtitle("Category Motorcycles");
-			 for (auto car : Motorcycles1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Motorcycles1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Planes:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Planes");
 			 Menu::Subtitle("Category Planes");
-			 for (auto car : Planes1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Planes1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Service:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Service");
 			 Menu::Subtitle("Category Service");
-			 for (auto car : Service1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Service1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case SUV:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("SUV");
 			 Menu::Subtitle("Category SUV");
-			 for (auto car : SUVs1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : SUVs1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Trailer:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Trailer");
 			 Menu::Subtitle("Category Trailer");
-			 for (auto car : Trailer1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Trailer1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Trains:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Trains");
 			 Menu::Subtitle("Category Trains");
-			 for (auto car : Trains1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Trains1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Utility:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Utility");
 			 Menu::Subtitle("Category Utility");
-			 for (auto car : Utility1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Utility1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Vans:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Vans");
 			 Menu::Subtitle("Category Vans");
-			 for (auto car : Vans1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Vans1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case smugglers_run:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Smugglers Run");
 			 Menu::Subtitle("Category Smugglers Run");
-			 for (auto car : smugglers1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : smugglers1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 case Gunrunning:
 			 //Menu::DRAW_TEXTURE("shopui_title_clubhousemod", "shopui_title_clubhousemod", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 			 Menu::Title("Gunrunning");
 			 Menu::Subtitle("Category Gunrunning");
-			 for (auto car : Gunrunning1) { Menu::Option(car, [car] { Features::spawn_vehicle(car); }); }
+			 for (auto car : Gunrunning1) { Menu::Option((std::string(UI::_GET_LABEL_TEXT(car)) +" (模型名：" + car + ")").c_str(), [car] { Features::spawn_vehicle(car); }); }
 			 break;
 		 }
 		 case DoomsdayHeist:
 			 Menu::Title("Doomsday");
 			 Menu::Subtitle("Category Doomsday");
-			 for (auto car : Doomsday) { Menu::Option(car, [car] { Features::spawn_vehicle(car); });
+			 for (auto car : Doomsday) { Menu::Option(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(GAMEPLAY::GET_HASH_KEY(car)), [car] { Features::spawn_vehicle(car); });
 			 }
 			 break;
 		 case VelosesEstilos:
 			 Menu::Title("SA Sport Series");
 			 Menu::Subtitle("Category SA Sport Series");
 			 for (auto car : SportSeries) {
-				 Menu::Option(car, [car] { Features::spawn_vehicle(car); });
+				 Menu::Option(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(GAMEPLAY::GET_HASH_KEY(car)), [car] { Features::spawn_vehicle(car); });
 			 }
 			 break;
 #pragma endregion

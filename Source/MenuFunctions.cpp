@@ -53,8 +53,8 @@ bool FileExists(const std::string& fileName)
 
 void YTD()
 {
-	std::string path = "MasterMenu/";
-	std::string name = "Master.ytd";
+	std::string path = "24KMenu/";
+	std::string name = "24k.ytd";
 	const std::string fullPath = path + name;
 
 	int textureID;
@@ -207,11 +207,11 @@ void Menu::Title(const char * title)
 	Ped playerPed = PLAYER::PLAYER_PED_ID();
 
 	//Drawing::Spriter("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
-	Drawing::Spriter("Master", "Teste", Settings::menuX, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
+	Drawing::Spriter("24k", "Teste", Settings::menuX, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 	
 	float speed = ENTITY::GET_ENTITY_SPEED(PED::GET_VEHICLE_PED_IS_USING(playerPed));
 	float rotation = speed * 2.51f /*as miles*/ * 1.6f /*as kilometers*/ / 320.0f /*circle max*/ + 0.655f /*arrow initial rotation*/;
-	Drawing::Spriter("Master", "NativeSpeedoBack", 30, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
+	Drawing::Spriter("24k", "NativeSpeedoBack", 30, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
 
 	
 	YTD();
@@ -323,22 +323,32 @@ bool Menu::MenuOption(const char * option, SubMenus newSub, std::function<void()
 	return false;
 }
 
+bool Menu::Lock(const char* option)
+{
+	Option(option);
+	if (Settings::currentOption <= Settings::maxVisOptions && Settings::optionCount <= Settings::maxVisOptions)
+		Drawing::Spriter("commonmenu", "shop_lock", Settings::menuX + 0.095f, (Settings::optionCount * 0.035f + 0.141f), 0.027f, 0.048f, 0, 255, 255, 255, 255);
+	else if (Settings::optionCount > Settings::currentOption - Settings::maxVisOptions && Settings::optionCount <= Settings::currentOption)
+		Drawing::Spriter("commonmenu", "shop_lock", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.027f, 0.048f, 0, 255, 255, 255, 255);
+	return false;
+}
+
 bool Menu::Bool(const char * option, bool & b00l)
 {
 	Option(option);
 	if (b00l)
 	{
 		if (Settings::currentOption <= Settings::maxVisOptions && Settings::optionCount <= Settings::maxVisOptions)
-			Drawing::Spriter("commonmenu", "shop_NEW_Star", Settings::menuX + 0.095f, (Settings::optionCount * 0.035f + 0.141f), 0.02f, 0.03f, 0, 0, 255, 0, 255);
+			Drawing::Spriter("commonmenu", "shop_box_tick", Settings::menuX + 0.095f, (Settings::optionCount * 0.035f + 0.141f), 0.027f, 0.048f, 0, 255, 255, 255, 255);
 		else if (Settings::optionCount > Settings::currentOption - Settings::maxVisOptions && Settings::optionCount <= Settings::currentOption)
-			Drawing::Spriter("commonmenu", "shop_NEW_Star", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.02f, 0.03f, 0, 0, 255, 0, 255);
+			Drawing::Spriter("commonmenu", "shop_box_tick", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.027f, 0.048f, 0, 255, 255, 255, 255);
 	}
 	else
 	{
 		if (Settings::currentOption <= Settings::maxVisOptions && Settings::optionCount <= Settings::maxVisOptions)
-			Drawing::Spriter("commonmenu", "shop_NEW_Star", Settings::menuX + 0.095f, (Settings::optionCount * 0.035f + 0.141f), 0.02f, 0.03f, 0, 255, 0, 70, 255);
+			Drawing::Spriter("commonmenu", "shop_box_blank", Settings::menuX + 0.095f, (Settings::optionCount * 0.035f + 0.141f), 0.027f, 0.048f, 0, 255, 255, 255, 255);
 		else if (Settings::optionCount > Settings::currentOption - Settings::maxVisOptions && Settings::optionCount <= Settings::currentOption)
-			Drawing::Spriter("commonmenu", "shop_NEW_Star", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.02f, 0.03f, 0, 255, 0, 70, 255);
+			Drawing::Spriter("commonmenu", "shop_box_blank", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.027f, 0.048f, 0, 255, 255, 255, 255);
 	}
 	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
 		b00l ^= 1;
@@ -1159,7 +1169,7 @@ public:
 		return std::stof(GetString(app, key));
 	}
 };
-std::string MenuStyleFile = ".\\MasterMenu\\MenuStyle.ini";
+std::string MenuStyleFile = ".\\24KMenu\\MenuStyle.ini";
 void Menu::Files::StyleSaver::SaveStyles()
 {
 	// Title Text

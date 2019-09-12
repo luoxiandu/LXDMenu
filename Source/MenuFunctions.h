@@ -125,6 +125,7 @@ namespace Menu {
 	bool Option(const char* option, std::function<void()> function);
 	bool MenuOption(const char* option, SubMenus newSub);
 	bool MenuOption(const char* option, SubMenus newSub, std::function<void()> function);
+	bool Lock(const char* option);
 	bool Bool(const char* option, bool& b00l);
 	bool Bool(const char* option, bool& b00l, std::function<void()> function);
 	bool Int(const char* option, int& _int, int min, int max);

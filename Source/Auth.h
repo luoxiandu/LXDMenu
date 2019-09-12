@@ -15,21 +15,24 @@ class Auth
 private:
 	bool is_authed_cache;
 	int check_count;
-	RestClient::Request request;
+	int fail_count;
 	ThreadPool* tpool;
-	std::string loginuser, authkey, currerr;
+	RestClient::Request request;
+	std::string loginuser, authkey, authtype, currerr;
 	bool verifyResponseJson(rapidjson::Document& d);
 	bool signSendData(std::ostringstream& senddata);
 
 public:
 	Auth();
 	~Auth();
+	int curTime;
 	bool login(std::string& username, std::string& password);
 	bool is_authed();
 	bool is_authed_rate_limited();
 	bool logout();
 	const char* getUsername();
 	const char* getAuthKey();
+	std::string getAuthType();
 	std::string getHWID();
 	const char* getErr();
 	bool hasErr();

@@ -144,6 +144,8 @@ void Features::UpdateLoop()
 
 	neverwanted ? NeverGetWanted(true) : NULL;
 
+	osk ? OSKR(true) : NULL;
+
 	betiny ? TinyPlayer(true) : NULL;
 
 	superman ? Superman(true) : NULL;
@@ -357,7 +359,10 @@ void Features::UpdateLoop()
 		}
 	}
 
-	
+	if (copslevelup)
+	{
+		copslevelupfunc();
+	}
 
 	flybool ? playerflyer(true) : NULL;
 
@@ -496,7 +501,19 @@ void Features::Offradarlester()
 }
 
 bool Features::newstealth = false;
-void Features::StealthCash4Loop() {//Stealth 10M
+void Features::StealthCash4Loop()
+{
+	if ((timeGetTime() - Features::TimePD2) > 1000) // 时间间隔
+	{
+		Any idk = GAMEPLAY::GET_RANDOM_INT_IN_RANGE(1500000000, 2999999999);
+		UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, 312105838, 1445302971, 10000000, 4);
+		UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
+		NETWORKCASH::NETWORK_EARN_FROM_ROCKSTAR(10000000);
+		Features::TimePD2 = timeGetTime();
+	}
+}
+// 原写法
+/*void Features::StealthCash4Loop() {//Stealth 10M
 	Features::resetStealth();
 	globalHandle(4107E9).As<int>() = 1;
 	globalHandle(4107E9).At(0, 7).As<int>() = 2;
@@ -512,7 +529,7 @@ void Features::resetStealth() {
 	globalHandle(4107E9).As<int>() = 0;
 	globalHandle(4107E9).At(0, 7).As<int>() = 2147483647;
 	globalHandle(4107E9).At(0, 7).At(4).As<int>() = NETWORK::GET_NETWORK_TIME();
-}
+}*/
 
 //LocalPed = 0x08;
 char LocalPed = 0x08;
@@ -594,6 +611,7 @@ void CREATE_VEHICLE(LPCSTR modelName, float x, float y, float z, float heading, 
 
 }
 void Features::spawn_vehicle(char* toSpawn) {
+	globalHandle(4267883).As<int>() = 1; // 刷车bypass
 	Hash model = GAMEPLAY::GET_HASH_KEY(toSpawn);
 	if (STREAMING::IS_MODEL_VALID(model))
 	{
@@ -611,8 +629,8 @@ void Features::spawn_vehicle(char* toSpawn) {
 		DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
 		auto networkId = NETWORK::VEH_TO_NET(veh);
 		ENTITY::_SET_ENTITY_SOMETHING(veh, true);
-		/*ENTITY::_SET_ENTITY_REGISTER(veh, true);
-		BypassOnlineVehicleKick();*/
+		ENTITY::_SET_ENTITY_REGISTER(veh, true);
+		BypassOnlineVehicleKick();
 		if (NETWORK::NETWORK_GET_ENTITY_IS_NETWORKED(veh))
 			NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true);
 		if (Features::spawnincar)
@@ -1145,7 +1163,7 @@ void Features::OnlinePlayerInfo(char* playerName, Player p)
 	int Client_Cash = Read_Global(1581949 + (306 * Features::Online::selectedPlayer));
 	char *ClientCash_string = ItoS(Client_Cash);
 	char Cash_buf[90];
-	snprintf(Cash_buf, sizeof(Cash_buf), "资金: ~b~$%s", ClientCash_string);
+	snprintf(Cash_buf, sizeof(Cash_buf), "金钱: ~b~$%s", ClientCash_string);
 	drawText(Cash_buf, 0, 0.48f, 0.1400f, 0.37f, 0.37f, bannerTextRed, bannerTextGreen, bannerTextBlue, bannerTextOpacity, false);
 	//ID 
 	char * ID = ItoS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer));
@@ -1579,7 +1597,7 @@ void Features::GodMode(bool toggle) {
 
 	if (toggle)
 	{
-		PLAYER::SET_PLAYER_INVINCIBLE(player, true);
+		Memory::set_value<bool>({ OFFSET_PLAYER, OFFSET_PLAYER_INFO, OFFSET_ENTITY_GOD }, 1);
 		ENTITY::SET_ENTITY_PROOFS(playerPed, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
 		PED::SET_PED_CAN_RAGDOLL(playerPed, FALSE);
 		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(playerPed, FALSE);
@@ -1587,7 +1605,7 @@ void Features::GodMode(bool toggle) {
 	}
 	else
 	{
-		PLAYER::SET_PLAYER_INVINCIBLE(player, false);
+		Memory::set_value<bool>({ OFFSET_PLAYER, OFFSET_PLAYER_INFO, OFFSET_ENTITY_GOD }, 0);
 		ENTITY::SET_ENTITY_PROOFS(playerPed, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE);
 		PED::SET_PED_CAN_RAGDOLL(playerPed, TRUE);
 		PED::SET_PED_CAN_RAGDOLL_FROM_PLAYER_IMPACT(playerPed, TRUE);
@@ -2477,7 +2495,7 @@ void Features::INCREMENT()
 	Features::patchEvent(REVENT_NETWORK_INCREMENT_STAT_EVENT, true);
 }
 
-bool Features::NETWORKCRC = false;
+bool Features::NETWORKCRC = true;
 void Features::NETWORK_CRC()
 {
 	Features::patchEvent(REVENT_NETWORK_CRC_HASH_CHECK_EVENT, true);
@@ -3968,4 +3986,68 @@ void Features::tester(int i) {
 int cint(float number)
 {
 	return 0;
+}
+
+
+bool Features::copslevelup = false;
+bool copsfuck = false;
+void Features::copslevelupfunc()
+{
+	copsfuck = !copsfuck;
+	Memory::set_value<int>({ OFFSET_PLAYER , OFFSET_PLAYER_INFO , OFFSET_PLAYER_INFO_WANTED }, copsfuck ? 5 : 0);
+}
+
+/****************************************************************************************************************************************
+	超强防举报
+	- theory: 
+		    .rdata:00000001419FCDC8 98 FC 13 41 01 00 00 00 ??_7CNetworkIncrementStatEvent@@6B@ dq offset sub_14113FC98 [0]
+			.rdata:00000001419FCDC8                                                                 ; DATA XREF: sub_14113B664+34↑o
+			.rdata:00000001419FCDC8                                                                 ; sub_14113B6C4+2C↑o ...
+			.rdata:00000001419FCDD0 30 97 14 41 01 00 00 00                 dq offset sub_141149730 [1]
+			.rdata:00000001419FCDD8 90 C9 14 41 01 00 00 00                 dq offset sub_14114C990 [2]
+			.rdata:00000001419FCDE0 C0 05 63 41 01 00 00 00                 dq offset loc_1416305BE+2 [3]
+			.rdata:00000001419FCDE8 10 28 5F 41 01 00 00 00                 dq offset sub_1415F2810 [4]
+			.rdata:00000001419FCDF0 70 EB 14 41 01 00 00 00                 dq offset qword_14114EB20+50h [5]
+			.rdata:00000001419FCDF8 94 A5 14 41 01 00 00 00                 dq offset qword_14114A558+3Ch [6]
+			.rdata:00000001419FCE00 14 33 14 41 01 00 00 00                 dq offset _handle_incremenet_stat_event [7]
+	
+	- reference: https://www.unknowncheats.me/forum/2567020-post6869.html
+****************************************************************************************************************************************/
+namespace ReportProtectionHook {
+	bool hookedIncrementStatEventHandler(char* a1, char* a2, float a3)
+	{
+		unsigned int hash = *reinterpret_cast<unsigned int*>(a1 + 48);
+		unsigned int playerId = *reinterpret_cast<unsigned int*>(a1 + 52);
+		switch (hash)
+		{
+		case 0xcbfd04a4 /* MPPLY_GAME_EXPLOITS */:
+		case 0x0e7072cd /* MPPLY_VC_HATE */:
+		case 0x9f79ba0b /* MPPLY_EXPLOITS */:
+		case 0x762f9994 /* MPPLY_TC_ANNOYINGME */:
+		case 0xb722d6c0 /* MPPLY_TC_HATE */:
+			Log::Msg("Blocked report %#x from player %d", hash, playerId);
+			return true;
+		default:
+			return f_incrementStatEventHandler(a1, a2, a3);
+		}
+	}
+}
+
+bool Features::ReportProtection = true;
+void Features::ToggleReportProtection(bool b)
+{
+	if (b)
+	{
+		ReportProtectionHook::f_incrementStatEventHandler = *reinterpret_cast<bool(**)(char*, char*, float)>(&ReportProtectionHook::m_incrementStatEventVTable[7]);
+		*reinterpret_cast<bool(**)(char*, char*, float)>(&ReportProtectionHook::m_incrementStatEventVTable[7]) = &ReportProtectionHook::hookedIncrementStatEventHandler;
+		return;
+	}
+	else
+	{
+		if (!ReportProtectionHook::f_incrementStatEventHandler)
+			return;
+
+		*reinterpret_cast<bool(**)(char*, char*, float)>(&ReportProtectionHook::m_incrementStatEventVTable[7]) = ReportProtectionHook::f_incrementStatEventHandler;
+		ReportProtectionHook::f_incrementStatEventHandler = nullptr;
+	}
 }
