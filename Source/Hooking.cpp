@@ -667,6 +667,7 @@ void Hooking::FindPatterns()
 
 	Log::Msg("Found 'get_script_event_data' signature.");
 
+	// Outdated!
 	/*setFn<fpSetName>("SetName",
 		"\x48\x8B\x05\x00\x00\x00\x00\xC3\x8A\xD1",
 		"xxx????xxx",
@@ -704,6 +705,7 @@ void Hooking::FindPatterns()
 
 	Log::Msg("Found 'get_player_ped' signature.");
 
+	// Outdated!
 	/*setFn<fpSetLobbyTime>("set_lobby_time",
 		"\x80\x3D\x00\x00\x00\x00\x00\x75\x37\x8B\x05\x00\x00\x00\x00\xC6",
 		"xx?????xxxx????x",
@@ -752,6 +754,8 @@ void Hooking::FindPatterns()
 		&Hooking::begin_text_cmd_display_text);
 
 	Log::Msg("Found 'BeginTextCmdDisplayText' signature.");
+	
+	// Outdated!
 	/*setFn<fpStatSetInt>("stat_set_int",
 		"\x48\x89\x5C\x24\x00\x48\x89\x74\x24\x00\x89\x54\x24\x10\x55\x57\x41\x57",
 		"xxxx?xxxx?xxxxxxxx",
@@ -784,14 +788,14 @@ void Hooking::FindPatterns()
 
 
 	// Old and detected
-	//CPattern pattern_modelCheck("\x48\x85\xC0\x0F\x84\x00\x00\x00\x00\x8B\x48\x50", "xxxxx????xxx");
-	//auto ptr = pattern_modelCheck.find(0).get(0).get<char>(0);
-	//ptr == nullptr ? Log::Msg("Found 'modelCheck2' pattern.") : Memory::nop(ptr, 24);
+	CPattern pattern_modelCheck("\x48\x85\xC0\x0F\x84\x00\x00\x00\x00\x8B\x48\x50", "xxxxx????xxx");
+	auto p_modelCheck = pattern_modelCheck.find(0).get(0).get<char>(0);
+	p_modelCheck == nullptr ? Log::Msg("Found 'modelCheck2' pattern.") : Memory::nop(p_modelCheck, 24);
 
-	//Bypass is player model allowed to spawn checks
-	//CPattern pattern_modelSpawn("\x48\x8B\xC8\xFF\x52\x30\x84\xC0\x74\x05\x48", "xxxxxxxxxxx");
-	//auto ptr = pattern_modelSpawn.find(0).get(0).get<char>(8);
-	//ptr == nullptr ? Log::Error("Loaded .ini vehicle spawner.") : Memory::nop(ptr, 2);
+	// Bypass is player model allowed to spawn checks
+	CPattern pattern_modelSpawn("\x48\x8B\xC8\xFF\x52\x30\x84\xC0\x74\x05\x48", "xxxxxxxxxxx");
+	auto p_modelSpawn = pattern_modelSpawn.find(0).get(0).get<char>(8);
+	p_modelSpawn == nullptr ? Log::Error("Loaded .ini vehicle spawner.") : Memory::nop(p_modelSpawn, 2);
 
 	// Get active script thread
 	c_location = p_activeThread.count(1).get(0).get<char>(1);

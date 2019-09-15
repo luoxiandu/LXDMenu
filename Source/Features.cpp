@@ -90,12 +90,14 @@ void Features::notifyMap(char* fmt, ...)
 void Features::UpdateLoop()
 {
 	playerGodMode ? GodMode(true) : NULL;
+	softGodMode ? SoftGodMode() : NULL;
 
 	offradardeath ? deathoffradar(true) : NULL;
 
 	lesteroff ? Offradarlester() : NULL;
 
 	newstealth ? StealthCash4Loop() : NULL;
+	commonstealth ? CommonStealth() : NULL;
 	phonedisable ? disablephone() : NULL;
 
 	enginealwaysonbool ? enginealwayson(true) : NULL;
@@ -498,6 +500,21 @@ void Features::Offradarlester()
 {
 	globalHandle(2422736).At(PLAYER::PLAYER_ID(), 420).At(215).As<int>() = 1;
 	globalHandle(2436181).At(70).As<int>() = NETWORK::GET_NETWORK_TIME();
+}
+
+bool Features::commonstealth = false;
+int Features::moneyhash = -1127021384;
+int Features::moneyamount = 2000;
+int Features::moneydelay = 1000;
+void Features::CommonStealth()
+{
+	if ((timeGetTime() - Features::TimePD2) > Features::moneydelay)
+	{
+		Any idk = GAMEPLAY::GET_RANDOM_INT_IN_RANGE(1500000000, 2999999999);
+		UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, Features::moneyhash, 1445302971, Features::moneyamount, 4);
+		UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
+		Features::TimePD2 = timeGetTime();
+	}
 }
 
 bool Features::newstealth = false;
@@ -1705,15 +1722,28 @@ void Features::Online::TeleportToPlayer(Player player) {
 		ENTITY::SET_ENTITY_COORDS(handle, coords.x, coords.y, coords.z, false, false, false, false);
 }
 
-void Features::SetRank(int rpvalue)
+int Features::rankgoal = 0;
+int Features::rankrole = 1;
+void Features::SetRank()
 {
-	if (rpvalue < 0 && rpvalue > 8000)
+	if (rankgoal < 0 && rankgoal > 8000)
 	{
-		rpvalue = 8000;
+		rankgoal = 8000;
 	}
-	STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_CHAR_XP_FM"), Features::Levels[rpvalue], 0);
-	STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP1_CHAR_XP_FM"), Features::Levels[rpvalue], 0);
+	char hashname[15];
+	sprintf(hashname, "MP%d_CHAR_XP_FM", rankrole - 1);
+	STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY(hashname), Features::Levels[rankgoal], 0);
+}
 
+void Features::SetRank_Gift()
+{
+	if (rankgoal < 0 && rankgoal > 8000)
+	{
+		rankgoal = 8000;
+	}
+	char hashname[27];
+	sprintf(hashname, "MP%d_CHAR_SET_RP_GIFT_ADMIN", rankrole - 1);
+	STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY(hashname), Features::Levels[rankgoal], 1);
 }
 
 
@@ -3994,7 +4024,11 @@ bool copsfuck = false;
 void Features::copslevelupfunc()
 {
 	copsfuck = !copsfuck;
-	Memory::set_value<int>({ OFFSET_PLAYER , OFFSET_PLAYER_INFO , OFFSET_PLAYER_INFO_WANTED }, copsfuck ? 5 : 0);
+	Memory::set_value<int>({ OFFSET_PLAYER , OFFSET_PLAYER_INFO , OFFSET_PLAYER_INFO_WANTED }, copsfuck ? 4 : 0);
+	if (!copsfuck)
+	{
+		STATS::STAT_INCREMENT(GAMEPLAY::GET_HASH_KEY("XP_TUNABLE_LOSE_WANTED_LEVEL_4_STAR"), 400);
+	}
 }
 
 /****************************************************************************************************************************************
@@ -4050,4 +4084,20 @@ void Features::ToggleReportProtection(bool b)
 		*reinterpret_cast<bool(**)(char*, char*, float)>(&ReportProtectionHook::m_incrementStatEventVTable[7]) = ReportProtectionHook::f_incrementStatEventHandler;
 		ReportProtectionHook::f_incrementStatEventHandler = nullptr;
 	}
+}
+
+bool Features::softGodMode = false;
+void Features::SoftGodMode()
+{
+	Ped p = PLAYER::PLAYER_PED_ID();
+	if (PED::GET_PED_ARMOUR(p) < 1)
+		PED::ADD_ARMOUR_TO_PED(p, 100);
+}
+
+void Features::SharkCards(int amount)
+{
+	Any idk = GAMEPLAY::GET_RANDOM_INT_IN_RANGE(1500000000, 2999999999);
+	UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, 312105838, 1445302971, amount, 4);
+	UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
+	NETWORKCASH::NETWORK_EARN_FROM_ROCKSTAR(amount);
 }

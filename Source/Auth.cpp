@@ -218,9 +218,7 @@ bool  Auth::login(std::string& username, std::string& password)
 		// 判断响应是否正常
 		if (d.IsObject() && d["payload"].IsObject())
 		{
-			time_t recvtime;
-			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 5) // 验证响应是否在5秒以内新鲜生成
+			if (abs(curTime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -292,9 +290,7 @@ bool  Auth::is_authed()
 		// 判断响应是否正常
 		if (d.IsObject() && d["payload"].IsObject())
 		{
-			time_t recvtime;
-			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 5) // 验证响应是否在5秒以内新鲜生成
+			if (abs(curTime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -376,9 +372,7 @@ bool  Auth::logout()
 		// 判断响应是否正常
 		if (d.IsObject() && d["payload"].IsObject())
 		{
-			time_t recvtime;
-			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 5) // 验证响应是否在5秒以内新鲜生成
+			if (abs(curTime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{

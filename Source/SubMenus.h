@@ -34,6 +34,7 @@ enum SubMenus {
 	modelchanger,
 	tpother,
 	moneyoptions,
+	commonstealth,
 	OutfitOptions,
 	weatheroptions,
 	vehicle,

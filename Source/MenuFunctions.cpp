@@ -375,7 +375,7 @@ bool Menu::Int(const char * option, int & _int, int min, int max)
 			_int < max ? _int++ : _int = min;
 		}
 		if (Settings::rightPressed) {
-			_int >= min ? _int-- : _int = max;
+			_int > min ? _int-- : _int = max;
 		}
 	}
 
@@ -398,7 +398,7 @@ bool Menu::Int(const char * option, int & _int, int min, int max, int step)
 			_int < max ? _int += step : _int = min;
 		}
 		if (Settings::rightPressed) {
-			_int >= min ? _int -= step : _int = max;
+			_int > min ? _int -= step : _int = max;
 		}
 	}
 

@@ -61,6 +61,14 @@ namespace Features {
 
 	void StealthCash4Loop();
 
+	void SharkCards(int amount);
+
+	extern bool commonstealth;
+	extern int moneyhash;
+	extern int moneyamount;
+	extern int moneydelay;
+	void CommonStealth();
+
 	void resetStealth();
 
 	void SET_PLAYER_NAME(const std::string & name);
@@ -122,7 +130,10 @@ namespace Features {
 	void OSKR(bool toggle);
 	void Superman(bool toggle);
 
-	void SetRank(int rpvalue);
+	extern int rankgoal;
+	extern int rankrole;
+	void SetRank();
+	void SetRank_Gift();
 	extern bool shootcash;
 	extern bool AttachDetach[35];
 	void PTFXCALLO(char *call1, char *call2, char *name, Player target);
@@ -130,8 +141,10 @@ namespace Features {
 	extern bool lesteroff;
 	extern bool phonedisable;
 	extern bool playerGodMode;
+	extern bool softGodMode;
 	extern bool newstealth;
 	void GodMode(bool toggle);
+	void SoftGodMode();
 	extern bool loop_RainbowBoxes;
 	extern bool playersuperjump;
 	void SuperJump(bool toggle);
