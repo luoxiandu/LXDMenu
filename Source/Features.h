@@ -476,6 +476,46 @@ namespace Features {
 
 	void ToggleReportProtection(bool);
 	extern bool ReportProtection;
+
+	extern bool kickp;
+	extern int kickporig;
+	void Kickprotec();
+
+	extern bool antirotatecam;
+	extern int antirotatecamorig;
+	void AntiRotateCam();
+
+	extern bool antivehiclekick;
+	extern int antivehiclekickorig;
+	void AntiVehicleKick();
+
+	extern bool antinotification;
+	extern int antinotificationorig;
+	void AntiNotification();
+
+	extern bool CeoBanProtection;
+	extern int ceobanprotectionorig;
+	void CEOBanp();
+
+	extern bool SendToJobProtection;
+	extern int sendtojobprotectionorig;
+	void STJp();
+
+	extern bool CEOKickProtection;
+	extern int ceokickprotectionorig;
+	void CEOKickp();
+
+	extern bool Bounty;
+	void Bountyy();
+
+	extern bool Transaction;
+	void Transaktion();
+
+	extern int ROLE;
+
+	bool isPlayerFriend(Player player, bool& result);
+	bool isPlayerInvincible(Ped handle);
+	bool isPlayerInGodmode(Ped handle);
 	
 	namespace Online {
 		extern int selectedPlayer;

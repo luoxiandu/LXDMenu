@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int menu_version = 1.05;
+int menu_version = 1.08;
 
 const char* client_private_key_hexstr = "977EDC91A8BB5825B1D7FAED03B2CF8D87758AFF3A116259EBD25CDAA0FC4612";
 const char* server_public_key_hexstr = "66F16DF14487954D7FF05DA7543B1181134E12D378AD1EE0EC73DC779127B29DB9433AFA50FE33FAD09FF0DD044B91D8D6DC848978F871474E10460A1C1387E5";
@@ -35,6 +35,112 @@ int main()
 	return 0;
 }
 **/
+
+struct   NTP_Packet
+{
+	int      Control_Word;
+	int      root_delay;
+	int      root_dispersion;
+	int      reference_identifier;
+	__int64 reference_timestamp;
+	__int64 originate_timestamp;
+	__int64 receive_timestamp;
+	int      transmit_timestamp_seconds;
+	int      transmit_timestamp_fractions;
+};
+
+
+/************************************************************************/  
+/* 函数说明:自动与时间服务器同步更新 
+/* 参数说明:无 
+/* 返 回 值:成功返回TRUE，失败返回FALSE 
+/************************************************************************/  
+bool UpdateSysTime()
+{
+    WORD    wVersionRequested;
+    WSADATA wsaData;
+	int retval;
+
+    // 初始化版本
+    wVersionRequested = MAKEWORD( 1, 1 );
+    if (0!=WSAStartup(wVersionRequested, &wsaData))
+    {  
+        WSACleanup();
+        return false;
+    }
+    if (LOBYTE(wsaData.wVersion)!=1 || HIBYTE(wsaData.wVersion)!=1)
+    {
+        WSACleanup();
+        return false;   
+    }
+
+    // 这个IP是中国大陆时间同步服务器地址，可自行修改
+    SOCKET soc=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
+    struct sockaddr_in addrSrv;
+    addrSrv.sin_addr.S_un.S_addr=inet_addr("203.107.6.88");  // ntp.aliyun.com
+    addrSrv.sin_family=AF_INET;
+    addrSrv.sin_port=htons(123);
+          
+    NTP_Packet NTP_Send,NTP_Recv;
+	NTP_Send.Control_Word = htonl(0x0B000000);
+	NTP_Send.root_delay = 0;
+	NTP_Send.root_dispersion = 0;
+	NTP_Send.reference_identifier = 0;
+	NTP_Send.reference_timestamp = 0;
+	NTP_Send.originate_timestamp = 0;
+	NTP_Send.receive_timestamp = 0;
+	NTP_Send.transmit_timestamp_seconds = 0;
+	NTP_Send.transmit_timestamp_fractions = 0;
+
+	retval = sendto(soc, (const char*)& NTP_Send, sizeof(NTP_Send), 0, (struct sockaddr*) & addrSrv, sizeof(addrSrv));
+    if(SOCKET_ERROR == retval || INVALID_SOCKET == retval)
+    {
+        closesocket(soc);
+        return false;
+    }
+    int sockaddr_Size =sizeof(addrSrv);
+	retval = recvfrom(soc, (char*)& NTP_Recv, sizeof(NTP_Recv), 0, (struct sockaddr*) & addrSrv, &sockaddr_Size);
+    if(SOCKET_ERROR == retval || INVALID_SOCKET == retval)
+    {
+        closesocket(soc);
+        return false;
+    }
+    closesocket(soc);
+    WSACleanup();
+
+    SYSTEMTIME  newtime;  
+    float       Splitseconds;  
+    struct      tm  *lpLocalTime;  
+    time_t      ntp_time;  
+      
+    // 获取时间服务器的时间  
+    ntp_time    = ntohl(NTP_Recv.transmit_timestamp_seconds)-2208988800;  
+    lpLocalTime = localtime(&ntp_time);  
+    if(lpLocalTime == nullptr)  
+    {  
+        return false;  
+    }  
+          
+    // 获取新的时间  
+    newtime.wYear      =lpLocalTime->tm_year+1900;  
+    newtime.wMonth     =lpLocalTime->tm_mon+1;  
+    newtime.wDayOfWeek =lpLocalTime->tm_wday;  
+    newtime.wDay       =lpLocalTime->tm_mday;  
+    newtime.wHour      =lpLocalTime->tm_hour;  
+    newtime.wMinute    =lpLocalTime->tm_min;  
+    newtime.wSecond    =lpLocalTime->tm_sec;  
+          
+    // 设置时间精度  
+    Splitseconds=(float)ntohl(NTP_Recv.transmit_timestamp_fractions);  
+    Splitseconds=(float)0.000000000200 * Splitseconds;  
+    Splitseconds=(float)1000.0 * Splitseconds;  
+    newtime.wMilliseconds   =   (unsigned   short)Splitseconds;  
+      
+    // 修改本机系统时间  
+    SetLocalTime(&newtime);  
+    return true;  
+}  
+
 
 /************************************************************************
 *   功能：将一个十六进制字节串转换成 ASCII 码表示的十六进制的字符串
@@ -138,6 +244,8 @@ Auth::Auth()
 {
 	tpool = new ThreadPool(4);
 	request.timeout = 3000;
+	int i = 5;
+	while (!UpdateSysTime() && --i) Sleep(1000);
 }
 
 Auth::~Auth()
@@ -196,13 +304,13 @@ bool  Auth::login(std::string& username, std::string& password)
 {
 	std::ostringstream senddata;
 	// 获取当前时间
-	// time_t gentime;
-	// time(&gentime);
+	time_t gentime;
+	time(&gentime);
 	// gentime = NETWORK::_GET_POSIX_TIME();
 	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << curTime;
+	senddata << "&gen_time=" << gentime;
 	senddata << "&password=" << password;
 	senddata << "&username=" << username;
 	senddata << "&ver=" << menu_version;
@@ -218,7 +326,9 @@ bool  Auth::login(std::string& username, std::string& password)
 		// 判断响应是否正常
 		if (d.IsObject() && d["payload"].IsObject())
 		{
-			if (abs(curTime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
+			time_t recvtime;
+			time(&recvtime);
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -271,13 +381,13 @@ bool  Auth::is_authed()
 {
 	std::ostringstream senddata;
 	// 获取当前时间
-	// time_t gentime;
-	// time(&gentime);
+	time_t gentime;
+	time(&gentime);
 	// gentime = NETWORK::_GET_POSIX_TIME();
 	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << curTime;
+	senddata << "&gen_time=" << gentime;
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
@@ -290,7 +400,9 @@ bool  Auth::is_authed()
 		// 判断响应是否正常
 		if (d.IsObject() && d["payload"].IsObject())
 		{
-			if (abs(curTime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
+			time_t recvtime;
+			time(&recvtime);
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -352,13 +464,13 @@ bool  Auth::logout()
 {
 	std::ostringstream senddata;
 	// 获取当前时间
-	// time_t gentime;
-	// time(&gentime);
+	time_t gentime;
+	time(&gentime);
 	// gentime = NETWORK::_GET_POSIX_TIME();
 	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << curTime;
+	senddata << "&gen_time=" << gentime;
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
@@ -372,7 +484,9 @@ bool  Auth::logout()
 		// 判断响应是否正常
 		if (d.IsObject() && d["payload"].IsObject())
 		{
-			if (abs(curTime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
+			time_t recvtime;
+			time(&recvtime);
+			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{

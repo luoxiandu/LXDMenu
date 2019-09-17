@@ -78,3 +78,12 @@ public:
 	Blip_t* m_Blips[1500]; //0x0000 
 
 };//Size=0x2F18
+
+
+struct MemoryPool
+{
+	uintptr_t ListAddr;
+	char* BoolAdr;
+	int MaxCount;
+	int ItemSize;
+};

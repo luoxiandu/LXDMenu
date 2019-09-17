@@ -11,6 +11,7 @@ DWORD wakeAt;
 
 std::vector<LPVOID>		Hooking::m_hooks;
 uint64_t* Hooking::m_frameCount;
+MemoryPool* Hooking::m_entityPool;
 fpIsDLCPresent			Hooking::is_DLC_present;
 fpSetName			    Hooking::SetName;
 fpTriggerScriptEvent	Hooking::trigger_script_event;
@@ -28,6 +29,7 @@ fpSendMessage2           Hooking::send_message2;
 fpAddTextCompSubstrPlayerName Hooking::add_text_comp_substr_playername;
 fpEndTextCmdDisplayText       Hooking::end_text_cmd_display_text;
 fpBeginTextCmdDisplayText     Hooking::begin_text_cmd_display_text;
+fpNetworkIsSessionStarted	  Hooking::network_is_session_started;
 static eGameState* m_gameState;
 static uint64_t												m_worldPtr;
 static BlipList* m_blipList;
@@ -649,6 +651,14 @@ void Hooking::FindPatterns()
 		true,
 		2);
 
+	//entity pool
+	setPat<MemoryPool>("entity pool",
+		"\x4C\x8B\x0D\x00\x00\x00\x00\x44\x8B\xC1\x49\x8B\x41\x08",
+		"xxx????xxxxxxx",
+		&Hooking::m_entityPool,
+		true,
+		3);
+
 
 	Log::Msg("Found 'frame_count' signature.");
 
@@ -760,6 +770,11 @@ void Hooking::FindPatterns()
 		"\x48\x89\x5C\x24\x00\x48\x89\x74\x24\x00\x89\x54\x24\x10\x55\x57\x41\x57",
 		"xxxx?xxxx?xxxxxxxx",
 		&Hooking::stat_set_int);*/
+
+	/*setFn<fpNetworkIsSessionStarted>("network_is_session_started",
+		"\x48\x8B\x0D\x00\x00\x00\x00\x33\xC0\x48\x85\xC9\x74\x0E\x83\xB9\x00\x00\x00\x00\x00\x75\x05",
+		"xxx????xxxxxxxxx?????xx",
+		&Hooking::network_is_session_started);*/
 
 	char* c_location = nullptr;
 	void* v_location = nullptr;
@@ -935,4 +950,26 @@ __int64** Hooking::getGlobalPtr()
 __int64* Hooking::getGlobalPatern(int index)
 {
 	return &m_globalPtr[index >> 0x12 & 0x3F][index & 0x3FFFF];
+}
+
+char* Hooking::handle_to_ptr(int handle)
+{
+	uintptr_t ptr = get_address_of_item_in_pool(m_entityPool, handle);
+	if (ptr == 0)
+		return nullptr;
+	return *reinterpret_cast<char * *>(ptr + 8);
+}
+
+uintptr_t Hooking::get_address_of_item_in_pool(MemoryPool* pool, int handle)
+{
+	if (pool == nullptr)
+		return 0;
+
+	int index = handle >> 8;
+	int flag = pool->BoolAdr[index];
+
+	if (flag & 0x80 || flag != (handle & 0xFF))
+		return 0;
+
+	return pool->ListAddr + index * pool->ItemSize;
 }

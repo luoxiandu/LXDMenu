@@ -18,6 +18,8 @@ typedef BOOL(__cdecl* fpCreateAmbientPickup)(DWORD pickupHash, Vector3* pos, int
 typedef BOOL(_cdecl* fpGetEventData)(int eventGroup, int eventIndex, uint64_t* argStruct, int argStructSize);
 typedef uint32_t* (*__cdecl        fpFileRegister)(int*, const char*, bool, const char*, bool);
 using fpGetLabelText = const char* (*) (void* this_, const char* label);
+typedef BOOL(__cdecl* fpNetworkIsSessionStarted)();
+
 class Hooking
 {
 private:
@@ -29,6 +31,7 @@ public:
 	static fpFileRegister            m_fileregister;
 	static std::vector<LPVOID>		m_hooks;
 	static uint64_t* m_frameCount;
+	static MemoryPool* m_entityPool;
 	static fpIsDLCPresent			is_DLC_present;
 	static fpSetName			    SetName;
 	static GetEventData             get_script_event_data;
@@ -47,6 +50,7 @@ public:
 	static fpAddTextCompSubstrPlayerName	    add_text_comp_substr_playername;
 	static fpEndTextCmdDisplayText	    end_text_cmd_display_text;
 	static fpBeginTextCmdDisplayText	    begin_text_cmd_display_text;
+	static fpNetworkIsSessionStarted		network_is_session_started;
 	static void Start(HMODULE hmoduleDLL);
 	static void Cleanup();
 	static eGameState GetGameState();
@@ -111,6 +115,9 @@ public:
 		}
 	};
 	static NativeHandler GetNativeHandler(uint64_t origHash);
+
+	static uintptr_t get_address_of_item_in_pool(MemoryPool* pool, int handle);
+	static char* handle_to_ptr(int handle);
 };
 
 void WAIT(DWORD ms);

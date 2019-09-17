@@ -2988,6 +2988,11 @@ namespace SCRIPT
 	static void SET_NO_LOADING_SCREEN(BOOL toggle) { invoke<Void>(0x5262CC1995D07E09, toggle); } // 0x5262CC1995D07E09 0xC8055034
 	static BOOL _GET_NO_LOADING_SCREEN() { return invoke<BOOL>(0x18C1270EA7F199BC); } // 0x18C1270EA7F199BC
 	static void _0xB1577667C3708F9B() { invoke<Void>(0xB1577667C3708F9B); } // 0xB1577667C3708F9B 0xB03BCCDF
+	static void eventur(int eventGroup, uint64_t* args, int argCount, int bit)
+	{
+		static auto func = reinterpret_cast<void(*)(int, uint64_t*, int, int)>(Memory::pattern("48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 48 89 78 20 41 56 48 81 EC ? ? ? ? 45 8B F0 41 8B F9").count(1).get(0).get<void>(0));
+		func(eventGroup, args, argCount, bit);
+	}
 }
 
 namespace UI

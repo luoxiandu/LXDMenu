@@ -4101,3 +4101,177 @@ void Features::SharkCards(int amount)
 	UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
 	NETWORKCASH::NETWORK_EARN_FROM_ROCKSTAR(amount);
 }
+
+bool Features::kickp = false;
+int Features::kickporig;
+void Features::Kickprotec()
+{
+	if (kickp)
+	{
+		kickporig = globalHandle(1382674).At(609).As<int>();
+		globalHandle(1382674).At(609).As<int>() = 609;
+	}
+	else
+	{
+		globalHandle(1382674).At(609).As<int>() = kickporig;
+	}
+}
+
+bool Features::antirotatecam = false;
+int Features::antirotatecamorig;
+void Features::AntiRotateCam()
+{
+	if (antirotatecam)
+	{
+		antirotatecamorig = globalHandle(1382674).At(2).As<int>();
+		globalHandle(1382674).At(2).As<int>() = 2;
+	}
+	else
+	{
+		globalHandle(1382674).At(2).As<int>() = antirotatecamorig;
+	}
+}
+
+bool Features::antivehiclekick = false;
+int Features::antivehiclekickorig;
+void Features::AntiVehicleKick()
+{
+	if (antivehiclekick)
+	{
+		antivehiclekickorig = globalHandle(1382674).At(61).As<int>();
+		globalHandle(1382674).At(61).As<int>() = 61;
+	}
+	else
+	{
+		globalHandle(1382674).At(61).As<int>() = antivehiclekickorig;
+	}
+}
+
+bool Features::antinotification = false;
+int Features::antinotificationorig;
+void Features::AntiNotification()
+{
+	if (antinotification)
+	{
+		antinotificationorig = globalHandle(1382674).At(0).As<int>();
+		globalHandle(1382674).At(0).As<int>() = 0;
+	}
+	else
+	{
+		globalHandle(1382674).At(0).As<int>() = antinotificationorig;
+	}
+}
+
+bool Features::CeoBanProtection = false;
+int Features::ceobanprotectionorig;
+void Features::CEOBanp()
+{
+	if (CeoBanProtection)
+	{
+		ceobanprotectionorig = globalHandle(1382674).At(558).As<int>();
+		globalHandle(1382674).At(558).As<int>() = 558;
+	}
+	else
+	{
+		globalHandle(1382674).At(558).As<int>() = ceobanprotectionorig;
+	}
+}
+
+bool Features::SendToJobProtection = false;
+int Features::sendtojobprotectionorig;
+void Features::STJp()
+{
+	if (SendToJobProtection)
+	{
+		sendtojobprotectionorig = globalHandle(1382674).At(295).As<int>();
+		globalHandle(1382674).At(295).As<int>() = 295;
+	}
+	else
+	{
+		globalHandle(1382674).At(295).As<int>() = sendtojobprotectionorig;
+	}
+}
+
+bool Features::CEOKickProtection = false;
+int Features::ceokickprotectionorig;
+void Features::CEOKickp()
+{
+	if (CEOKickProtection)
+	{
+		ceokickprotectionorig = globalHandle(1382674).At(536).As<int>();
+		globalHandle(1382674).At(536).As<int>() = 536;
+	}
+	else
+	{
+		globalHandle(1382674).At(536).As<int>() = ceokickprotectionorig;
+	}
+}
+
+bool Features::Bounty = false;
+void Features::Bountyy()
+{
+	globalHandle(1382674).At(67).As<int>() = Bounty;
+
+}
+
+bool Features::Transaction = false;
+void Features::Transaktion()
+{
+	auto unkKek1 = globalHandle(1624079 + 1 + Features::Online::selectedPlayer * 558 + 491).As<std::uint64_t>();
+	auto unkKek2 = globalHandle(1641937 + 9).As<std::uint64_t>();
+	std::uint64_t args[8] = {
+		-1241703753,
+		Features::Online::selectedPlayer,
+		10000, // amount
+		0,
+		0,
+		unkKek1, unkKek2, unkKek2
+	};
+	SCRIPT::eventur(1, args, 8, 1 << Features::Online::selectedPlayer);
+}
+
+int Features::ROLE = 1;
+
+bool Features::isPlayerFriend(Player player, bool& result)
+{
+	int NETWORK_HANDLE[76];
+	NETWORK::NETWORK_HANDLE_FROM_PLAYER(player, &NETWORK_HANDLE[0], 13);
+	if (NETWORK::NETWORK_IS_HANDLE_VALID(&NETWORK_HANDLE[0], 13))
+	{
+		result = NETWORK::NETWORK_IS_FRIEND(&NETWORK_HANDLE[0]);
+		return true;
+	}
+	return false;
+}
+
+/******
+bool Features::isPlayerInvincible(Ped ped)
+{
+	char* playerPed = Hooking::handle_to_ptr<char>(ped);
+
+	if (playerPed != 0) {
+		bool isIn = INTERIOR::IS_VALID_INTERIOR(INTERIOR::GET_INTERIOR_FROM_ENTITY(ped));
+		if (!isIn)
+		{
+			bool isInvincible = *reinterpret_cast<bool*>(playerPed + OFFSET_ENTITY_GOD);
+			return isInvincible;
+		}
+	}
+
+	return false;
+}
+******/
+
+bool Features::isPlayerInvincible(Ped handle)
+{
+	char* addr = Hooking::handle_to_ptr(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(handle));
+	if (!addr)
+		return false;
+	DWORD flag = *(DWORD*)(addr + 0x188);
+	return ((flag & (1 << 8)) != 0) || ((flag & (1 << 9)) != 0);
+}
+
+bool Features::isPlayerInGodmode(Ped handle)
+{
+	return !INTERIOR::GET_INTERIOR_FROM_ENTITY(handle) && isPlayerInvincible(handle);
+}
