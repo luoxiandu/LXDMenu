@@ -7,6 +7,7 @@
 #include <conio.h>
 
 extern class Auth;
+extern std::string menu_version;
 
 Vehicle veh;
 Object latestObj;
@@ -7666,7 +7667,7 @@ void main() {
 	_onexit(dologout);
 	Features::tpKg = true;
 	Features::rwtpKg = true;
-	Features::IconNotification((char *)(std::string("尊敬的 24K Menu 用户") + authserver.getUsername() + "，请开始您的仙境之旅吧！").c_str(), "~r~24K Menu", " v1.0.8");
+	Features::IconNotification((char *)(std::string("尊敬的 24K Menu 用户") + authserver.getUsername() + "，请开始您的仙境之旅吧！").c_str(), "~r~24K Menu", (char*)(" v" + menu_version).c_str());
 	Features::notifyMap("按F4打开菜单");
 	int autherrcount = 0;
 	while (true) {
@@ -7680,13 +7681,13 @@ void main() {
 		case mainmenu:
 		{
 			 Menu::Title("24K Menu");
-			 Menu::Subtitle("~y~VERSION: 1.0.8 ¦");
+			 Menu::Subtitle(("~y~VERSION: " + menu_version + " ¦").c_str());
 			 Menu::MenuOption("防护选项", protectedmenu);
 			 Menu::MenuOption("战局选项" , onlineoptions);
 			 Menu::MenuOption("自身选项", playermenu);
 			 Menu::MenuOption("武器选项", weapon);
 			 Menu::MenuOption("载具选项", vehicle);
-			 Menu::MenuOption("载具生成", vehspawner);
+			 Menu::MenuOption("载具生成（仅线下）", vehspawner);
 			 Menu::MenuOption("传送选项", teleports);
 			 Menu::MenuOption("世界选项", worldoptions);
 			 Menu::MenuOption("镜头特效", versionsoptions);
@@ -7737,14 +7738,14 @@ void main() {
 				Ped ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i);
 
 				//char buffer[0x400];
-				//bool is_invincible = Features::isPlayerInGodmode(i);
-				//bool is_friend;
-				//bool handle_valid = Features::isPlayerFriend(i, is_friend);
+				//bool is_invincible = Features::isPlayerInGodmode(ped);
+				bool is_friend;
+				bool handle_valid = Features::isPlayerFriend(i, is_friend);
 				//bool isIn = INTERIOR::IS_VALID_INTERIOR(INTERIOR::GET_INTERIOR_FROM_ENTITY(ped));
 
 				if (ENTITY::DOES_ENTITY_EXIST(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i))) {
 					std::string playerlabel = "";
-					/****
+					
 					Player isFriend = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i);
 					bool is_friend;
 					bool handle_valid = Features::isPlayerFriend(i, is_friend);
@@ -7755,16 +7756,16 @@ void main() {
 					else if (handle_valid && is_friend) {
 						playerlabel += " ~g~[好友]";
 					}
-					else if (is_invincible) {
+					/*else if (is_invincible) {
 							playerlabel += " ~r~[无敌]";
-						}
+					}*/
 					else if (isFriend == PLAYER::PLAYER_PED_ID()) {
 						playerlabel += " ~b~[自己]";
 					}
 					else {
 						playerlabel += "";
 					}
-					****/
+					
 
 					Menu::MenuOption((PLAYER::GET_PLAYER_NAME(i) + playerlabel).c_str(), onlinemenu_selected) ? Features::Online::selectedPlayer = i : NULL;
 					if (Menu::Settings::currentOption == (menui++) + 2)
@@ -7839,6 +7840,7 @@ void main() {
 				 if (!GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT()) return;
 				 Features::moneydelay = std::atoi(GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT());
 				 });
+			 Menu::Bool("刷入银行", Features::commonstealthinbank);
 			 Menu::Bool("开始交易", Features::commonstealth);
 		 }
 		 break;
@@ -7916,6 +7918,7 @@ void main() {
 			 Menu::Bool("无限子弹", Features::infammo, [] { Features::noreloadv(Features::infammo); });
 			 Menu::Bool("一击必杀", Features::osk);
 			 Menu::Bool("快速射击", Features::rapidfirer);
+			 Menu::Bool("自动瞄准", Features::aimbot);
 			 Menu::Bool("彩虹枪", Features::rbgun, [] { Features::RBGuner(Features::rbgun); });
 			 Menu::Bool("烟花枪", Features::WeaponFirework, [] {Features::featureWeaponFirework(Features::WeaponFirework); }); //done
 			 Menu::Bool("钱袋枪", Features::FakeBags, [] {Features::featureFakeBags(Features::FakeBags); }); //done
@@ -11280,9 +11283,9 @@ void main() {
 			 Menu::Option("功能 : ~y~老猫（洛仙都）");
 			 Menu::Option("脚本 : ~p~Rachel the Deer（洛仙都）");
 			 Menu::Option("状态 : ~g~未检测");
-			 Menu::Option("GTA5.exe : ~b~v1.0.1737.1");
+			 Menu::Option("GTA5.exe : ~b~v1.0.1737.5");
 			 Menu::Option("支持线上版本 : ~g~1.48");
-			 Menu::Option("外挂版本 : ~r~1.0.8");
+			 Menu::Option(("外挂版本 : ~r~" + menu_version).c_str());
 			 Menu::Option("发布日期 : ~c~Sep 1, 2019");
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~∑GTA账号：~q~") + PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())).c_str());
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~已登录用户：~p~") + authserver.getUsername()).c_str());
@@ -11559,6 +11562,7 @@ void main() {
 				 Menu::Lock("循环爆炸");
 				 Menu::Lock("掉钱袋");
 				 Menu::Lock("爆炸");
+				 Menu::Lock("天基炮");
 				 Menu::Lock("踢出载具");
 				 Menu::Lock("删除载具");
 				 Menu::Lock("弹射载具");
@@ -11592,7 +11596,7 @@ void main() {
 				 }
 				 if (Menu::Option("崩溃（克隆崩）")) {
 					 int Handle = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
-					 for (int i = 0; i < 30; i++) PED::CLONE_PED(Handle, 1, 1, 1);
+					 for (int i = 0; i < 40; i++) PED::CLONE_PED(Handle, 1, 1, 1);
 				 }
 				 Menu::Bool("镜头晃动", Features::camshaker[Features::Online::selectedPlayer], [] { Features::shakecam(Features::camshaker[Features::Online::selectedPlayer]); });
 				 Menu::Bool("循环爆炸", Features::exploder[Features::Online::selectedPlayer], [] { Features::explodeloop(Features::exploder[Features::Online::selectedPlayer]); });
@@ -11600,6 +11604,10 @@ void main() {
 				 if (Menu::Option("爆炸")) {
 					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
 					 FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1000.f, true, false, 1000.f);
+				 }
+				 if (Menu::Option("天基炮")) {
+					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
+					 FIRE::ADD_OWNED_EXPLOSION(PLAYER::PLAYER_PED_ID(), coords.x, coords.y, coords.z, Explosions::EXP_TAG_ORBITAL_CANNON, 1000.f, true, false, 1000.f);
 				 }
 				 if (Menu::Option("踢出载具")) {
 					 Ped playerPed = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
@@ -11620,7 +11628,7 @@ void main() {
 					 Ped selectedplayer = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
 					 if (!ENTITY::DOES_ENTITY_EXIST(selectedplayer)) return;
 					 Vector3 pos = ENTITY::GET_ENTITY_COORDS(selectedplayer, 1);
-					 FIRE::ADD_EXPLOSION(pos.x, pos.y, pos.z, 29, 0.5f, true, false, 5.0f);
+					 FIRE::ADD_EXPLOSION(pos.x, pos.y, pos.z, Explosions::EXP_TAG_BLIMP, 0.5f, true, false, 5.0f);
 				 }
 				 if (Menu::Option("载具加速")) {
 					 Player playerPed = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
@@ -11691,7 +11699,7 @@ void main() {
 			 Menu::MenuOption("账号服务 - 刷钱", moneystealth);
 			 Menu::MenuOption("账号服务 - 刷级", recoverRank);
 			 Menu::MenuOption("账号服务 - 解锁", RecoveryStats);
-			 if (Menu::Option("清除负面统计")) {
+			 if (Menu::Option("清除负面统计（建议常按）")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_BAD_SPORT_BITSET"), 0, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_MPPLY_WAS_I_BAD_SPORT"), 0, 0);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MP0_MPPLY_OVERALL_BADSPORT"), 0, 0);
@@ -11724,6 +11732,7 @@ void main() {
 				 STATS::STAT_SET_FLOAT(GAMEPLAY::GET_HASH_KEY("MPPLY_OVERALL_BADSPORT"), 0.0f, TRUE);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_DESTROYED_PVEHICLES"), 0, TRUE);
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_BADSPORT_MESSAGE"), 0, TRUE);
+				 STATS::STAT_SET_BOOL($("MPPLY_IS_HIGH_EARNER"), false, 1);
 			 }
 			 if (Menu::Option("清除举报")) {
 				 STATS::STAT_SET_INT(GAMEPLAY::GET_HASH_KEY("MPPLY_REPORT_STRENGTH"), 0, 1);
@@ -12875,7 +12884,10 @@ void main() {
 			 Menu::Subtitle("VEHICLE SPAWNER");
 			 Menu::Bool("即刷即上", Features::spawnincar);
 			 Menu::Bool("直接满改", Features::spawnmaxed);
-			 Menu::MenuOption("DLC 车辆", dlcvehicles);
+			 if (authserver.getAuthType() == "MEMBER")
+				 Menu::Lock("DLC载具");
+			 else
+				Menu::MenuOption("DLC载具", dlcvehicles);
 			 Menu::MenuOption("超级跑车", Super);
 			 Menu::MenuOption("运动车辆", Sports);
 			 Menu::MenuOption("经典运动", SportClassic);

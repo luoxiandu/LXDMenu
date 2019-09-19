@@ -291,9 +291,29 @@ void* __cdecl MY_CLONE_PED(NativeContext* cxt)
 fpGetLabelText ogGetLabelText = nullptr;
 const char* hkGetLabelText(void* this_, const char* label)
 {
+	if (std::strcmp(label, "HUD_MPREENTER") == 0)
+	{
+		return "24K Menu正在和您一起寻找新的战局";
+	}
 	if (std::strcmp(label, "HUD_JOINING") == 0)
 	{
-		return "Joining GTA Online With Gays"; //not working :D
+		return "24K Menu正在和您一起进入在线模式";
+	}
+	if (std::strcmp(label, "HUD_QUITTING") == 0)
+	{
+		return "24K Menu正在和您一起返回故事模式";
+	}
+	if (std::strcmp(label, "PM_QUIT_MP") == 0)
+	{
+		return "和24K Menu一起返回故事模式";
+	}
+	if (std::strcmp(label, "PM_ENTER_MP") == 0)
+	{
+		return "和24K Menu一起进入在线模式";
+	}
+	if (std::strcmp(label, "PM_GO") == 0)
+	{
+		return "和24K Menu一起加入公开战局";
 	}
 
 	return ogGetLabelText(this_, label);
@@ -306,7 +326,15 @@ bool Hooking::HookNatives()
 		return false;
 	Hooking::m_hooks.push_back(Hooking::is_DLC_present);
 
+	MH_STATUS statuslol = MH_CreateHook(Hooking::GetLabelText, hkGetLabelText, (void**)& ogGetLabelText);
+	if (status != MH_OK || MH_EnableHook(Hooking::GetLabelText) != MH_OK)
+		return false;
+	Hooking::m_hooks.push_back(Hooking::GetLabelText);
 
+	auto KekCheck = Memory::pattern("80 3D ? ? ? ? ? 0F 85 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B 08 48 39 0D ? ? ? ? 0F 85").count(1).get(0).get<std::uint8_t>(0);
+	KekCheck[0] = 0xC3;
+	std::memset(KekCheck + 1, 0x90, 7);
+	FlushInstructionCache(GetCurrentProcess(), KekCheck, 8);
 
 
 	return true;
@@ -771,10 +799,12 @@ void Hooking::FindPatterns()
 		"xxxx?xxxx?xxxxxxxx",
 		&Hooking::stat_set_int);*/
 
+	// Outdated!
 	/*setFn<fpNetworkIsSessionStarted>("network_is_session_started",
 		"\x48\x8B\x0D\x00\x00\x00\x00\x33\xC0\x48\x85\xC9\x74\x0E\x83\xB9\x00\x00\x00\x00\x00\x75\x05",
 		"xxx????xxxxxxxxx?????xx",
 		&Hooking::network_is_session_started);*/
+	Hooking::GetLabelText = static_cast<fpGetLabelText>(Memory::pattern("48 89 5C 24 ? 57 48 83 EC 20 48 8B DA 48 8B F9 48 85 D2 75 44 E8").count(1).get(0).get<void>(0));
 
 	char* c_location = nullptr;
 	void* v_location = nullptr;
@@ -803,14 +833,14 @@ void Hooking::FindPatterns()
 
 
 	// Old and detected
-	CPattern pattern_modelCheck("\x48\x85\xC0\x0F\x84\x00\x00\x00\x00\x8B\x48\x50", "xxxxx????xxx");
-	auto p_modelCheck = pattern_modelCheck.find(0).get(0).get<char>(0);
-	p_modelCheck == nullptr ? Log::Msg("Found 'modelCheck2' pattern.") : Memory::nop(p_modelCheck, 24);
+	// CPattern pattern_modelCheck("\x48\x85\xC0\x0F\x84\x00\x00\x00\x00\x8B\x48\x50", "xxxxx????xxx");
+	// auto p_modelCheck = pattern_modelCheck.find(0).get(0).get<char>(0);
+	// p_modelCheck == nullptr ? Log::Msg("Found 'modelCheck2' pattern.") : Memory::nop(p_modelCheck, 24);
 
 	// Bypass is player model allowed to spawn checks
-	CPattern pattern_modelSpawn("\x48\x8B\xC8\xFF\x52\x30\x84\xC0\x74\x05\x48", "xxxxxxxxxxx");
-	auto p_modelSpawn = pattern_modelSpawn.find(0).get(0).get<char>(8);
-	p_modelSpawn == nullptr ? Log::Error("Loaded .ini vehicle spawner.") : Memory::nop(p_modelSpawn, 2);
+	// CPattern pattern_modelSpawn("\x48\x8B\xC8\xFF\x52\x30\x84\xC0\x74\x05\x48", "xxxxxxxxxxx");
+	// auto p_modelSpawn = pattern_modelSpawn.find(0).get(0).get<char>(8);
+	// p_modelSpawn == nullptr ? Log::Error("Loaded .ini vehicle spawner.") : Memory::nop(p_modelSpawn, 2);
 
 	// Get active script thread
 	c_location = p_activeThread.count(1).get(0).get<char>(1);

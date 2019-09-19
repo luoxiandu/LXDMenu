@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int menu_version = 1.08;
+std::string menu_version = "1.0.9";
 
 const char* client_private_key_hexstr = "977EDC91A8BB5825B1D7FAED03B2CF8D87758AFF3A116259EBD25CDAA0FC4612";
 const char* server_public_key_hexstr = "66F16DF14487954D7FF05DA7543B1181134E12D378AD1EE0EC73DC779127B29DB9433AFA50FE33FAD09FF0DD044B91D8D6DC848978F871474E10460A1C1387E5";
@@ -139,7 +139,27 @@ bool UpdateSysTime()
     // 修改本机系统时间  
     SetLocalTime(&newtime);  
     return true;  
-}  
+}
+
+bool Auth::UpdateTimeOffsetHttp()
+{
+	RestClient::Response res = RestClient::get("http://47.75.254.17/auth/");
+	if (200 == res.code)
+	{
+		// 解析收到的JSON数据
+		rapidjson::Document d;
+		d.Parse(res.body.c_str());
+		// 判断响应是否正常
+		if (d.IsObject() && d["payload"].IsObject())
+		{
+			time_t recvtime;
+			time(&recvtime);
+			time_offset = d["payload"]["now"].GetInt() - recvtime;
+			return true;
+		}
+	}
+	return false;
+}
 
 
 /************************************************************************
@@ -244,8 +264,7 @@ Auth::Auth()
 {
 	tpool = new ThreadPool(4);
 	request.timeout = 3000;
-	int i = 5;
-	while (!UpdateSysTime() && --i) Sleep(1000);
+	time_offset = 0;
 }
 
 Auth::~Auth()
@@ -302,6 +321,8 @@ inline bool Auth::verifyResponseJson(rapidjson::Document &d)
 
 bool  Auth::login(std::string& username, std::string& password)
 {
+	int i = 5;
+	while (!UpdateTimeOffsetHttp() && --i) Sleep(1000);
 	std::ostringstream senddata;
 	// 获取当前时间
 	time_t gentime;
@@ -310,7 +331,7 @@ bool  Auth::login(std::string& username, std::string& password)
 	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << gentime;
+	senddata << "&gen_time=" << gentime + time_offset;
 	senddata << "&password=" << password;
 	senddata << "&username=" << username;
 	senddata << "&ver=" << menu_version;
@@ -387,7 +408,7 @@ bool  Auth::is_authed()
 	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << gentime;
+	senddata << "&gen_time=" << gentime + time_offset;
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求
@@ -470,7 +491,7 @@ bool  Auth::logout()
 	// gentime += 10;
 	// 开始构造请求表单数据
 	senddata << "HWID=" << getHWID();
-	senddata << "&gen_time=" << gentime;
+	senddata << "&gen_time=" << gentime + time_offset;
 	senddata << "&ver=" << menu_version;
 	signSendData(senddata); // 对表单签名
 	// 进行网络请求

@@ -108,6 +108,8 @@ void Features::UpdateLoop()
 
 	heatvisionbool ? heatvision(true) : NULL;
 
+	Aimbot(aimbot);
+
 	if (Forcefield) {
 		ENTITY::APPLY_FORCE_TO_ENTITY(PLAYER::PLAYER_PED_ID(), true, 0, 100, 100, 0, 0, 0, false, true, false, false, false, true);
 		ENTITY::APPLY_FORCE_TO_ENTITY(PLAYER::PLAYER_PED_ID(), 13, 99.9f, 99.9f, 99.9f, 0.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0, 1);
@@ -503,6 +505,7 @@ void Features::Offradarlester()
 }
 
 bool Features::commonstealth = false;
+bool Features::commonstealthinbank = false;
 int Features::moneyhash = -1127021384;
 int Features::moneyamount = 2000;
 int Features::moneydelay = 1000;
@@ -511,7 +514,7 @@ void Features::CommonStealth()
 	if ((timeGetTime() - Features::TimePD2) > Features::moneydelay)
 	{
 		Any idk = GAMEPLAY::GET_RANDOM_INT_IN_RANGE(1500000000, 2999999999);
-		UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, Features::moneyhash, 1445302971, Features::moneyamount, 4);
+		UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, Features::moneyhash, 1445302971, Features::moneyamount, commonstealthinbank ? 4 : 1);
 		UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
 		Features::TimePD2 = timeGetTime();
 	}
@@ -526,6 +529,15 @@ void Features::StealthCash4Loop()
 		UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, 312105838, 1445302971, 10000000, 4);
 		UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
 		NETWORKCASH::NETWORK_EARN_FROM_ROCKSTAR(10000000);
+		int iVar0;
+		char rockstaraward[30], totalearned[23];
+		"MP0_MPPLY_TOTAL_EVC";
+		sprintf(rockstaraward, "MP0_MONEY_EARN_ROCKSTAR_AWARD");
+		sprintf(totalearned, "MP0_MPPLY_TOTAL_EARNED");
+		STATS::STAT_GET_INT($(rockstaraward), &iVar0, -1);
+		STATS::STAT_SET_INT($(rockstaraward), iVar0 + 10000000, 1);
+		STATS::STAT_GET_INT($(totalearned), &iVar0, -1);
+		STATS::STAT_SET_INT($(totalearned), iVar0 + 10000000, 1);
 		Features::TimePD2 = timeGetTime();
 	}
 }
@@ -1426,7 +1438,7 @@ void Features::FireManModeLoop(bool toggle)
 	if (FireManMode == true)
 	{
 		Vector3 Mouth = PED::GET_PED_BONE_COORDS(PLAYER::PLAYER_PED_ID(), 39317, 0.1f, 0.0f, 0.0f);
-			FIRE::_ADD_SPECFX_EXPLOSION(Mouth.x, Mouth.y, Mouth.z, EXPLOSION_DIR_FLAME, EXPLOSION_DIR_FLAME, 1.0f, true, true, 0.0f);
+			FIRE::_ADD_SPECFX_EXPLOSION(Mouth.x, Mouth.y, Mouth.z, Explosions::EXP_TAG_DIR_FLAME, Explosions::EXP_TAG_DIR_FLAME, 1.0f, true, true, 0.0f);
 	}
 }
 
@@ -2913,7 +2925,7 @@ bool Features::exploder[32] = { false };
 void Features::explodeloop(Player target)
 {
 	Vector3 targetCords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(target), false);
-	FIRE::ADD_EXPLOSION(targetCords.x, targetCords.y, targetCords.z, 0, 0.0f, true, false, 10.0f);
+	FIRE::ADD_EXPLOSION(targetCords.x, targetCords.y, targetCords.z, 0, 1000.f, true, false, 10.0f);
 }
 
 
@@ -4097,9 +4109,19 @@ void Features::SoftGodMode()
 void Features::SharkCards(int amount)
 {
 	Any idk = GAMEPLAY::GET_RANDOM_INT_IN_RANGE(1500000000, 2999999999);
-	UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, 312105838, 1445302971, amount, 4);
+	UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, 312105838, 1445302971, amount, 1);
 	UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
 	NETWORKCASH::NETWORK_EARN_FROM_ROCKSTAR(amount);
+	int iVar0;
+	char rockstaraward[30], totalearned[23];
+	"MP0_MPPLY_TOTAL_EVC";
+	sprintf(rockstaraward, "MP0_MONEY_EARN_ROCKSTAR_AWARD");
+	sprintf(totalearned, "MP0_MPPLY_TOTAL_EARNED");
+	STATS::STAT_GET_INT($(rockstaraward), &iVar0, -1);
+	STATS::STAT_SET_INT($(rockstaraward), iVar0 + amount, 1);
+	STATS::STAT_GET_INT($(totalearned), &iVar0, -1);
+	STATS::STAT_SET_INT($(totalearned), iVar0 + amount, 1);
+	Features::TimePD2 = timeGetTime();
 }
 
 bool Features::kickp = false;
@@ -4274,4 +4296,31 @@ bool Features::isPlayerInvincible(Ped handle)
 bool Features::isPlayerInGodmode(Ped handle)
 {
 	return !INTERIOR::GET_INTERIOR_FROM_ENTITY(handle) && isPlayerInvincible(handle);
+}
+
+bool Features::aimbot = false;
+void Features::Aimbot(bool toggle)
+{
+	const int ElementAmount = 10;
+	const int ArrSize = ElementAmount * 4 + 2;
+
+	Entity* peds = new Entity[ArrSize];
+	if (toggle)
+	{
+		peds[0] = ElementAmount;
+		Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_INDEX(), 1);
+		int PedFound = PED::GET_PED_NEARBY_PEDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(PLAYER::GET_PLAYER_INDEX()), peds, -1);
+		for (int i = 0; i < PedFound; i++)
+		{
+			int OffsetID = i * 2 + 2;
+			int bone = ENTITY::GET_ENTITY_BONE_INDEX_BY_NAME(peds[OffsetID], "SKEL_Head");
+			Vector3 pos = ENTITY::GET_WORLD_POSITION_OF_ENTITY_BONE(peds[OffsetID], bone);
+			RequestControlOfEnt(peds[OffsetID]);
+			if (ENTITY::DOES_ENTITY_EXIST(peds[OffsetID]) && PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(PLAYER::GET_PLAYER_INDEX()) != peds[OffsetID])
+			{
+				PED::SET_PED_SHOOTS_AT_COORD(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(PLAYER::GET_PLAYER_INDEX()), pos.x, pos.y, pos.z, true);
+			}
+		}
+	}
+	else { delete[] peds; }
 }

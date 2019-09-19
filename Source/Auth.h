@@ -16,11 +16,13 @@ private:
 	bool is_authed_cache;
 	int check_count;
 	int fail_count;
+	int time_offset;
 	ThreadPool* tpool;
 	RestClient::Request request;
 	std::string loginuser, authkey, authtype, currerr;
 	bool verifyResponseJson(rapidjson::Document& d);
 	bool signSendData(std::ostringstream& senddata);
+	bool UpdateTimeOffsetHttp();
 
 public:
 	Auth();
@@ -38,4 +40,4 @@ public:
 	bool hasErr();
 };
 
-extern int menu_version;
+extern std::string menu_version;

@@ -64,6 +64,7 @@ namespace Features {
 	void SharkCards(int amount);
 
 	extern bool commonstealth;
+	extern bool commonstealthinbank;
 	extern int moneyhash;
 	extern int moneyamount;
 	extern int moneydelay;
@@ -516,6 +517,9 @@ namespace Features {
 	bool isPlayerFriend(Player player, bool& result);
 	bool isPlayerInvincible(Ped handle);
 	bool isPlayerInGodmode(Ped handle);
+
+	extern bool aimbot;
+	void Aimbot(bool toggle);
 	
 	namespace Online {
 		extern int selectedPlayer;
