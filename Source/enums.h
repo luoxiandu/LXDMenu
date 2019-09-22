@@ -2075,3 +2075,19 @@ enum Button
 	INPUT_MAP_POI = 337
 };
 
+enum Language {
+	american = 0,
+	french,
+	german,
+	italian,
+	spanish,
+	portuguese,
+	polish,
+	russian,
+	korean,
+	chinese,
+	japanese,
+	mexican,
+	chinese_simplified,
+};
+

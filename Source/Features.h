@@ -520,6 +520,10 @@ namespace Features {
 
 	extern bool aimbot;
 	void Aimbot(bool toggle);
+
+	void display_help(char* sParam0, int iParam1);
+
+	void Bullshark();
 	
 	namespace Online {
 		extern int selectedPlayer;

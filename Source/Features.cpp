@@ -526,7 +526,7 @@ void Features::StealthCash4Loop()
 	if ((timeGetTime() - Features::TimePD2) > 1000) // 时间间隔
 	{
 		Any idk = GAMEPLAY::GET_RANDOM_INT_IN_RANGE(1500000000, 2999999999);
-		UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, 312105838, 1445302971, 10000000, 4);
+		UNK3::_NETWORK_SHOP_BEGIN_SERVICE(&idk, 1474183246, 312105838, 1445302971, 10000000, 1);
 		UNK3::_NETWORK_SHOP_CHECKOUT_START(idk);
 		NETWORKCASH::NETWORK_EARN_FROM_ROCKSTAR(10000000);
 		int iVar0;
@@ -4321,6 +4321,18 @@ void Features::Aimbot(bool toggle)
 				PED::SET_PED_SHOOTS_AT_COORD(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(PLAYER::GET_PLAYER_INDEX()), pos.x, pos.y, pos.z, true);
 			}
 		}
+		delete[] peds;
 	}
 	else { delete[] peds; }
+}
+
+void Features::display_help(char* sParam0, int iParam1)//Position - 0x21E61
+{
+	UI::BEGIN_TEXT_COMMAND_DISPLAY_HELP(sParam0);
+	UI::END_TEXT_COMMAND_DISPLAY_HELP(0, 0, true, iParam1);
+}
+
+void Features::Bullshark()
+{
+	globalHandle(2524719).At(830).As<int>() = 1;
 }

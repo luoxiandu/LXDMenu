@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-std::string menu_version = "1.0.9";
+std::string menu_version = "1.0.10";
 
 const char* client_private_key_hexstr = "977EDC91A8BB5825B1D7FAED03B2CF8D87758AFF3A116259EBD25CDAA0FC4612";
 const char* server_public_key_hexstr = "66F16DF14487954D7FF05DA7543B1181134E12D378AD1EE0EC73DC779127B29DB9433AFA50FE33FAD09FF0DD044B91D8D6DC848978F871474E10460A1C1387E5";
@@ -349,7 +349,7 @@ bool  Auth::login(std::string& username, std::string& password)
 		{
 			time_t recvtime;
 			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
+			if (abs(recvtime + time_offset - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -423,7 +423,7 @@ bool  Auth::is_authed()
 		{
 			time_t recvtime;
 			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
+			if (abs(recvtime + time_offset - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
@@ -507,7 +507,7 @@ bool  Auth::logout()
 		{
 			time_t recvtime;
 			time(&recvtime);
-			if (abs(recvtime - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
+			if (abs(recvtime + time_offset - atoi(d["gen_time"].GetString())) < 15) // 验证响应是否在15秒以内新鲜生成
 			{
 				if (verifyResponseJson(d)) // 验签通过
 				{
