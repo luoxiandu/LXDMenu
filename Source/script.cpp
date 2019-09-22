@@ -7725,12 +7725,14 @@ void main() {
 			else
 			{
 				Menu::MenuOption("全局控制", allplayers);
-				/*Menu::Option("战局追踪（输入Rockstar ID）", [] {
+				Menu::Option("战局追踪（输入Rockstar ID）", [] {
 					GAMEPLAY::DISPLAY_ONSCREEN_KEYBOARD(true, "", "", "", "", "", "", 32);
 					while (GAMEPLAY::UPDATE_ONSCREEN_KEYBOARD() == 0) WAIT(0);
 					if (!GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT()) return;
-					NETWORK::NETWORK_JOIN_TRANSITION(std::atoi(GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT()));
-					});*/
+					int rockstarid = std::atoi(GAMEPLAY::GET_ONSCREEN_KEYBOARD_RESULT());
+					int gamer_handle = NETWORK::NETWORK_GET_PLAYER_FROM_GAMER_HANDLE(&rockstarid);
+					NETWORK::NETWORK_JOIN_TRANSITION(gamer_handle);
+					});
 			}
 			int menui = 0;
 			for (int i = 0; i < 32; ++i) {
@@ -7768,7 +7770,7 @@ void main() {
 					
 
 					Menu::MenuOption((PLAYER::GET_PLAYER_NAME(i) + playerlabel).c_str(), onlinemenu_selected) ? Features::Online::selectedPlayer = i : NULL;
-					if (Menu::Settings::currentOption == (menui++) + 2)
+					if (Menu::Settings::currentOption == (menui++) + 3)
 					{
 						Features::LoadInfoplayer(PLAYER::GET_PLAYER_NAME(i), i);
 					}
@@ -11239,7 +11241,7 @@ void main() {
 				 {
 					 if (PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i) == PLAYER::PLAYER_PED_ID()) continue;
 					 {
-						 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i), false);
+						 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i), true);
 						 FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1000.f, true, false, 100.f);
 					 }
 				 }
@@ -11260,7 +11262,8 @@ void main() {
 			 Menu::MenuOption("视觉效果", PTFX);
 			//if (Menu::Int("玩家透明度", shuzhi, 0, 255)) { ENTITY::SET_ENTITY_ALPHA(PLAYER::PLAYER_PED_ID(), shuzhi, 0); } //自慰
 			 Menu::Bool("无敌", Features::playerGodMode, [] { Features::GodMode(Features::playerGodMode); });
-			 Menu::Bool("软无敌", Features::softGodMode);
+			 Menu::Bool("软无敌（自动补甲）", Features::softGodMode);
+			 Menu::Option("牛鲨睾酮", [] { Features::Bullshark(); });
 			 Menu::Bool("永不通缉", Features::neverwanted, [] { Features::NeverGetWanted(Features::neverwanted); });
 			 Menu::Bool("雷达隐匿", Features::orbool, [] { Features::OffRadar(Features::orbool); });
 			 Menu::Bool("禁用电话", Features::phonedisable, [] { Features::disablephone(); });
@@ -11273,6 +11276,17 @@ void main() {
 			 Menu::Bool("穿墙飞行", Features::flybool, [] { Features::playerflyer(Features::flybool); });
 			 Menu::Bool("变小", Features::betiny, [] { Features::TinyPlayer(Features::betiny); });
 			 Menu::Option("清洗", [] { int Ped = PLAYER::PLAYER_PED_ID(); PED::CLEAR_PED_BLOOD_DAMAGE(Ped); PED::RESET_PED_VISIBLE_DAMAGE(Ped); });
+			 if (Menu::Option("重置人物模型（强力清除模型）"))
+			 {
+				 DWORD model = GAMEPLAY::GET_HASH_KEY("mp_m_freemode_01");
+				 STREAMING::REQUEST_MODEL(model);
+				 while (!STREAMING::HAS_MODEL_LOADED(model)) WAIT(0);
+				 PLAYER::SET_PLAYER_MODEL(PLAYER::PLAYER_ID(), model);
+				 PED::SET_PED_DEFAULT_COMPONENT_VARIATION(PLAYER::PLAYER_PED_ID());
+				 WAIT(10);
+				 STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
+				 WAIT(10);
+			 }
 			 if (Menu::Option("自杀")) { ENTITY::SET_ENTITY_HEALTH(PLAYER::PLAYER_PED_ID(), 0); }
 		 }
 		 break;
@@ -11286,7 +11300,7 @@ void main() {
 			 Menu::Option("GTA5.exe : ~b~v1.0.1737.5");
 			 Menu::Option("支持线上版本 : ~g~1.48");
 			 Menu::Option(("外挂版本 : ~r~" + menu_version).c_str());
-			 Menu::Option("发布日期 : ~c~Sep 1, 2019");
+			 Menu::Option("发布日期 : ~c~Sep 22, 2019");
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~∑GTA账号：~q~") + PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())).c_str());
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~已登录用户：~p~") + authserver.getUsername()).c_str());
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~在用授权：~p~") + authserver.getAuthKey() + " - " + authserver.getAuthType()).c_str());
@@ -11453,10 +11467,10 @@ void main() {
 			 if (Menu::Option("钢管舞表演")) { Features::doAnimation("mini@strip_club@pole_dance@pole_dance1", "pd_dance_01"); }
 			 if (Menu::Option("俯卧撑")) { Features::doAnimation("amb@world_human_push_ups@male@base", "base"); }
 			 if (Menu::Option("仰卧起坐")) { Features::doAnimation("amb@world_human_sit_ups@male@base", "base"); }
-			 if (Menu::Option("庆祝庆贺")) { Features::doAnimation("rcmfanatic1celebrate", "celebrate"); }
-			 if (Menu::Option("触电死亡")) { Features::doAnimation("ragdoll@human", "electrocute"); }
-			 if (Menu::Option("自取灭亡")) { Features::doAnimation("mp_suicide", "pistol"); }
-			 if (Menu::Option("脱衣洗澡")) { Features::doAnimation("mp_safehouseshower@male@", "male_shower_idle_b"); }
+			 if (Menu::Option("庆祝")) { Features::doAnimation("rcmfanatic1celebrate", "celebrate"); }
+			 if (Menu::Option("触电")) { Features::doAnimation("ragdoll@human", "electrocute"); }
+			 if (Menu::Option("自杀")) { Features::doAnimation("mp_suicide", "pistol"); }
+			 if (Menu::Option("洗澡")) { Features::doAnimation("mp_safehouseshower@male@", "male_shower_idle_b"); }
 		 }
 		 break;
 #pragma endregion
@@ -11557,12 +11571,16 @@ void main() {
 				 Menu::Lock("冻结");
 				 Menu::Lock("失控");
 				 Menu::Lock("空袭");
+				 Menu::Lock("变鱼崩");
 				 Menu::Lock("崩溃（克隆崩）");
 				 Menu::Lock("镜头晃动");
 				 Menu::Lock("循环爆炸");
 				 Menu::Lock("掉钱袋");
 				 Menu::Lock("爆炸");
 				 Menu::Lock("天基炮");
+				 Menu::Lock("匿名天基炮");
+				 Menu::Lock("陷害");
+				 Menu::Lock("陷害（同时自杀装无辜）");
 				 Menu::Lock("踢出载具");
 				 Menu::Lock("删除载具");
 				 Menu::Lock("弹射载具");
@@ -11579,8 +11597,9 @@ void main() {
 			 else
 			 {
 				 Menu::MenuOption("控制选项", attachoptions);
-				 Menu::MenuOption("镜头特效", PTFXO);
+				 Menu::MenuOption("视觉特效", PTFXO);
 				 Menu::MenuOption("远程控制", Remotes);
+				 Menu::MenuOption("强制动作", forcean);
 				 Menu::Bool("检测发言", Features::TalkingPlayers, [] { Features::featureTalkingPlayers(Features::TalkingPlayers); });
 				 Menu::Bool("喷水", Features::playerwaterloop[Features::Online::selectedPlayer], [] { Features::WaterLoop(Features::playerwaterloop[Features::Online::selectedPlayer]); });
 				 Menu::Bool("喷火", Features::playerfireloop[Features::Online::selectedPlayer], [] { Features::FireLoop(Features::playerfireloop[Features::Online::selectedPlayer]); });
@@ -11588,26 +11607,86 @@ void main() {
 				 Menu::Bool("失控", Features::fuckedhandling[Features::Online::selectedPlayer], [] { Features::fuckhandling(Features::fuckedhandling[Features::Online::selectedPlayer]); });
 				 if (Menu::Option("空袭"))
 				 {
-					 Vector3 Coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 1);
+					 Vector3 Coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), true);
 					 Coords.z += 15;
 					 GAMEPLAY::SHOOT_SINGLE_BULLET_BETWEEN_COORDS(Coords.x, Coords.y, Coords.z + 35, Coords.x, Coords.y, Coords.z, 250, 1, GAMEPLAY::GET_HASH_KEY("VEHICLE_WEAPON_SPACE_ROCKET"), PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), 1, 1, 500);
 					 GAMEPLAY::SHOOT_SINGLE_BULLET_BETWEEN_COORDS(Coords.x, Coords.y, Coords.z + 30, Coords.x, Coords.y, Coords.z, 250, 0, GAMEPLAY::GET_HASH_KEY("VEHICLE_WEAPON_SPACE_ROCKET"), 0, 1, 1, 500);
 					 GAMEPLAY::SHOOT_SINGLE_BULLET_BETWEEN_COORDS(Coords.x, Coords.y, Coords.z + 55, Coords.x, Coords.y, Coords.z, 100, false, 0xF8A3939F, PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), true, true, 600);
 				 }
+				 if (Menu::Option("变鱼崩"))
+				 {
+					 DWORD model = GAMEPLAY::GET_HASH_KEY("A_C_Fish");
+					 STREAMING::REQUEST_MODEL(model);
+					 while (!STREAMING::HAS_MODEL_LOADED(model)) WAIT(0);
+					 PLAYER::SET_PLAYER_MODEL(Features::Online::selectedPlayer, model);
+					 PED::SET_PED_DEFAULT_COMPONENT_VARIATION(Features::Online::selectedPlayer);
+					 WAIT(10);
+					 STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
+					 WAIT(10);
+				 }
 				 if (Menu::Option("崩溃（克隆崩）")) {
 					 int Handle = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
-					 for (int i = 0; i < 40; i++) PED::CLONE_PED(Handle, 1, 1, 1);
+					 for (int i = 0; i < 100; i++) PED::CLONE_PED(Handle, 1, 1, 1);
 				 }
 				 Menu::Bool("镜头晃动", Features::camshaker[Features::Online::selectedPlayer], [] { Features::shakecam(Features::camshaker[Features::Online::selectedPlayer]); });
 				 Menu::Bool("循环爆炸", Features::exploder[Features::Online::selectedPlayer], [] { Features::explodeloop(Features::exploder[Features::Online::selectedPlayer]); });
 				 Menu::Bool("掉钱袋", Features::savenewdrop2[Features::Online::selectedPlayer], [] {Features::dildmoney(Features::savenewdrop2[Features::Online::selectedPlayer]); });
 				 if (Menu::Option("爆炸")) {
-					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
+					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), true);
 					 FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1000.f, true, false, 1000.f);
 				 }
 				 if (Menu::Option("天基炮")) {
-					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), false);
-					 FIRE::ADD_OWNED_EXPLOSION(PLAYER::PLAYER_PED_ID(), coords.x, coords.y, coords.z, Explosions::EXP_TAG_ORBITAL_CANNON, 1000.f, true, false, 1000.f);
+					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), true);
+					 auto nword = Memory::pattern("F3 0F 11 45 ? F3 0F 11 55 ? 89 5C 24 30 4C 89 75 9F 4C 89 75 AF 44 89 75 B7 48 C7 45").count(1).get(0).get<char>(120);
+					 nword += *reinterpret_cast<std::int32_t*>(nword);
+					 nword += sizeof(std::int32_t);
+					 *nword = 1;
+					 FIRE::ADD_OWNED_EXPLOSION(PLAYER::PLAYER_PED_ID(), coords.x, coords.y, coords.z, Explosions::EXP_TAG_ORBITAL_CANNON, 1000.f, true, false, 5.f);
+					 *nword = 0;
+				 }
+				 if (Menu::Option("匿名天基炮")) {
+					 Vector3 coords = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer), true);
+					 FIRE::ADD_EXPLOSION(coords.x, coords.y, coords.z, Explosions::EXP_TAG_ORBITAL_CANNON, 1000.f, true, false, 5.f);
+				 }
+				 if (Menu::Option("陷害"))
+				 {
+					 Player player = Features::Online::selectedPlayer;
+					 Ped ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(player);
+					 Player local = PLAYER::PLAYER_ID();
+
+					 for (int i = 0; i < 32; ++i)
+					 {
+						 if (i != local && i != player)
+						 {
+							 auto nword = Memory::pattern("F3 0F 11 45 ? F3 0F 11 55 ? 89 5C 24 30 4C 89 75 9F 4C 89 75 AF 44 89 75 B7 48 C7 45").count(1).get(0).get<char>(120);
+							 nword += *reinterpret_cast<std::int32_t*>(nword);
+							 nword += sizeof(std::int32_t);
+							 *nword = 1;
+							 auto pos = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i), true);
+							 FIRE::ADD_OWNED_EXPLOSION(ped, pos.x, pos.y, pos.z, Explosions::EXP_TAG_BLIMP, 1000.f, true, false, 5.f);
+							 *nword = 0;
+						 }
+					 }
+				 }
+				 if (Menu::Option("陷害（同时自杀装无辜）"))
+				 {
+					 Player player = Features::Online::selectedPlayer;
+					 Ped ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(player);
+					 Player local = PLAYER::PLAYER_ID();
+
+					 for (int i = 0; i < 32; ++i)
+					 {
+						 if (i != player)
+						 {
+							 auto nword = Memory::pattern("F3 0F 11 45 ? F3 0F 11 55 ? 89 5C 24 30 4C 89 75 9F 4C 89 75 AF 44 89 75 B7 48 C7 45").count(1).get(0).get<char>(120);
+							 nword += *reinterpret_cast<std::int32_t*>(nword);
+							 nword += sizeof(std::int32_t);
+							 *nword = 1;
+							 auto pos = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(i), true);
+							 FIRE::ADD_OWNED_EXPLOSION(ped, pos.x, pos.y, pos.z, Explosions::EXP_TAG_BLIMP, 1000.f, true, false, 5.f);
+							 *nword = 0;
+						 }
+					 }
 				 }
 				 if (Menu::Option("踢出载具")) {
 					 Ped playerPed = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer);
@@ -13083,19 +13162,19 @@ void main() {
 		 case forcean:
 		 {
 			 //Menu::DRAW_TEXTURE("shopui_title_ie_modgarage", "shopui_title_ie_modgarage", titlebox, 0.0800f, 0.21f, 0.090f, 0, 255, 255, 255, 255);
-			 Menu::Title("Force Animation");
+			 Menu::Title("强制动作");
 			 Menu::Subtitle("FORCE ANIMATIONS");
-			 if (Menu::Option("~r~Stop ~w~Animation")) { AI::CLEAR_PED_TASKS_IMMEDIATELY(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer)); }
-			 if (Menu::Option("Sex Receiver")) { Features::animatePlayer(Features::Online::selectedPlayer, "rcmpaparazzo_2", "shag_loop_poppy"); }
-			 if (Menu::Option("Sex Giver")) { Features::animatePlayer(Features::Online::selectedPlayer, "rcmpaparazzo_2", "shag_loop_a"); }
-			 if (Menu::Option("Stripper Dance")) { Features::animatePlayer(Features::Online::selectedPlayer, "mini@strip_club@private_dance@part1", "priv_dance_p1"); }
-			 if (Menu::Option("Pole Dance")) { Features::animatePlayer(Features::Online::selectedPlayer, "mini@strip_club@pole_dance@pole_dance1", "pd_dance_01"); }
-			 if (Menu::Option("Push Ups")) { Features::animatePlayer(Features::Online::selectedPlayer, "amb@world_human_push_ups@male@base", "base"); }
-			 if (Menu::Option("Sit Ups")) { Features::animatePlayer(Features::Online::selectedPlayer, "amb@world_human_sit_ups@male@base", "base"); }
-			 if (Menu::Option("Celebrate")) { Features::animatePlayer(Features::Online::selectedPlayer, "rcmfanatic1celebrate", "celebrate"); }
-			 if (Menu::Option("Electrocution")) { Features::animatePlayer(Features::Online::selectedPlayer, "ragdoll@human", "electrocute"); }
-			 if (Menu::Option("Suicide")) { Features::animatePlayer(Features::Online::selectedPlayer, "mp_suicide", "pistol"); }
-			 if (Menu::Option("Showering")) { Features::animatePlayer(Features::Online::selectedPlayer, "mp_safehouseshower@male@", "male_shower_idle_b"); }
+			 if (Menu::Option("~r~停止 ~w~动作")) { AI::CLEAR_PED_TASKS_IMMEDIATELY(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(Features::Online::selectedPlayer)); }
+			 if (Menu::Option("被操")) { Features::animatePlayer(Features::Online::selectedPlayer, "rcmpaparazzo_2", "shag_loop_poppy"); }
+			 if (Menu::Option("操别人")) { Features::animatePlayer(Features::Online::selectedPlayer, "rcmpaparazzo_2", "shag_loop_a"); }
+			 if (Menu::Option("脱衣舞表演")) { Features::animatePlayer(Features::Online::selectedPlayer, "mini@strip_club@private_dance@part1", "priv_dance_p1"); }
+			 if (Menu::Option("钢管舞表演")) { Features::animatePlayer(Features::Online::selectedPlayer, "mini@strip_club@pole_dance@pole_dance1", "pd_dance_01"); }
+			 if (Menu::Option("俯卧撑")) { Features::animatePlayer(Features::Online::selectedPlayer, "amb@world_human_push_ups@male@base", "base"); }
+			 if (Menu::Option("仰卧起坐")) { Features::animatePlayer(Features::Online::selectedPlayer, "amb@world_human_sit_ups@male@base", "base"); }
+			 if (Menu::Option("庆祝")) { Features::animatePlayer(Features::Online::selectedPlayer, "rcmfanatic1celebrate", "celebrate"); }
+			 if (Menu::Option("触电")) { Features::animatePlayer(Features::Online::selectedPlayer, "ragdoll@human", "electrocute"); }
+			 if (Menu::Option("自杀")) { Features::animatePlayer(Features::Online::selectedPlayer, "mp_suicide", "pistol"); }
+			 if (Menu::Option("洗澡")) { Features::animatePlayer(Features::Online::selectedPlayer, "mp_safehouseshower@male@", "male_shower_idle_b"); }
 			
 		 }
 		 break;
