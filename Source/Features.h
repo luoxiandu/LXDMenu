@@ -524,6 +524,8 @@ namespace Features {
 	void display_help(char* sParam0, int iParam1);
 
 	void Bullshark();
+
+	extern bool settocop;
 	
 	namespace Online {
 		extern int selectedPlayer;

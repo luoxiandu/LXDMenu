@@ -291,6 +291,7 @@ void* __cdecl MY_CLONE_PED(NativeContext* cxt)
 fpGetLabelText ogGetLabelText = nullptr;
 const char* hkGetLabelText(void* this_, const char* label)
 {
+	// 右下角加载部分
 	if (std::strcmp(label, "HUD_MPREENTER") == 0)
 	{
 		return "24K Menu正在和您一起寻找新的战局";
@@ -307,13 +308,128 @@ const char* hkGetLabelText(void* this_, const char* label)
 	{
 		return "和24K Menu一起返回故事模式";
 	}
+	if (std::strcmp(label, "HUD_TRANSP") == 0)
+	{
+		return "24K Menu正在帮您搞交易";
+	}
+	if (std::strcmp(label, "MPATM_PEND") == 0)
+	{
+		return "24K Menu正在帮您搞交易";
+	}
+	if (std::strcmp(label, "0xCB2C3C6B") == 0)
+	{
+		return "24K Menu正在帮您搞交易";
+	}
+	if (std::strcmp(label, "LOADING_MPLAYER_L") == 0)
+	{
+		return "24K Menu正在和您一起加载线上模式";
+	}
+	if (std::strcmp(label, "LOADING_SPLAYER_L") == 0)
+	{
+		return "24K Menu正在和您一起加载故事模式";
+	}
+	// 线下进线上的主菜单部分
 	if (std::strcmp(label, "PM_ENTER_MP") == 0)
 	{
 		return "和24K Menu一起进入在线模式";
 	}
+	if (std::strcmp(label, "PM_INF_PGOT") == 0)
+	{
+		return "和24K Menu一起进入在线模式";
+	}
+	if (std::strcmp(label, "PM_INF_PGOB") == 0)
+	{
+		return "直入主题，进入GTA在线模式，并用24K Menu提供的强大功能获取无穷乐趣。";
+	}
+	// 在线模式的详情选择界面
 	if (std::strcmp(label, "PM_GO") == 0)
 	{
+		return "加入公开战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOT0") == 0)
+	{
 		return "和24K Menu一起加入公开战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOB0") == 0)
+	{
+		return "直接进入公开战局，与未曾谋面的犯罪精英激情厮杀。";
+	}
+	if (std::strcmp(label, "PM_NCREW_FM") == 0)
+	{
+		return "加入帮会战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOT1") == 0)
+	{
+		return "和24K Menu一起加入帮会战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOB1") == 0)
+	{
+		return "寻找公开的帮会战局，并告诉他们谁才是老大。";
+	}
+	if (std::strcmp(label, "PM_CREW_FM") == 0)
+	{
+		return "加入非公开帮会战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOT2") == 0)
+	{
+		return "和24K Menu一起加入非公开帮会战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOB2") == 0)
+	{
+		return "和您自己帮会的同志们一起游乐，开黑，核平洛圣都。";
+	}
+	if (std::strcmp(label, "PM_FRIEND_FM") == 0)
+	{
+		return "加入非公开好友战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOT3") == 0)
+	{
+		return "和24K Menu一起加入非公开好友战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOB3") == 0)
+	{
+		return "你的朋友或许正在自闭，你现在就可以去拯救他！";
+	}
+	if (std::strcmp(label, "PM_SOLO_FM") == 0)
+	{
+		return "创建单人战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOT4") == 0)
+	{
+		return "和24K Menu一起创建单人战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOB4") == 0)
+	{
+		return "这是官方的自闭战局，很多功能不能用的。如果您想单人拉货请想办法卡单人~r~公开~w~战局。";
+	}
+	if (std::strcmp(label, "PM_INVO_FM") == 0)
+	{
+		return "创建凭邀请加入的战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOT5") == 0)
+	{
+		return "和24K Menu一起创建凭邀请加入的战局";
+	}
+	if (std::strcmp(label, "PM_INF_PGOB5") == 0)
+	{
+		return "开房!噢!耶！";
+	}
+	// 在线模式的菜单界面
+	if (std::strcmp(label, "PM_GOTO_STORE") == 0)
+	{
+		return "和24K Menu一起去在线商店";
+	}
+	if (std::strcmp(label, "PM_FIND_SESS") == 0)
+	{
+		return "和24K Menu一起寻找新战局";
+	}
+	if (std::strcmp(label, "PM_EXIT_GAME") == 0)
+	{
+		return "和24K Menu一起退出游戏";
+	}
+	if (*(unsigned int*)label == 0xB3182F72)  // 不起作用,不知道这种数的标签怎么hook
+	{
+		return "24K Menu恭喜你又激活了一个全新的账号！请时刻注意辅助的更新，降低封号风险。有关辅助的更多内容请访问我们的官网：~HUD_COLOUR_SOCIAL_CLUB~https://24kmenu.com~n~哦对了，R星提醒你不要作弊（滑稽）";
 	}
 
 	return ogGetLabelText(this_, label);
@@ -331,10 +447,11 @@ bool Hooking::HookNatives()
 		return false;
 	Hooking::m_hooks.push_back(Hooking::GetLabelText);
 
-	auto KekCheck = Memory::pattern("80 3D ? ? ? ? ? 0F 85 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B 08 48 39 0D ? ? ? ? 0F 85").count(1).get(0).get<std::uint8_t>(0);
+	// Not know what is it.
+	/*auto KekCheck = Memory::pattern("80 3D ? ? ? ? ? 0F 85 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B 08 48 39 0D ? ? ? ? 0F 85").count(1).get(0).get<std::uint8_t>(0);
 	KekCheck[0] = 0xC3;
 	std::memset(KekCheck + 1, 0x90, 7);
-	FlushInstructionCache(GetCurrentProcess(), KekCheck, 8);
+	FlushInstructionCache(GetCurrentProcess(), KekCheck, 8);*/
 
 
 	return true;

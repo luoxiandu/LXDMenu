@@ -7673,12 +7673,13 @@ void main() {
 	Features::tpKg = true;
 	Features::rwtpKg = true;
 	Features::IconNotification((char *)(std::string("尊敬的 24K Menu 用户") + authserver.getUsername() + "，请开始您的仙境之旅吧！").c_str(), "~r~24K Menu", (char*)(" v" + menu_version).c_str());
-	Features::notifyMap("按F4打开菜单");
+	// Features::notifyMap("按F4打开菜单");
+	Features::display_help("24K Menu 若要打开菜单，请按~KEY_F4~", 10000);
 	int autherrcount = 0;
 	while (true) {
 		// authserver.curTime = NETWORK::_GET_POSIX_TIME() + 10;
 		if (!authserver.is_authed_rate_limited() && autherrcount++ > 5)  // 如果授权出了问题就直接退出
-			// 与授权服务器失去连接，如果频繁出现此类错误，请向组织反馈。如果可以的话，请一并反馈运营商和网络环境的信息，以便我们提供更好的体验。
+			// GBK文本：与授权服务器失去连接，如果频繁出现此类错误，请向组织反馈。如果可以的话，请一并反馈运营商和网络环境的信息，以便我们提供更好的体验。
 			Log::Fatal("\xD3\xEB\xCA\xDA\xC8\xA8\xB7\xFE\xCE\xF1\xC6\xF7\xCA\xA7\xC8\xA5\xC1\xAC\xBD\xD3\xA3\xAC\xC8\xE7\xB9\xFB\xC6\xB5\xB7\xB1\xB3\xF6\xCF\xD6\xB4\xCB\xC0\xE0\xB4\xED\xCE\xF3\xA3\xAC\xC7\xEB\xCF\xF2\xD7\xE9\xD6\xAF\xB7\xB4\xC0\xA1\xA1\xA3\xC8\xE7\xB9\xFB\xBF\xC9\xD2\xD4\xB5\xC4\xBB\xB0\xA3\xAC\xC7\xEB\xD2\xBB\xB2\xA2\xB7\xB4\xC0\xA1\xD4\xCB\xD3\xAA\xC9\xCC\xBA\xCD\xCD\xF8\xC2\xE7\xBB\xB7\xBE\xB3\xB5\xC4\xD0\xC5\xCF\xA2\xA3\xAC\xD2\xD4\xB1\xE3\xCE\xD2\xC3\xC7\xCC\xE1\xB9\xA9\xB8\xFC\xBA\xC3\xB5\xC4\xCC\xE5\xD1\xE9\xA1\xA3");
 		Menu::Checks::Keys();
 		Features::UpdateLoop();
@@ -7758,23 +7759,24 @@ void main() {
 					bool handle_valid = Features::isPlayerFriend(i, is_friend);
 
 					if (NETWORK::NETWORK_GET_HOST_OF_SCRIPT("freemode", -1, 0) == i) {
-						playerlabel += " ~y~[房主]";
+						playerlabel += "  ~y~[房主]";
 					}
 					else if (handle_valid && is_friend) {
-						playerlabel += " ~g~[好友]";
+						playerlabel += "  ~g~[好友]";
 					}
 					/*else if (is_invincible) {
-							playerlabel += " ~r~[无敌]";
+							playerlabel += "  ~r~[无敌]";
 					}*/
 					else if (isFriend == PLAYER::PLAYER_PED_ID()) {
-						playerlabel += " ~b~[自己]";
+						playerlabel += "  ~b~[自己]";
 					}
 					else {
 						playerlabel += "";
 					}
 					
-
-					Menu::MenuOption((PLAYER::GET_PLAYER_NAME(i) + playerlabel).c_str(), onlinemenu_selected) ? Features::Online::selectedPlayer = i : NULL;
+					char usernamecolor[26];
+					sprintf(usernamecolor, "~HUD_COLOUR_NET_PLAYER%d~", i + 1);
+					Menu::MenuOption((usernamecolor + (PLAYER::GET_PLAYER_NAME(i) + playerlabel)).c_str(), onlinemenu_selected) ? Features::Online::selectedPlayer = i : NULL;
 					if (Menu::Settings::currentOption == (menui++) + 2)
 					{
 						Features::LoadInfoplayer(PLAYER::GET_PLAYER_NAME(i), i);
@@ -7799,18 +7801,18 @@ void main() {
 			 //Menu::Bool("250k", Features::stealth250k, [] { Features::Stealth(Features::stealth250k); });
 			 //Menu::Bool("120k", Features::stealth120k, [] { Features::Stealth(Features::stealth120k); });
 			 // Menu::Bool("50k", Features::stealth50k, [] { Features::Stealth(Features::stealth50k); });
-			 Menu::Bool("金钱雨", Features::moneyrain2k, [] { Features::RainMoney(Features::moneyrain2k); });
-			 Menu::Bool("掉落$2500", Features::moneydropp, [] { Features::dildomoneylocal(Features::moneydropp); });
+			 Menu::Bool("钱袋刷钱1", Features::moneyrain2k, [] { Features::RainMoney(Features::moneyrain2k); });
+			 Menu::Bool("钱袋刷钱2", Features::moneydropp, [] { Features::dildomoneylocal(Features::moneydropp); });
 			 // Menu::Int("金额", Features::amount5, 0, 2147483647, 1000000);
 			 // Menu::Bool("确认删钱", Features::remover, [] { Features::Stealth(Features::remover); });
 			 Menu::Int("自由刷钱 - 金额", Features::amount, 1000000, 15000000, 1000000);
 			 Menu::Bool("自由刷钱 - 开关（高风险）", Features::giver);
-			 Menu::Option("假装买一张巨齿鲨卡（800万）", [] { Features::SharkCards(8000000); });
-			 Menu::Option("假装买一张鲸鲨卡（350万）", [] { Features::SharkCards(3500000); });
-			 Menu::Option("假装买一张大白鲨卡（125万）", [] { Features::SharkCards(1250000); });
-			 Menu::Option("假装买一张牛鲨卡（50万）", [] { Features::SharkCards(500000); });
-			 Menu::Option("假装买一张虎鲨卡（20万）", [] { Features::SharkCards(200000); });
-			 Menu::Option("假装买一张红鲨卡（10万）", [] { Features::SharkCards(100000); });
+			 Menu::Option("假装买一张巨齿鲨现金卡（800万）", [] { Features::SharkCards(8000000); });
+			 Menu::Option("假装买一张鲸鲨现金卡（350万）", [] { Features::SharkCards(3500000); });
+			 Menu::Option("假装买一张大白鲨现金卡（125万）", [] { Features::SharkCards(1250000); });
+			 Menu::Option("假装买一张牛鲨现金卡（50万）", [] { Features::SharkCards(500000); });
+			 Menu::Option("假装买一张虎鲨现金卡（20万）", [] { Features::SharkCards(200000); });
+			 Menu::Option("假装买一张红鲨现金卡（10万）", [] { Features::SharkCards(100000); });
 			 Menu::Bool("循环1000万Rockstar给予金额", Features::newstealth);
 			 
 
@@ -11269,6 +11271,7 @@ void main() {
 			 Menu::Bool("无敌", Features::playerGodMode, [] { Features::GodMode(Features::playerGodMode); });
 			 Menu::Bool("软无敌（自动补甲）", Features::softGodMode);
 			 Menu::Option("牛鲨睾酮", [] { Features::Bullshark(); });
+			 if (Menu::Bool("成为警察", Features::settocop)) { PED::SET_PED_AS_COP(PLAYER::PLAYER_PED_ID(), Features::settocop); };
 			 Menu::Bool("永不通缉", Features::neverwanted, [] { Features::NeverGetWanted(Features::neverwanted); });
 			 Menu::Bool("雷达隐匿", Features::orbool, [] { Features::OffRadar(Features::orbool); });
 			 Menu::Bool("禁用电话", Features::phonedisable, [] { Features::disablephone(); });
@@ -11305,7 +11308,7 @@ void main() {
 			 Menu::Option("GTA5.exe : ~b~v1.0.1737.5");
 			 Menu::Option((std::string("支持线上版本 : ~g~") + UNK3::_GET_ONLINE_VERSION()).c_str());
 			 Menu::Option(("外挂版本 : ~r~" + menu_version).c_str());
-			 Menu::Option("发布日期 : ~c~Sep 22, 2019");
+			 Menu::Option("发布日期 : ~c~Sep 25, 2019");
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~∑GTA账号：~q~") + PLAYER::GET_PLAYER_NAME(PLAYER::PLAYER_ID())).c_str());
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~已登录用户：~p~") + authserver.getUsername()).c_str());
 			 Menu::Option((std::string("~HUD_COLOUR_GOLD~在用授权：~p~") + authserver.getAuthKey() + " - " + authserver.getAuthType()).c_str());
